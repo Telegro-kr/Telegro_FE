@@ -1,24 +1,19 @@
-import { defineConfig } from 'vite';
+import path from 'node:path';
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import svgr from 'vite-plugin-svgr';
+import { defineConfig } from 'vite';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-
   plugins: [
     react(),
-    svgr({
-      exportAsDefault: true
-    })
+    tailwindcss(),
+    createSvgIconsPlugin({
+      iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
+      symbolId: 'icon-[name]',
+    }),
   ],
-  server: {
-    port: 5173,
-    cors: {
-      origin: '*', 
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], 
-      allowedHeaders: ['Authorization', 'Content-Type'], 
-      withCredentials: true, 
-      maxAge: 3600 
-    },
+  resolve: {
+    alias: { '@': path.resolve(__dirname, 'src') },
   },
 });
