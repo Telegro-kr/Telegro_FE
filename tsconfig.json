@@ -3,6 +3,7 @@
     "target": "ES6",
     "module": "ESNext",
     "jsx": "react-jsx",
+    "types": ["vite/client"],
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
@@ -13,7 +14,21 @@
     "checkJs": false,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@styles/*": ["src/shared/styles/*"],
+      "@state/*": ["src/shared/state/*"],
+      "@routes/*": ["src/shared/routes/*"],
+      "@mocks/*": ["src/shared/mocks/*"],
+      "@libs/*": ["src/shared/libs/*"],
+      "@layouts/*": ["src/shared/layouts/*"],
+      "@hooks/*": ["src/shared/hooks/*"],
+      "@constants/*": ["src/shared/constants/*"],
+      "@utils/*": ["src/shared/utils/*"],
+      "@apis/*": ["src/shared/apis/*"],
+      "@assets/*": ["src/shared/assets/*"],
+      "@components/*": ["src/shared/components/*"],
+      "@types/*": ["src/shared/types/*"],
+      "@contexts/*": ["src/shared/contexts/*"],
+      "@pages/*": ["src/pages/*"]
     }
   },
   "include": ["src"],
