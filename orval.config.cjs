@@ -1,10 +1,9 @@
-// orval.config.cjs
 const { defineConfig } = require('orval');
 
 module.exports = defineConfig({
   telegro: {
     input: {
-      target: 'https://api.telegro.kr/v3/api-docs',
+      target: process.env.ORVAL_API_SPEC,
       override: {
         transformer: (openapi) => {
           if (openapi?.components?.securitySchemes?.['bearer-key']) {
