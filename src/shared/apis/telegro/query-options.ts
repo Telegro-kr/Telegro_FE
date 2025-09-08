@@ -22,7 +22,6 @@ export function customQueryOptions<TQueryFnData, TError, TData>(
   const { queryKey, queryFn, ...rest } = options;
 
   const defaults: Partial<UseQueryOptions<TQueryFnData, TError, TData>> = {
-    staleTime: 60_000,
     gcTime: 300_000,
     retry: 1,
   };
