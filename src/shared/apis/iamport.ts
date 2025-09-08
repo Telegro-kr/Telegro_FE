@@ -1,4 +1,5 @@
 import axios from 'axios';
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export interface PaymentInfo {
   vbank_name: string;
@@ -16,7 +17,7 @@ export const getPaymentInfo = async (impUid: string): Promise<PaymentInfo> => {
   }
 
   const { data } = await axios.post<{ data: PaymentInfo }>(
-    `https://api.telegro.kr/api/payments/${impUid}`,
+    `${baseURL}/api/payments/${impUid}`,
     {},
     {
       headers: {
