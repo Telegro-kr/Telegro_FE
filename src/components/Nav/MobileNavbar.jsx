@@ -1,27 +1,35 @@
-import { useState, useEffect } from 'react';
-import { FaSearch, FaCog, FaSignOutAlt, FaChevronDown, FaChevronRight, FaBars, FaTimes } from 'react-icons/fa';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { clearUserRole } from '../../store/slices/authSlice';
-import Avvvatars from 'avvvatars-react';
-import * as M from './MobileNavbarStyle';
-import LogoImage from '/src/assets/image/Landing/logo.svg'; 
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import {
+  FaSearch,
+  FaCog,
+  FaSignOutAlt,
+  FaChevronDown,
+  FaChevronRight,
+  FaBars,
+  FaTimes,
+} from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUserRole } from "../../store/slices/authSlice";
+import Avvvatars from "avvvatars-react";
+import * as M from "./MobileNavbarStyle";
+import LogoImage from "/src/assets/image/Landing/logo.svg";
+import axios from "axios";
 
 export default function MobileNavbar() {
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.userRole);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);   
+  const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({
-    id: '',
-    phone: '',
-    email: '',
-    name: '',
+    id: "",
+    phone: "",
+    email: "",
+    name: "",
     point: 0,
   });
 
@@ -29,19 +37,19 @@ export default function MobileNavbar() {
   const location = useLocation();
 
   const checkLoginStatus = () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
   };
 
   const fetchUserData = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
-      const response = await axios.get('https://api.telegro.kr/api/users/my', {
+      const response = await axios.get("https://api.telegro.kr/api/users/my", {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
@@ -57,14 +65,14 @@ export default function MobileNavbar() {
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        navigate('/login');
+        navigate("/login");
       }
     }
   };
 
   const fetchProductsByCategory = async (category, page = 0) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
       const response = await axios.get(`https://api.telegro.kr/products`, {
@@ -79,7 +87,7 @@ export default function MobileNavbar() {
         return [];
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
       return [];
     }
   };
@@ -95,14 +103,14 @@ export default function MobileNavbar() {
 
     handleResize();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
   const fetchAllProducts = async () => {
-    const categories = ['HEADSET', 'LINE_CORD', 'RECORDER', 'ACCESSORY'];
+    const categories = ["HEADSET", "LINE_CORD", "RECORDER", "ACCESSORY"];
     let allProducts = [];
 
     for (const category of categories) {
@@ -118,7 +126,7 @@ export default function MobileNavbar() {
     e.preventDefault();
 
     let filtered = [];
-    if (searchValue.trim() !== '') {
+    if (searchValue.trim() !== "") {
       filtered = products.filter((product) =>
         product.productName.toLowerCase().includes(searchValue.toLowerCase())
       );
@@ -126,19 +134,19 @@ export default function MobileNavbar() {
 
     if (filtered.length > 0) {
       filtered = filtered.sort((a, b) => b.id - a.id);
-      navigate('/search', { state: { filteredProducts: filtered } });
+      navigate("/search", { state: { filteredProducts: filtered } });
     } else {
-      alert('검색 결과가 없습니다.');
+      alert("검색 결과가 없습니다.");
     }
 
-    setSearchValue('');
+    setSearchValue("");
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     dispatch(clearUserRole());
     setIsLoggedIn(false);
-    navigate('/');
+    navigate("/");
   };
 
   const toggleSidebar = () => {
@@ -166,19 +174,19 @@ export default function MobileNavbar() {
         <M.MenuButton onClick={toggleSidebar}>
           {isMobileSidebarVisible ? <FaTimes /> : <FaBars />}
         </M.MenuButton>
-        <M.LogoWrapper style={{cursor: 'pointer'}} onClick={() => navigate('/main')}>
+        <M.LogoWrapper style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
           <M.LogoImg src={LogoImage} alt="Telegro Logo" />
           <M.LogoText>Telegro</M.LogoText>
         </M.LogoWrapper>
       </M.TopBar>
 
       <M.Sidebar show={isMobileSidebarVisible}>
-        <M.LogoWrapper style={{opacity: '0'}}>
+        <M.LogoWrapper style={{ opacity: "0" }}>
           <M.LogoImg src={LogoImage} alt="Telegro Logo" />
           <M.LogoText>Telegro</M.LogoText>
         </M.LogoWrapper>
 
-        <M.SearchBar style={{ marginTop: '2%' }}>
+        <M.SearchBar style={{ marginTop: "2%" }}>
           <FaSearch />
           <form onSubmit={handleSubmit}>
             <M.SearchInput
@@ -191,21 +199,21 @@ export default function MobileNavbar() {
         </M.SearchBar>
 
         <M.MenuWrapper>
-          <M.MenuItem style={{cursor: 'default'}} className="active">
+          <M.MenuItem style={{ cursor: "default" }} className="active">
             <FaCog />
             Dashboard
           </M.MenuItem>
-          <M.MenuItem onClick={() => navigate('/cart')}>
+          <M.MenuItem onClick={() => navigate("/cart")}>
             <FaCog />
             장바구니
           </M.MenuItem>
 
-          <M.MenuItem onClick={() => navigate('/ordermanager')}>
+          <M.MenuItem onClick={() => navigate("/ordermanager")}>
             <FaCog />
             주문확인
           </M.MenuItem>
 
-          <M.MenuItem onClick={() => navigate('/notice')}>
+          <M.MenuItem onClick={() => navigate("/notice")}>
             <FaCog />
             자료실
           </M.MenuItem>
@@ -222,45 +230,39 @@ export default function MobileNavbar() {
               {isSubMenuOpen ? <FaChevronDown /> : <FaChevronRight />}
             </M.MenuItem>
             <M.SubMenu open={isSubMenuOpen}>
-              <M.MenuItem onClick={() => navigate('/headset')}>
-                헤드셋
-              </M.MenuItem>
-              <M.MenuItem onClick={() => navigate('/lineCord')}>
-                라인 코드
-              </M.MenuItem>
-              <M.MenuItem onClick={() => navigate('/recording')}>
-                녹음기기
-              </M.MenuItem>
-              <M.MenuItem onClick={() => navigate('/accessory')}>
-                악세서리
-              </M.MenuItem>
+              <M.MenuItem onClick={() => navigate("/headset")}>헤드셋</M.MenuItem>
+              <M.MenuItem onClick={() => navigate("/lineCord")}>라인 코드</M.MenuItem>
+              <M.MenuItem onClick={() => navigate("/recording")}>녹음기기</M.MenuItem>
+              <M.MenuItem onClick={() => navigate("/accessory")}>악세서리</M.MenuItem>
             </M.SubMenu>
           </M.SubMenuWrapper>
         </M.MenuWrapper>
 
         <M.FooterWrapper>
-        {isLoggedIn ? (
-        <M.ProfileWrapper onClick={() => navigate('/mypage')} style={{ cursor: 'pointer' }}>
-          <Avvvatars value={userInfo.id} size={40} />
-          <M.ProfileInfo style={{ marginLeft: '10px' }}>
-            <div>{userInfo.name}</div>
-            <div style={{ fontSize: '0.8rem', color: '#FFD700' }}>{userRole}</div>
-          </M.ProfileInfo>
-          <M.LogoutButton onClick={(e) => { 
-            e.stopPropagation();
-            handleLogout();
-          }}>
-            <FaSignOutAlt />
-            Log out
-          </M.LogoutButton>
-        </M.ProfileWrapper>
-      ) : (
-        <M.ProfileWrapper style={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>
-          <M.ProfileInfo>
-            <div>로그인해주세요</div>
-          </M.ProfileInfo>
-        </M.ProfileWrapper>
-      )}
+          {isLoggedIn ? (
+            <M.ProfileWrapper onClick={() => navigate("/mypage")} style={{ cursor: "pointer" }}>
+              <Avvvatars value={userInfo.id} size={40} />
+              <M.ProfileInfo style={{ marginLeft: "10px" }}>
+                <div>{userInfo.name}</div>
+                <div style={{ fontSize: "0.8rem", color: "#FFD700" }}>{userRole}</div>
+              </M.ProfileInfo>
+              <M.LogoutButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLogout();
+                }}
+              >
+                <FaSignOutAlt />
+                Log out
+              </M.LogoutButton>
+            </M.ProfileWrapper>
+          ) : (
+            <M.ProfileWrapper style={{ cursor: "pointer" }} onClick={() => navigate("/login")}>
+              <M.ProfileInfo>
+                <div>로그인해주세요</div>
+              </M.ProfileInfo>
+            </M.ProfileWrapper>
+          )}
         </M.FooterWrapper>
       </M.Sidebar>
     </>
