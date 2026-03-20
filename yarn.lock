@@ -3740,6 +3740,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prosemirror-transform@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "prosemirror-transform@npm:1.11.0"
+  dependencies:
+    prosemirror-model: "npm:^1.21.0"
+  checksum: 10c0/07f5b4ff6c0e05f7f68fbb067d0f4a2030242c4d2312b0b979bb7553059d80c13b3e86e8f4ba71a5a7352fa8c4c4a1fd4ba3dfbf73efed94631b5a53915fbe89
+  languageName: node
+  linkType: hard
+
 "prosemirror-view@npm:^1.18.7, prosemirror-view@npm:^1.27.0, prosemirror-view@npm:^1.31.0":
   version: 1.41.3
   resolution: "prosemirror-view@npm:1.41.3"
@@ -4268,6 +4277,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.6.0"
     eslint-plugin-react-refresh: "npm:^0.4.4"
     node.js: "npm:^0.0.1-security"
+    prosemirror-transform: "npm:^1.11.0"
     react: "npm:^18.2.0"
     react-avatar: "npm:^5.0.3"
     react-bootstrap: "npm:^2.10.4"
@@ -4282,6 +4292,7 @@ __metadata:
     redux-persist: "npm:^6.0.0"
     slick-carousel: "npm:^1.8.1"
     styled-components: "npm:^6.1.8"
+    tui-color-picker: "npm:^2.2.8"
     vite: "npm:^5.0.0"
     vite-plugin-svgr: "npm:^4.2.0"
     xlsx: "npm:^0.18.5"
@@ -4554,7 +4565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tui-color-picker@npm:^2.2.6":
+"tui-color-picker@npm:^2.2.6, tui-color-picker@npm:^2.2.8":
   version: 2.2.8
   resolution: "tui-color-picker@npm:2.2.8"
   checksum: 10c0/041f648df16e03528f3214edde660b0228dd5e376db074cf7675254903a57152be5564d8efa33622f00c0cf7db9712050702f29bfdb43bf18ba26786f6817c26
