@@ -3,6 +3,7 @@ import headsetImage from '../../assets/images/Landing/headset.svg';
 import productImage1 from '../../assets/images/Landing/image1.png';
 import productImage2 from '../../assets/images/Landing/image2.png';
 import productImage3 from '../../assets/images/Landing/image3.png';
+import productImage4 from '../../assets/images/Landing/image4.png';
 
 const productPath = '/products';
 const noticePath = '/notices';
@@ -97,7 +98,10 @@ const productCards = [
   { title: 'headset', image: productImage1, path: productPath },
   { title: 'recording', image: productImage2, path: productPath },
   { title: 'accessory', image: productImage3, path: productPath },
+  { title: 'linecode', image: productImage4, path: productPath },
 ];
+
+const marqueeCards = [...productCards, ...productCards];
 
 export default function PublicHome() {
   return (
@@ -173,7 +177,7 @@ export default function PublicHome() {
         </div>
       </section>
 
-      <section className="px-6 py-16 md:px-12 md:py-24 lg:px-16">
+      <section className="px-6 py-18 md:px-12 md:py-24 lg:px-16">
         <div className="mx-auto max-w-[1344px]">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
             <div className="space-y-4">
@@ -189,8 +193,8 @@ export default function PublicHome() {
             </div>
 
             <div className="flex flex-col items-center lg:items-end">
-              <div className="relative">
-                <div className="flex items-center gap-4 rounded-full bg-[#f5f2ec] px-8 py-6">
+              <div className="relative flex gap-8">
+                <div className="flex items-center gap-4 rounded-full bg-[#f5f2ec] px-[3rem] py-[1rem]">
                   <span className="font-['Pretendard',sans-serif] text-[3.2rem] font-bold text-[#4a4a4a] md:text-[4rem] lg:text-[4.2rem]">
                     Telegro
                   </span>
@@ -209,18 +213,24 @@ export default function PublicHome() {
         </div>
       </section>
 
-      <section className="px-6 py-16 md:px-12 md:py-24 lg:px-16">
-        <div className="mx-auto max-w-[1344px]">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
-            {productCards.map((card) => (
-              <Link key={card.title} to={card.path} className="group block">
-                <article className="relative h-[50rem] overflow-hidden rounded-[5rem] bg-gradient-to-b from-[#f5f2ec] to-[#fff3d5] md:h-[55rem] lg:h-[59.1rem]">
+      <section className="overflow-hidden py-16 md:py-24">
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-[#fafafa] to-transparent md:w-20" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[#fafafa] to-transparent md:w-20" />
+          <div className="flex w-max gap-8 px-6 motion-safe:animate-[product-marquee_28s_linear_infinite] md:gap-10 md:px-12 lg:gap-12 lg:px-16">
+            {marqueeCards.map((card, index) => (
+              <Link
+                key={`${card.title}-${index}`}
+                to={card.path}
+                className="group block shrink-0"
+              >
+                <article className="relative h-[42rem] w-[28rem] overflow-hidden rounded-[4rem] bg-gradient-to-b from-[#f5f2ec] to-[#fff3d5] md:h-[50rem] md:w-[34rem] lg:h-[59.1rem] lg:w-[40rem]">
                   <div className="absolute top-8 left-8 z-10">
                     <h4 className="font-['Prata',serif] text-[2.6rem] tracking-[-0.03em] text-[#474747] md:text-[3rem]">
                       {card.title}
                     </h4>
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center p-12">
+                  <div className="absolute inset-0 flex items-center justify-center p-10 md:p-12">
                     <img
                       src={card.image}
                       alt={card.title}
