@@ -1,4 +1,4 @@
-import logoImage from '../../assets/images/Landing/logo.svg';
+import logoImage from '@/assets/images/Landing/logo.svg';
 
 export default function PublicFooter() {
   return (
@@ -54,20 +54,20 @@ export default function PublicFooter() {
         <div className="h-px bg-[#c1c7cd]" />
 
         <div className="space-y-4">
-          <p className="font-['Noto_Sans_KR',sans-serif] text-[1.8rem] font-bold">
-            ?붾젅洹몃줈(?쒖뿰?꾩옄)
+          <p className="font-['Noto_Sans_KR',sans-serif] text-[1.6rem] font-bold">
+            텔레그로(서연전자)
           </p>
           <div className="space-y-2 font-['Noto_Sans_KR',sans-serif] text-[1.5rem] font-medium text-[#e8e8e8]">
             <p>
-              二쇱냼: ?쒖슱?밸퀎??愿묒쭊援?愿묐굹猷⑤줈56湲?85 ?뚰겕?몃쭏??21 8痢?A30,
-              31??
+              주소: 서울특별시 광진구 광나루로56길 85 테크노마트 21 8층 A30,
+              31호
             </p>
-            <p>怨좉컼?쇳꽣: 070-4111-5733</p>
+            <p>고객센터: 070-4111-5733</p>
             <p>
-              A/S 臾쇰즺諛곗넚吏: 寃쎄린???⑥뼇二쇱떆 ?ㅻ궓???묒?濡?81踰덇만 101濡쒖젨?앸같
-              ?됰궡?곸뾽???쒖뿰?꾩옄)
+              A/S 물류배송지: 경기도 남양주시 오남읍 양지로281번길 101로젠택배
+              평내영업소(서연전자)
             </p>
-            <p>?ъ뾽???깅줉踰덊샇: 215-18-12286</p>
+            <p>사업자 등록번호: 215-18-12286</p>
           </div>
         </div>
 

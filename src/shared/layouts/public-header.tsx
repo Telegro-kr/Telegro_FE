@@ -111,7 +111,7 @@ export default function PublicHeader() {
           <button
             type="button"
             aria-label="Search"
-            className="place-items-center rounded-full p-2 transition-colors hover:bg-black/5"
+            className="cursor-pointer place-items-center rounded-full p-2 transition-colors hover:bg-black/5"
           >
             <Icon
               name="search"
