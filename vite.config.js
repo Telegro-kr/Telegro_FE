@@ -14,7 +14,7 @@ export default defineConfig({
     tailwindcss(),
     tsconfigPaths(),
     createSvgIconsPlugin({
-      iconDirs: [path.resolve(process.cwd(), 'src/shared/assets/icons')],
+      iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
       symbolId: 'icon-[name]',
     }),
   ],

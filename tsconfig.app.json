@@ -1,9 +1,5 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.node.json" }
-  ],
-    "compilerOptions": {
+  "compilerOptions": {
     "target": "ES6",
     "module": "ESNext",
     "jsx": "react-jsx",

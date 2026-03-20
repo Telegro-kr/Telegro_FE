@@ -23,6 +23,9 @@
   html,
   body {
     font-size: 62.5%;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE, old Edge */
+
     font-family:
       'Pretendard',
       -apple-system,
@@ -64,4 +67,51 @@
       transform: translateY(0);
     }
   }
+
+  @keyframes mobile-link-drop {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, -16rem, 0) scale(0.92);
+    }
+
+    55% {
+      opacity: 1;
+      transform: translate3d(0, 1.2rem, 0) scale(1.02);
+    }
+
+    72% {
+      transform: translate3d(0, -0.8rem, 0) scale(0.995);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  @keyframes desktop-link-drop {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, -24rem, 0) scale(0.9);
+    }
+
+    52% {
+      opacity: 1;
+      transform: translate3d(0, 1.6rem, 0) scale(1.03);
+    }
+
+    70% {
+      transform: translate3d(0, -1rem, 0) scale(0.99);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }

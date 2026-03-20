@@ -1,45 +1,53 @@
 import { useSetAtom } from 'jotai';
-import { AXIOS_INSTANCE } from '@apis/telegro/axios-instance';
+import { useQueryClient } from '@tanstack/react-query';
+import { telegroInvalidate, useLogin } from '@apis/telegro';
 import {
   accessTokenAtom,
-  userRoleAtom,
   resetSessionAtom,
   type ServerRole,
+  userRoleAtom,
 } from '@state/session';
 
 type LoginPayload = { id: string; password: string };
-type LoginResponse = {
-  code: number;
-  message: string;
-  data: { userRole: ServerRole; accessToken: string };
-};
 
 export function useAuth() {
   const setToken = useSetAtom(accessTokenAtom);
   const setRole = useSetAtom(userRoleAtom);
   const reset = useSetAtom(resetSessionAtom);
+  const queryClient = useQueryClient();
+  const loginMutation = useLogin();
 
   const login = async (payload: LoginPayload) => {
-    const res = await AXIOS_INSTANCE.post<LoginResponse>(
-      '/auth/login',
-      payload,
-    );
-    const token = res.data?.data?.accessToken;
-    const role = res.data?.data?.userRole;
-    if (!token || !role)
-      throw new Error('로그인 응답에 accessToken 또는 userRole이 없습니다.');
+    const response = await loginMutation.mutateAsync({ data: payload });
+    const token = response?.data?.accessToken;
+    const role = response?.data?.userRole as ServerRole | undefined;
+
+    if (!token || !role) {
+      throw new Error('Login response is missing accessToken or userRole.');
+    }
 
     localStorage.setItem('accessToken', token);
+    localStorage.setItem('userRole', role);
 
     setToken(token);
     setRole(role);
+
+    await telegroInvalidate.authBoundaries(queryClient);
+
     return { token, role };
   };
 
   const logout = () => {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('userRole');
+    queryClient.clear();
     reset();
   };
 
-  return { login, logout };
+  return {
+    login,
+    logout,
+    isLoginPending: loginMutation.isPending,
+    loginError: loginMutation.error,
+  };
 }

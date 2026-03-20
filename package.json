@@ -11,7 +11,7 @@
     "format": "biome format --write .",
     "preview": "vite preview",
     "prepare": "husky",
-    "icons:gen": "node src/shared/scripts/gen-icons-list.js",
+    "icons:gen": "tsx src/shared/scripts/gen-icons-list.ts",
     "orval": "orval --config orval.config.cjs",
     "orval:watch": "orval --config orval.config.cjs --watch"
   },
@@ -47,6 +47,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4.1.11",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.2",
     "vite": "^7.1.2",
     "vite-plugin-svg-icons": "^2.0.1"

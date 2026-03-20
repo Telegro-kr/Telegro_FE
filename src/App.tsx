@@ -1,4 +1,3 @@
-// src/App.tsx
 import { Suspense } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { Provider as JotaiProvider } from 'jotai';
