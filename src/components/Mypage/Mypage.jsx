@@ -7,6 +7,7 @@ import add from '/src/assets/icon/mypage/addaddress.svg';
 import AddressModal from './AddressModal'; 
 import EditAddressModal from './EditAddressModal';
 import profile from '/src/assets/icon/mypage/profile.svg';
+import { API_BASE_URL } from '../../constants/api';
 
 const Mypage = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Mypage = () => {
     }
   
     try {
-      const response = await axios.get('https://api.telegro.kr/api/users/my', {
+      const response = await axios.get(`${API_BASE_URL}/api/users/my`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -86,7 +87,7 @@ const Mypage = () => {
     }
   
     try {
-      const response = await axios.delete(`https://api.telegro.kr/api/users/address/${addressId}`, {
+      const response = await axios.delete(`${API_BASE_URL}/api/users/address/${addressId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

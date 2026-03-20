@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import * as D from './NoticeDetailStyle'; 
 import * as N from '../Notice/NoticeStyle'; 
+import { API_BASE_URL } from '../../constants/api';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 const NoticeDetail = () => {
@@ -12,7 +13,7 @@ const NoticeDetail = () => {
   useEffect(() => {
     const fetchNoticeDetail = async () => {
       try {
-        const response = await axios.get(`https://api.telegro.kr/notices/${noticeId}`);
+        const response = await axios.get(`${API_BASE_URL}/notices/${noticeId}`);
         if (response.status === 200) {
           setNotice(response.data.data);  
         }

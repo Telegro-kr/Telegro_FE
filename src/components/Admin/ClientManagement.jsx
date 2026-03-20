@@ -7,6 +7,7 @@ import AddClient from '/src/assets/icon/Admin/addclient.svg';
 import * as N from './Notice/NoticeStyle';
 import Pagination from '../Pagination/Pagination';
 import * as P from './ProductList/ProductStyle';
+import { API_BASE_URL } from '../../constants/api';
 const roleColors = {
   MEMBER: { background: '#D8EBFF', color: '#007BFF' }, 
   DEALER: { background: '#E8F5E9', color: '#4CAF50' }, 
@@ -171,7 +172,7 @@ const ClientManagement = () => {
           size: pageSize,
         };
 
-        const response = await axios.get('https://api.telegro.kr/api/users', {
+        const response = await axios.get(`${API_BASE_URL}/api/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -222,7 +223,7 @@ const ClientManagement = () => {
     }
   
     try {
-      const response = await axios.delete(`https://api.telegro.kr/api/users/${clientId}`, {
+      const response = await axios.delete(`${API_BASE_URL}/api/users/${clientId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

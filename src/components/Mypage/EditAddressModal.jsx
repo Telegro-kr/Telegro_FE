@@ -5,6 +5,7 @@ import CloseIcon from '/src/assets/icon/mypage/close.svg';
 import { Postcode } from '../Postcode/Postcode';
 import check from '/src/assets/icon/Admin/check.svg';
 import checked from '/src/assets/icon/Admin/checked.svg';
+import { API_BASE_URL } from '../../constants/api';
 
 export default function EditAddressModal({ isOpen, toggleEditModal, address, onUpdateAddress }) {
   const [nickname, setNickname] = useState('');
@@ -29,7 +30,7 @@ export default function EditAddressModal({ isOpen, toggleEditModal, address, onU
 
     try {
       const response = await axios.post(
-        `https://api.telegro.kr/api/users/address/${addressId}/set-default`,
+        `${API_BASE_URL}/api/users/address/${addressId}/set-default`,
         {},
         {
           headers: {
@@ -61,7 +62,7 @@ export default function EditAddressModal({ isOpen, toggleEditModal, address, onU
 
     try {
       const response = await axios.patch(
-        `https://api.telegro.kr/api/users/address/${address.id}`,
+        `${API_BASE_URL}/api/users/address/${address.id}`,
         updatedAddress,
         {
           headers: {

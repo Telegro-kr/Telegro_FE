@@ -15,6 +15,7 @@ import Avvvatars from "avvvatars-react";
 import * as M from "./MobileNavbarStyle";
 import LogoImage from "/src/assets/image/Landing/logo.svg";
 import axios from "axios";
+import { API_BASE_URL } from '../../constants/api';
 
 export default function MobileNavbar() {
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ export default function MobileNavbar() {
     if (!token) return;
 
     try {
-      const response = await axios.get("https://api.telegro.kr/api/users/my", {
+      const response = await axios.get(`${API_BASE_URL}/api/users/my`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -75,7 +76,7 @@ export default function MobileNavbar() {
       const token = localStorage.getItem("token");
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-      const response = await axios.get(`https://api.telegro.kr/products`, {
+      const response = await axios.get(`${API_BASE_URL}/products`, {
         headers,
         params: { category, page, size: 10 },
       });

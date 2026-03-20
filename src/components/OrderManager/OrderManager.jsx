@@ -10,6 +10,7 @@ import { FaSearch } from 'react-icons/fa';
 import { formatDate } from '../../utils/format';
 import { orderStatusMap } from '../../constants/orderStatus';
 import Form from 'react-bootstrap/Form';
+import { API_BASE_URL } from '../../constants/api';
 
 const OrderManager = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const OrderManager = () => {
   
     try {
       const response = await axios.post(
-        `https://api.telegro.kr/api/payments/cancel/${orderId}`,
+        `${API_BASE_URL}/api/payments/cancel/${orderId}`,
         {},
         {
           headers: {
@@ -62,7 +63,7 @@ const OrderManager = () => {
     const fetchAllOrders = async () => {
       try {
         const accessToken = localStorage.getItem('token');
-        const response = await axios.get(`https://api.telegro.kr/api/orders`, {
+        const response = await axios.get(`${API_BASE_URL}/api/orders`, {
           params: {
             startDate: startDate || undefined,
             endDate: endDate || undefined,
@@ -87,7 +88,7 @@ const OrderManager = () => {
     const fetchOrders = async () => {
       try {
         const accessToken = localStorage.getItem('token');
-        const paginatedResponse = await axios.get(`https://api.telegro.kr/api/orders`, {
+        const paginatedResponse = await axios.get(`${API_BASE_URL}/api/orders`, {
           params: {
             startDate: startDate || undefined,
             endDate: endDate || undefined,
@@ -135,7 +136,7 @@ const OrderManager = () => {
       setIsSearching(true);
       try {
         const accessToken = localStorage.getItem('token');
-        const response = await axios.get('https://api.telegro.kr/api/orders', {
+        const response = await axios.get(`${API_BASE_URL}/api/orders`, {
           params: {
             q: searchValue,
             filterBy: 'product',

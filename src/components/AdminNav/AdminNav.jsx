@@ -4,6 +4,7 @@ import { FaSearch, FaCog, FaSignOutAlt, FaChevronDown, FaChevronRight, FaBars, F
 import { useNavigate, useLocation } from 'react-router-dom';
 import Logo from '/src/assets/image/Landing/logo.svg';
 import axios from 'axios';
+import { API_BASE_URL } from '../../constants/api';
 
 const AdminNav = () => {
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
@@ -22,7 +23,7 @@ const AdminNav = () => {
 
   const fetchProductsByCategory = async (category, page = 0) => {
     try {
-      const response = await axios.get(`https://api.telegro.kr/products`, {
+      const response = await axios.get(`${API_BASE_URL}/products`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         },

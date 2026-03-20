@@ -8,6 +8,7 @@ import * as N from './Notice/NoticeStyle';
 import { FaSearch, FaFileExcel } from 'react-icons/fa';
 import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx';
+import { API_BASE_URL } from '../../constants/api';
 
 const OrderList = () => {
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ const OrderList = () => {
   
     try {
       const response = await axios.post(
-        `https://api.telegro.kr/api/payments/cancel/${orderId}`,
+        `${API_BASE_URL}/api/payments/cancel/${orderId}`,
         {},
         {
           headers: {
@@ -126,7 +127,7 @@ const OrderList = () => {
     const fetchOrders = async () => {
       try {
         const accessToken = localStorage.getItem('token');
-        const paginatedResponse = await axios.get(`https://api.telegro.kr/api/orders`, {
+        const paginatedResponse = await axios.get(`${API_BASE_URL}/api/orders`, {
           params: {
             startDate: startDate || undefined,
             endDate: endDate || undefined,
@@ -168,7 +169,7 @@ const OrderList = () => {
     const fetchAllOrders = async () => {
       try {
         const accessToken = localStorage.getItem('token');
-        const response = await axios.get(`https://api.telegro.kr/api/orders`, {
+        const response = await axios.get(`${API_BASE_URL}/api/orders`, {
           params: {
             startDate: startDate || undefined,
             endDate: endDate || undefined,
@@ -199,7 +200,7 @@ const OrderList = () => {
       const accessToken = localStorage.getItem('token');
       const filterBy = searchCategory === 'productName' ? 'product' : 'user';
   
-      const response = await axios.get('https://api.telegro.kr/api/orders', {
+      const response = await axios.get(`${API_BASE_URL}/api/orders`, {
         params: {
           q: searchValue || undefined,
           filterBy, 
@@ -237,7 +238,7 @@ const OrderList = () => {
   
     try {
       const response = await axios.patch(
-        `https://api.telegro.kr/api/orders/${orderId}`,
+        `${API_BASE_URL}/api/orders/${orderId}`,
         {},
         {
           headers: {

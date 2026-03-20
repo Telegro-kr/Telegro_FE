@@ -9,6 +9,7 @@ import color from '@toast-ui/editor-plugin-color-syntax';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import * as C from '../Product/ProductCreateStyle';
+import { API_BASE_URL } from '../../../constants/api';
 
 const ProductEdit = () => {
   const { productId } = useParams();
@@ -37,7 +38,7 @@ const ProductEdit = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://api.telegro.kr/products/${productId}`);
+        const response = await axios.get(`${API_BASE_URL}/products/${productId}`);
         if (response.status === 200) {
           setProduct(response.data.data);
           setOriginalProduct(response.data.data);
@@ -92,7 +93,7 @@ const ProductEdit = () => {
           });
 
           const presignedUrlResponse = await axios.post(
-            'https://api.telegro.kr/api/file?prefix=product',
+            `${API_BASE_URL}/api/file?prefix=product`,
             {
               metadata: {
                 description: '이미지 설명',
@@ -199,7 +200,7 @@ const ProductEdit = () => {
     
       try {
         const response = await axios.patch(
-          `https://api.telegro.kr/api/products/${productId}`,
+          `${API_BASE_URL}/api/products/${productId}`,
           updatedProduct,
           {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -229,7 +230,7 @@ const ProductEdit = () => {
     }
   
     try {
-      const response = await axios.post(`https://api.telegro.kr/api/file?prefix=product`, {
+      const response = await axios.post(`${API_BASE_URL}/api/file?prefix=product`, {
         metadata: {
           description: "새로운 이미지 설명",
           tags: ["태그1", "태그2"]

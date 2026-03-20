@@ -4,6 +4,7 @@ import * as M from '../Mypage/MypageStyle';
 import Avvvatars from 'avvvatars-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../../constants/api';
 
 const ClientDetail = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const ClientDetail = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`https://api.telegro.kr/api/users/${clientId}`, {
+        const response = await axios.get(`${API_BASE_URL}/api/users/${clientId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',

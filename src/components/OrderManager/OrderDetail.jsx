@@ -6,6 +6,7 @@ import { verifyPayment } from "../../api/verifyPayment";
 import { paymentMethodMap } from "../../constants/payment";
 import { ERROR_MESSAGES } from "../../constants/errorMessage";
 import { formatNumber, formatDate, toKoreanTime } from "../../utils/format";
+import { API_BASE_URL } from '../../constants/api';
 
 const OrderDetail = () => {
   const [orderData, setOrderData] = useState(null);
@@ -18,7 +19,7 @@ const OrderDetail = () => {
     const fetchOrderDetails = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://api.telegro.kr/api/orders/${orderId}`, {
+        const response = await axios.get(`${API_BASE_URL}/api/orders/${orderId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

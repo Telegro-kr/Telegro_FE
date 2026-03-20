@@ -4,6 +4,7 @@ import * as L from "../Login/LoginStyle";
 import { useDispatch } from "react-redux";
 import { setUserRole } from "../../store/slices/authSlice";
 import axios from "axios";
+import { API_BASE_URL } from '../../constants/api';
 
 function GeneralLogin() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ function GeneralLogin() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "https://api.telegro.kr/auth/login",
+        `${API_BASE_URL}/auth/login`,
         {
           id: id,
           password: password,

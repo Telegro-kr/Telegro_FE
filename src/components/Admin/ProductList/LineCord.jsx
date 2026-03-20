@@ -6,6 +6,7 @@ import editpost from '/src/assets/icon/Admin/editpost.svg';
 import Pagination from '../../Pagination/Pagination';
 import * as P from './ProductStyle';
 import axios from 'axios';
+import { API_BASE_URL } from '../../../constants/api';
 
 
 const LineCord = ({ category = 'LINE_CORD', initialPage = 1, size = 12 }) => {
@@ -31,7 +32,7 @@ const LineCord = ({ category = 'LINE_CORD', initialPage = 1, size = 12 }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://api.telegro.kr/products', {
+        const response = await axios.get(`${API_BASE_URL}/products`, {
           params: { category, page: currentPage - 1, size },
         });
   

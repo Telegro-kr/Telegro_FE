@@ -9,6 +9,7 @@ import CommonTableRow from './CommonTableRow';
 import * as N from './NoticeStyle';
 import Pagination from '../Pagination/Pagination';
 import { FaFilePdf, FaFileImage, FaFileWord, FaFileExcel, FaFile } from 'react-icons/fa';
+import { API_BASE_URL } from '../../constants/api';
 
 const Notice = ({ size = 10 }) => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Notice = ({ size = 10 }) => {
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const response = await axios.get('https://api.telegro.kr/notices', {
+        const response = await axios.get(`${API_BASE_URL}/notices`, {
           params: { page: currentPage - 1, size },
         });
     
@@ -61,7 +62,7 @@ const Notice = ({ size = 10 }) => {
   useEffect(() => {
     const fetchAllNotices = async () => {
       try {
-        const response = await axios.get('https://api.telegro.kr/notices', {
+        const response = await axios.get(`${API_BASE_URL}/notices`, {
           params: { page: 0, size: 10000 }, // 모든 데이터 불러오기
         });
 

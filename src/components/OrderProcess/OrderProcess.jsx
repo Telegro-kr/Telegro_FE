@@ -10,6 +10,7 @@ import axios from 'axios';
 import Logen from '/src/assets/image/OrderProcess/logen.svg';
 import { verifyPayment } from '../../api/verifyPayment';
 import { getTodayDate } from '../../utils/format';
+import { API_BASE_URL } from '../../constants/api';
 
 const OrderProcess = () => {  const navigate = useNavigate();
   const userRole = useSelector((state) => state.auth.userRole);
@@ -63,7 +64,7 @@ const OrderProcess = () => {  const navigate = useNavigate();
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get("https://api.telegro.kr/api/users/my", {
+        const response = await axios.get(`${API_BASE_URL}/api/users/my`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -196,7 +197,7 @@ const handleUseAllPoints = () => {
       : 0;
     try {
       const response = await axios.post(
-        'https://api.telegro.kr/api/orders/done',
+        `${API_BASE_URL}/api/orders/done`,
         {
           deliveryAddress: {
             address: formData.address,
@@ -258,7 +259,7 @@ const handleUseAllPoints = () => {
     }
     try {
       const response = await axios.post(
-        'https://api.telegro.kr/api/orders/done',
+        `${API_BASE_URL}/api/orders/done`,
         {
           deliveryAddress: {
             address: formData.address,
@@ -455,7 +456,7 @@ const handleUseAllPoints = () => {
       if (!rsp.error_code) {
         try {
           const verifyResponse = await axios.post(
-            `https://api.telegro.kr/api/payments/${rsp.imp_uid}`,{},
+            `${API_BASE_URL}/api/payments/${rsp.imp_uid}`,{},
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -518,7 +519,7 @@ const CanclePayment = async (imp_uid = null) => {
 
   try {
     const response = await axios.post(
-      `https://api.telegro.kr/api/payments/${imp_uid}`, 
+      `${API_BASE_URL}/api/payments/${imp_uid}`, 
       {
         status: "null", 
       },

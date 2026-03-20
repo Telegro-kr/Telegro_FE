@@ -4,6 +4,7 @@ import { Postcode } from '../Postcode/Postcode';
 import * as D from './NoticeDetail/NoticeDetailStyle';
 import * as A from './AddClientStyle';
 import axios from 'axios';
+import { API_BASE_URL } from '../../constants/api';
 
 function AddClient() {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ function AddClient() {
   
       const DTO = { signUpUserInfoDto, company };
   
-      const response = await axios.post('https://api.telegro.kr/api/companies', DTO, { headers });
+      const response = await axios.post(`${API_BASE_URL}/api/companies`, DTO, { headers });
   
       if (response.status === 200) {
         navigate('/admin/clientmanagement');

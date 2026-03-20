@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Modal from 'react-modal';
 import store from '../../store';
+import { API_BASE_URL } from '../../constants/api';
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState('description'); 
   const { productId } = useParams();
   const apiClient = axios.create({
-    baseURL: 'https://api.telegro.kr', 
+    baseURL: `${API_BASE_URL}`, 
     timeout: 5000,
   });
   
@@ -54,7 +55,7 @@ const ProductDetail = () => {
     try {
       const accessToken = localStorage.getItem('token');
       const response = await apiClient.post(
-        `https://api.telegro.kr/api/carts/${productId}`,
+        `${API_BASE_URL}/api/carts/${productId}`,
         {
           selectOption: selectedOption,
           quantity: quantity,
@@ -88,7 +89,7 @@ const ProductDetail = () => {
       const accessToken = localStorage.getItem("token");
   
       const cartResponse = await apiClient.post(
-        `https://api.telegro.kr/api/carts/${productId}`,
+        `${API_BASE_URL}/api/carts/${productId}`,
         {
           selectOption: selectedOption,
           quantity: quantity,
@@ -145,7 +146,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://api.telegro.kr/products/${productId}`, {
+        const response = await axios.get(`${API_BASE_URL}/products/${productId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }

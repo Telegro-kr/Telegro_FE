@@ -10,6 +10,7 @@ import Next from '/src/assets/image/Landing/next.svg';
 import NextBlue from '/src/assets/image/Landing/nextBlue.svg';
 import Logo from '/src/assets/image/Landing/logo.svg';
 import Mail from '/src/assets/image/Landing/mail.svg';
+import { API_BASE_URL } from '../../constants/api';
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function Landing() {
         setCurrentImage(images[currentIndex]);
       }, 3000); 
   
-      axios.post('https://api.telegro.kr/hits', {}, {
+      axios.post(`${API_BASE_URL}/hits`, {}, {
         withCredentials: true
       })
       .catch(error => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+import { API_BASE_URL } from '../../constants/api';
 
 const OrderDetail = () => {
   const [orderData, setOrderData] = useState(null);
@@ -18,7 +19,7 @@ const OrderDetail = () => {
     const fetchOrderDetails = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://api.telegro.kr/api/orders/${orderId}`, {
+        const response = await axios.get(`${API_BASE_URL}/api/orders/${orderId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import * as L from "../Login/LoginStyle";
 import { Postcode } from "../Postcode/Postcode";
 import axios from "axios";
+import { API_BASE_URL } from '../../constants/api';
 
 function Signup() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ function Signup() {
 
   const handleSignupClick = async () => {
     try {
-      const response = await axios.post("https://api.telegro.kr/auth/signup", {
+      const response = await axios.post(`${API_BASE_URL}/auth/signup`, {
         userid: id,
         username: name,
         password: password,

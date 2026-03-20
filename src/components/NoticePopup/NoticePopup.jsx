@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as B from '../NotificationBar/NotificationStyle';
 import axios from 'axios';
 import Img from '/src/assets/image/Landing/logo.svg'; 
+import { API_BASE_URL } from '../../constants/api';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 
@@ -12,11 +13,11 @@ const NoticePopup = () => {
 
   const fetchPopupNotice = async () => {
     try {
-      const popupResponse = await axios.get('https://api.telegro.kr/notices/popup');
+      const popupResponse = await axios.get(`${API_BASE_URL}/notices/popup`);
       if (popupResponse.status === 200) {
         const noticeId = popupResponse.data.data.id;
 
-        const noticeResponse = await axios.get(`https://api.telegro.kr/notices/${noticeId}`);
+        const noticeResponse = await axios.get(`${API_BASE_URL}/notices/${noticeId}`);
         if (noticeResponse.status === 200) {
           setNotice(noticeResponse.data.data);
         }

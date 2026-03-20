@@ -5,6 +5,7 @@ import check from '/src/assets/icon/Admin/check.svg';
 import checked from '/src/assets/icon/Admin/checked.svg';
 import { useNavigate } from 'react-router-dom';
 import Delete from '/src/assets/icon/delete.svg';
+import { API_BASE_URL } from '../../constants/api';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Cart = () => {
     const fetchCartItems = async () => {
         try {
             const accessToken = localStorage.getItem('token');
-            const response = await axios.get('https://api.telegro.kr/api/carts?page=0&size=10', {
+            const response = await axios.get(`${API_BASE_URL}/api/carts?page=0&size=10`, {
                 headers: { Authorization: `Bearer ${accessToken}` },
             });
 
@@ -54,7 +55,7 @@ const Cart = () => {
     }
     try {
       const accessToken = localStorage.getItem('token');
-      const response = await axios.delete(`https://api.telegro.kr/api/carts/${id}`, {
+      const response = await axios.delete(`${API_BASE_URL}/api/carts/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
@@ -79,7 +80,7 @@ const Cart = () => {
     try {
       const accessToken = localStorage.getItem('token');
       await axios.put(
-        `https://api.telegro.kr/api/carts/${id}`,
+        `${API_BASE_URL}/api/carts/${id}`,
         {
           quantity: updatedProduct.quantity 
         },
@@ -121,7 +122,7 @@ const Cart = () => {
     try {
       const accessToken = localStorage.getItem('token');
       await axios.put(
-        `https://api.telegro.kr/api/carts/${id}`,
+        `${API_BASE_URL}/api/carts/${id}`,
         {
           quantity: updatedProduct.quantity
         },
@@ -154,7 +155,7 @@ const Cart = () => {
     try {
       const accessToken = localStorage.getItem('token');
       await axios.put(
-        `https://api.telegro.kr/api/carts/${id}`,
+        `${API_BASE_URL}/api/carts/${id}`,
         {
           inputOption: inputOptionValue 
         },
@@ -173,7 +174,7 @@ const Cart = () => {
       const accessToken = localStorage.getItem('token');
   
       const response = await axios.put(
-        `https://api.telegro.kr/api/carts/${cartId}`,
+        `${API_BASE_URL}/api/carts/${cartId}`,
         {
           selectOption, 
           inputOption, 
@@ -211,7 +212,7 @@ const Cart = () => {
         const accessToken = localStorage.getItem('token');
         const config = {
             method: 'post',
-            url: 'https://api.telegro.kr/api/orders/create',
+            url: `${API_BASE_URL}/api/orders/create`,
             data: selectedCartIDs,
             headers: {
                 Authorization: `Bearer ${accessToken}`,

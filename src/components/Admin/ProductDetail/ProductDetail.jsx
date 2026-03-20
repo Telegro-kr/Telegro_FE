@@ -8,6 +8,7 @@ import * as N from '../Notice/NoticeStyle';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Modal from 'react-modal';
+import { API_BASE_URL } from '../../../constants/api';
 
 const AdminProductDetail = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const AdminProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://api.telegro.kr/products/${productId}`,{
+        const response = await axios.get(`${API_BASE_URL}/products/${productId}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -65,7 +66,7 @@ const AdminProductDetail = () => {
     
     if (confirmDelete) {
       try {
-        const response = await axios.delete(`https://api.telegro.kr/api/products/${productId}`, {
+        const response = await axios.delete(`${API_BASE_URL}/api/products/${productId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }

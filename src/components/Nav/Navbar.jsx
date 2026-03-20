@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { clearUserRole } from "../../store/slices/authSlice";
 import profile from "/src/assets/icon/mypage/profile.svg";
 import axios from "axios";
+import { API_BASE_URL } from '../../constants/api';
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ export default function Navbar() {
 
   const fetchProductsByCategory = async (category, page = 0) => {
     try {
-      const response = await axios.get(`https://api.telegro.kr/products`, {
+      const response = await axios.get(`${API_BASE_URL}/products`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

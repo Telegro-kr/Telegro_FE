@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Postcode } from '../Postcode/Postcode'; 
 import axios from 'axios';
 import * as D from './NoticeDetail/NoticeDetailStyle';
+import { API_BASE_URL } from '../../constants/api';
 
 const Container = styled.div`
   width: 65%; 
@@ -149,7 +150,7 @@ function ClientEdit() {
     const fetchCompanyData = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.get(`https://api.telegro.kr/api/users/${clientId}`, {
+        const response = await axios.get(`${API_BASE_URL}/api/users/${clientId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -236,7 +237,7 @@ function ClientEdit() {
   
     try {
       const response = await axios.patch(
-        `https://api.telegro.kr/api/users/${clientId}`,
+        `${API_BASE_URL}/api/users/${clientId}`,
         payload,
         {
           headers: {
@@ -262,7 +263,7 @@ function ClientEdit() {
     }
 
     try {
-      const response = await axios.delete(`https://api.telegro.kr/api/users/${clientId}`, {
+      const response = await axios.delete(`${API_BASE_URL}/api/users/${clientId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

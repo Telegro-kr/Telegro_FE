@@ -6,6 +6,7 @@ import pin from '/src/assets/icon/Admin/pin.svg';
 import pinx from '/src/assets/icon/Admin/pinx.svg';
 import { Link, useNavigate, useParams } from 'react-router-dom'; 
 import axios from 'axios'; 
+import { API_BASE_URL } from '../../../constants/api';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 const AdminNoticeDetail = () => {
@@ -18,7 +19,7 @@ const AdminNoticeDetail = () => {
   useEffect(() => {
     const fetchNoticeDetail = async () => {
       try {
-        const response = await axios.get(`https://api.telegro.kr/notices/${noticeId}`);
+        const response = await axios.get(`${API_BASE_URL}/notices/${noticeId}`);
         if (response.status === 200) {
           setNotice(response.data.data);  
         }
@@ -29,7 +30,7 @@ const AdminNoticeDetail = () => {
 
     const fetchPopupSetting = async () => {
       try {
-        const response = await axios.get('https://api.telegro.kr/notices/popup');
+        const response = await axios.get(`${API_BASE_URL}/notices/popup`);
         if (response.status === 200 && response.data.data.id === parseInt(noticeId)) {
           setIsPopup(true); 
         } else {
@@ -48,7 +49,7 @@ const AdminNoticeDetail = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `https://api.telegro.kr/api/notices/${noticeId}/popup`,
+        `${API_BASE_URL}/api/notices/${noticeId}/popup`,
         { isPopup: !isPopup },  
         {
           headers: {
@@ -76,7 +77,7 @@ const AdminNoticeDetail = () => {
     const confirmDelete = window.confirm("정말로 이 공지를 삭제하시겠습니까?");
     if (confirmDelete) {
       try {
-        const response = await axios.delete(`https://api.telegro.kr/api/notices/${noticeId}`, {
+        const response = await axios.delete(`${API_BASE_URL}/api/notices/${noticeId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}` 
           }

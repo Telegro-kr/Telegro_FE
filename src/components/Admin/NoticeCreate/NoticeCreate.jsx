@@ -8,6 +8,7 @@ import * as D from '../NoticeDetail/NoticeDetailStyle';
 import { Editor } from '@toast-ui/react-editor'; 
 import '@toast-ui/editor/dist/toastui-editor.css'; 
 import color from '@toast-ui/editor-plugin-color-syntax';
+import { API_BASE_URL } from '../../../constants/api';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 
@@ -87,7 +88,7 @@ const NoticeCreate = () => {
           formData.append('file', file);
   
           const presignedUrlResponse = await axios.post(
-            `https://api.telegro.kr/api/file?prefix=notice&fileName=${encodeURIComponent(file.name)}`, 
+            `${API_BASE_URL}/api/file?prefix=notice&fileName=${encodeURIComponent(file.name)}`, 
             {
               metadata: {
                 description: '파일 설명',
@@ -136,7 +137,7 @@ const NoticeCreate = () => {
     }
   
     try {
-      const response = await axios.post(`https://api.telegro.kr/api/file?prefix=notice`, {
+      const response = await axios.post(`${API_BASE_URL}/api/file?prefix=notice`, {
         metadata: {
           description: "새로운 이미지 설명",
           tags: ["태그1", "태그2"]
@@ -173,7 +174,7 @@ const NoticeCreate = () => {
     };
 
     try {
-      const response = await axios.post('https://api.telegro.kr/api/notices', noticeData, {
+      const response = await axios.post(`${API_BASE_URL}/api/notices`, noticeData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',

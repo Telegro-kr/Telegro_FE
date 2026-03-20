@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../constants/api';
 
 export const getPaymentInfo = async (impUid) => {
   const token = localStorage.getItem('token');
@@ -8,7 +9,7 @@ export const getPaymentInfo = async (impUid) => {
   }
 
   const { data } = await axios.post(
-    `https://api.telegro.kr/api/payments/${impUid}`,
+    `${API_BASE_URL}/api/payments/${impUid}`,
     {},
     {
       headers: {

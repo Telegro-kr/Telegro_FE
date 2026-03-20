@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { API_BASE_URL } from '../../constants/api';
 
 const Stat = () => {
   const [category, setCategory] = useState('daily');
@@ -18,7 +19,7 @@ const Stat = () => {
       const year = selectedMonth.split('-')[0];
       const month = selectedMonth.split('-')[1];
   
-      let url = `https://api.telegro.kr/api/hits?filteredBy=${category}&year=${year}`;
+      let url = `${API_BASE_URL}/api/hits?filteredBy=${category}&year=${year}`;
       if (category === 'daily' || category === 'weekly' ||  category === 'company') {
         url += `&month=${month}`;
       }
