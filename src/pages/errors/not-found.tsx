@@ -1,12 +1,10 @@
-import { Link } from 'react-router-dom';
+import NotFoundView from '@components/errors/not-found-view';
+import { useNavigate } from 'react-router-dom';
 
 const NotFound = () => {
-  return (
-    <section>
-      <h1>404 Not Found</h1>
-      <Link to="/">Go Home</Link>
-    </section>
-  );
+  const navigate = useNavigate();
+
+  return <NotFoundView onGoHome={() => navigate('/')} />;
 };
 
 export default NotFound;

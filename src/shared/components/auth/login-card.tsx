@@ -1,100 +1,67 @@
-import { AuthActionButton, AuthCardShell, AuthField } from '@components/auth/auth-card';
-import { SignupCard } from '@components/auth/signup-card';
-import { toastError, toastSuccess } from '@components/common/toast/toast';
-import { useAuth } from '@hooks/use-auth';
-import { isLoggedInAtom, type ServerRole } from '@state/session';
-import { useAtomValue } from 'jotai';
-import { type FormEvent, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-
-type LocationState = {
-  from?: {
-    pathname?: string;
-  };
-};
+﻿import { AuthActionButton, AuthCardShell, AuthField } from '@components/auth/auth-card';
+import { type FormEvent } from 'react';
 
 type LoginCardProps = {
   className?: string;
-  onSignupClick?: () => void;
+  id: string;
+  password: string;
+  isPending: boolean;
+  onIdChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onSignupClick: () => void;
 };
 
-type LoginOverlayProps = {
-  onDismiss: () => void;
-};
+const COPY = {
+  titleSuffix: '에 오신것을 환영합니다.',
+  descriptionLine1: '편리한 상품 주문 및 관리를 위해',
+  descriptionLine2: '로그인을 해주세요!',
+  termsLine1: '서비스 이용 시',
+  termsLine2: '동의하고 확인한 것으로 간주합니다',
+  termsService: '이용약관',
+  termsPrivacy: '개인정보 처리방침',
+  id: '아이디',
+  password: '비밀번호',
+  idPlaceholder: '아이디를 입력해 주세요',
+  passwordPlaceholder: '비밀번호를 입력해 주세요',
+  login: '로그인',
+  loginPending: '로그인 중...',
+  signup: '회원가입',
+} as const;
 
-type OverlayMode = 'login' | 'signup';
-
-function getDefaultPathByRole(role: ServerRole) {
-  return role === 'ADMIN' ? '/admin' : '/';
-}
-
-function getErrorMessage(error: unknown) {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'response' in error &&
-    typeof error.response === 'object' &&
-    error.response !== null &&
-    'data' in error.response &&
-    typeof error.response.data === 'object' &&
-    error.response.data !== null &&
-    'message' in error.response.data &&
-    typeof error.response.data.message === 'string'
-  ) {
-    return error.response.data.message;
-  }
-
-  return '로그인에 실패했습니다.';
-}
-
-export function LoginCard({ className, onSignupClick }: LoginCardProps) {
-  const { login, isLoginPending } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
-
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    try {
-      const result = await login({ id, password });
-      const state = location.state as LocationState | null;
-      const nextPath =
-        state?.from?.pathname && state.from.pathname !== '/login'
-          ? state.from.pathname
-          : getDefaultPathByRole(result.role);
-
-      toastSuccess('로그인되었습니다.');
-      navigate(nextPath, { replace: true });
-    } catch (error) {
-      toastError(getErrorMessage(error));
-    }
-  }
-
+export const LoginCard = ({
+  className,
+  id,
+  password,
+  isPending,
+  onIdChange,
+  onPasswordChange,
+  onSubmit,
+  onSignupClick,
+}: LoginCardProps) => {
   return (
     <form onSubmit={onSubmit} className="w-full">
       <AuthCardShell
         className={className}
         title={
           <>
-            <span className="title3 text-primary">Telegro</span>에 오신 것을 환영합니다
+            <span className="title3 text-primary">Telegro</span> {COPY.titleSuffix}
           </>
         }
         description={
           <>
-            편리한 상품 주문과 관리를 위해
+            {COPY.descriptionLine1}
             <br />
-            로그인해 주세요.
+            {COPY.descriptionLine2}
           </>
         }
         footer={
           <div className="flex-col-center caption5 gap-1 text-center whitespace-nowrap text-gray-500">
             <p>
-              서비스 이용 시 <span className="underline">이용약관</span>에 동의하고
+              {COPY.termsLine1} <span className="underline">{COPY.termsService}</span>에
             </p>
             <p>
-              <span className="underline">개인정보 처리방침</span> 내용을 확인한 것으로 간주합니다.
+              <span className="underline">{COPY.termsPrivacy}</span> {COPY.termsLine2}
             </p>
           </div>
         }
@@ -102,62 +69,32 @@ export function LoginCard({ className, onSignupClick }: LoginCardProps) {
         <div className="flex flex-col gap-7">
           <div className="flex flex-col gap-5">
             <AuthField
-              label="아이디"
+              label={COPY.id}
               value={id}
-              onChange={(e) => setId(e.target.value)}
-              placeholder="아이디를 입력해 주세요"
+              onChange={(event) => onIdChange(event.target.value)}
+              placeholder={COPY.idPlaceholder}
               autoComplete="username"
             />
             <AuthField
-              label="비밀번호"
+              label={COPY.password}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(event) => onPasswordChange(event.target.value)}
               type="password"
-              placeholder="비밀번호를 입력해 주세요"
+              placeholder={COPY.passwordPlaceholder}
               autoComplete="current-password"
             />
           </div>
 
           <div className="flex flex-col gap-3">
-            <AuthActionButton type="submit" disabled={isLoginPending}>
-              {isLoginPending ? '로그인 중...' : '로그인'}
+            <AuthActionButton type="submit" disabled={isPending}>
+              {isPending ? COPY.loginPending : COPY.login}
             </AuthActionButton>
             <AuthActionButton tone="secondary" onClick={onSignupClick}>
-              회원가입
+              {COPY.signup}
             </AuthActionButton>
           </div>
         </div>
       </AuthCardShell>
     </form>
   );
-}
-
-export function LoginOverlay({ onDismiss }: LoginOverlayProps) {
-  const isLoggedIn = useAtomValue(isLoggedInAtom);
-  const [mode, setMode] = useState<OverlayMode>('login');
-
-  if (isLoggedIn) {
-    return null;
-  }
-
-  return (
-    <div className="fixed inset-0 z-50">
-      <button
-        type="button"
-        aria-label="로그인 오버레이 닫기"
-        onClick={onDismiss}
-        className="absolute inset-0 bg-black/30"
-      />
-      <div className="absolute right-0 bottom-0 left-0 flex justify-center px-4 md:left-1/2 md:justify-start md:px-0">
-        {mode === 'login' ? (
-          <LoginCard
-            className="motion-safe:animate-[login-card-rise_420ms_cubic-bezier(0.2,0.9,0.2,1)_both]"
-            onSignupClick={() => setMode('signup')}
-          />
-        ) : (
-          <SignupCard onBackToLogin={() => setMode('login')} />
-        )}
-      </div>
-    </div>
-  );
-}
+};
