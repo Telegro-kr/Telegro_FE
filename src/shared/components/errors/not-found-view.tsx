@@ -1,0 +1,52 @@
+type NotFoundViewProps = {
+  onGoHome: () => void;
+};
+
+const NotFoundView = ({ onGoHome }: NotFoundViewProps) => {
+  return (
+    <section className="relative max-h-screen overflow-hidden bg-[#FAFAFA] px-6 py-8">
+      <header className="flex justify-center">
+        <h1 className="font-['Readex_Pro',sans-serif] text-[2rem] font-medium tracking-[-0.03em] text-[#474747] md:text-[3rem] lg:text-[4rem]">
+          - telegro -
+        </h1>
+      </header>
+
+      <div className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-[90rem] items-center justify-center">
+        <div className="flex-col-center gap-20">
+          <div className="flex-col-center -gap-2">
+            <img
+              src="/404.svg"
+              alt="404 페이지를 찾을 수 없습니다"
+              className="h-[35rem] w-[52rem] max-w-full object-contain"
+            />
+            <div className="-mt-[5rem] text-center">
+              <p className="title1">찾으시는 페이지가 없습니다.</p>
+              <p className="caption5">
+                잘못된 접근이거나 요청하신 페이지를 찾을 수 없습니다. <br />
+                입력하신 페이지의 주소가 정확한지 다시 한 번 확인해 주시기
+                바랍니다.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onGoHome}
+            className="flex-row-center cursor-pointer rounded-[10px] bg-[#FFC633] px-[5rem] py-[1.2rem] font-['Pretendard',sans-serif] text-[1.5625rem] font-bold tracking-[0.013rem] text-white transition hover:brightness-95"
+          >
+            홈으로
+          </button>
+        </div>
+      </div>
+
+      <img
+        src="/panda-cry.svg"
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-0 h-[20.2rem] w-[25rem] object-contain"
+      />
+    </section>
+  );
+};
+
+export default NotFoundView;
