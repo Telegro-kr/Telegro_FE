@@ -5,6 +5,7 @@ export const ICONS = [
   "notice",
   "react",
   "search",
+  "signup-back",
   "toast-error",
   "toast-success"
 ] as const;

@@ -4,10 +4,11 @@ import loginImage from '/login-logo.svg';
 
 type AuthCardShellProps = {
   className?: string;
-  title: ReactNode;
+  title?: ReactNode;
   description?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
+  header?: ReactNode;
 };
 
 type AuthFieldProps = ComponentProps<'input'> & {
@@ -30,6 +31,7 @@ export function AuthCardShell({
   description,
   children,
   footer,
+  header,
 }: AuthCardShellProps) {
   return (
     <section
@@ -39,26 +41,28 @@ export function AuthCardShell({
       )}
     >
       <div className="flex h-full flex-col gap-8">
-        <div className="flex-col-center gap-6 sm:gap-8">
-          <img
-            src={loginImage}
-            alt="Telegro"
-            className="h-[8.8rem] w-[8.8rem] rounded-[1.6rem] object-cover sm:h-[10.6rem] sm:w-[10.6rem]"
-          />
+        {header ? (
+          <div>{header}</div>
+        ) : (
+          <div className="flex-col-center gap-6 sm:gap-8">
+            <img
+              src={loginImage}
+              alt="Telegro"
+              className="h-[8.8rem] w-[8.8rem] rounded-[1.6rem] object-cover sm:h-[10.6rem] sm:w-[10.6rem]"
+            />
 
-          <div className="flex-col-center w-full gap-4">
-            <div className="flex-col-center gap-2 text-center">
-              <h1 className="text-[2rem] font-semibold text-gray-900">
-                {title}
-              </h1>
-              {description ? (
-                <div className="body4 text-gray-700">{description}</div>
-              ) : null}
+            <div className="w-full flex-col-center gap-4">
+              <div className="flex-col-center gap-2 text-center">
+                {title ? (
+                  <h1 className="font-semibold text-[2rem] text-gray-900">{title}</h1>
+                ) : null}
+                {description ? <div className="body4 text-gray-700">{description}</div> : null}
+              </div>
+
+              <div className="h-px w-full bg-[#E9E9E9]" />
             </div>
-
-            <div className="h-px w-full bg-[#E9E9E9]" />
           </div>
-        </div>
+        )}
 
         <div className="flex flex-1 flex-col justify-between gap-8">
           <div>{children}</div>
@@ -69,29 +73,20 @@ export function AuthCardShell({
   );
 }
 
-export function AuthField({
-  label,
-  hint,
-  className,
-  ...props
-}: AuthFieldProps) {
+export function AuthField({ label, hint, className, ...props }: AuthFieldProps) {
   return (
     <label className="flex flex-col gap-2">
-      <span className="font-['Pretendard',sans-serif] text-[1.25rem] font-semibold text-[#2B2B2B]">
+      <span className="font-['Pretendard',sans-serif] font-semibold text-[#2B2B2B] text-[1.25rem]">
         {label}
       </span>
       <input
         className={cn(
-          "h-[4.2rem] rounded-[0.7rem] border border-[#E9E9E9] px-4 font-['Pretendard',sans-serif] text-[1.25rem] text-[#2B2B2B] transition outline-none placeholder:text-[#B7B7B7] focus:border-[#FFC633]",
+          "h-[4.2rem] rounded-[0.7rem] border border-[#E9E9E9] px-4 font-['Pretendard',sans-serif] text-[#2B2B2B] text-[1.25rem] outline-none transition placeholder:text-[#B7B7B7] focus:border-[#FFC633]",
           className,
         )}
         {...props}
       />
-      {hint ? (
-        <span className="text-[1.2rem] leading-[1.5] text-[#8B8B8B]">
-          {hint}
-        </span>
-      ) : null}
+      {hint ? <span className="text-[#8B8B8B] text-[1.2rem] leading-[1.5]">{hint}</span> : null}
     </label>
   );
 }
@@ -106,11 +101,10 @@ export function AuthActionButton({
     <button
       type={type}
       className={cn(
-        "h-[4.8rem] rounded-[0.5rem] font-['Pretendard',sans-serif] text-[1.5rem] font-bold tracking-[-0.01em] transition disabled:cursor-not-allowed disabled:opacity-60",
+        "h-[4.8rem] rounded-[0.5rem] font-['Pretendard',sans-serif] font-bold text-[1.5rem] tracking-[-0.01em] transition disabled:cursor-not-allowed disabled:opacity-60",
         tone === 'primary' &&
           'bg-[#FFC633] text-white hover:brightness-95 disabled:hover:brightness-100',
-        tone === 'secondary' &&
-          'bg-[#FFF4D8] text-[#2B2B2B] hover:bg-[#FFEAB5]',
+        tone === 'secondary' && 'bg-[#FFF4D8] text-[#2B2B2B] hover:bg-[#FFEAB5]',
         tone === 'ghost' &&
           'border border-[#E9E9E9] bg-white text-[#2B2B2B] hover:border-[#FFC633]',
         className,

@@ -1,6 +1,6 @@
 import { AuthActionButton, AuthCardShell, AuthField } from '@components/auth/auth-card';
 import { SignupCard } from '@components/auth/signup-card';
-import { toastError } from '@components/common/toast/toast';
+import { toastError, toastSuccess } from '@components/common/toast/toast';
 import { useAuth } from '@hooks/use-auth';
 import { isLoggedInAtom, type ServerRole } from '@state/session';
 import { useAtomValue } from 'jotai';
@@ -65,6 +65,7 @@ export function LoginCard({ className, onSignupClick }: LoginCardProps) {
           ? state.from.pathname
           : getDefaultPathByRole(result.role);
 
+      toastSuccess('로그인되었습니다.');
       navigate(nextPath, { replace: true });
     } catch (error) {
       toastError(getErrorMessage(error));
