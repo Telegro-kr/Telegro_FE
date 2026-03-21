@@ -5,7 +5,6 @@ import productImage2 from '../../assets/images/Landing/image2.png';
 import productImage3 from '../../assets/images/Landing/image3.png';
 import productImage4 from '../../assets/images/Landing/image4.png';
 
-throw new Error('route error test');
 const productPath = '/products';
 const noticePath = '/notices';
 

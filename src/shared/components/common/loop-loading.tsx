@@ -1,42 +1,47 @@
-import { useMemo } from 'react';
+﻿import pandaLoading from '/panda-loading.svg';
 
-const LoopLoading = ({ size = 40 }) => {
-  const BAR_COUNT = 10;
-  const bars = useMemo(() => Array.from({ length: BAR_COUNT }, () => crypto.randomUUID()), []);
-  const step = 360 / BAR_COUNT;
+type LoopLoadingProps = {
+  size?: number;
+};
 
+const LoopLoading = ({ size = 200 }: LoopLoadingProps) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-sm">
-      <div className="relative" style={{ height: `${size}px`, width: `${size}px` }}>
-        {bars.map((id, i) => (
-          <div
-            key={id}
-            className="absolute top-1/2 left-1/2 origin-center"
-            style={{
-              transform: `rotate(${i * step}deg) translate(0, -${size / 3.1}px)`,
-            }}
-          >
-            <div
-              className="h-[1rem] w-[0.22rem] rounded-full bg-neutral-500"
-              style={{
-                animation: `spinner-fade 1.2s linear infinite`,
-                animationDelay: `${(i * 0.1).toFixed(1)}s`,
-              }}
-            />
-          </div>
-        ))}
-
-        <style>
-          {`
-            @keyframes spinner-fade {
-              0% { opacity: 1; }
-              39% { opacity: 0.6; }
-              40% { opacity: 0.3; }
-              100% { opacity: 0.1; }
-            }
-          `}
-        </style>
-      </div>
+    <div
+      className="relative flex items-center justify-center rounded-full"
+      style={{ width: `${size}px`, height: `${size}px` }}
+    >
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <circle
+          cx="50"
+          cy="50"
+          r="45"
+          strokeWidth="11"
+          fill="none"
+          className="stroke-[#E9E9E9]"
+        />
+        <circle
+          cx="50"
+          cy="50"
+          r="45"
+          fill="none"
+          strokeWidth="10"
+          strokeLinecap="round"
+          strokeDasharray="45 240"
+          strokeDashoffset="100"
+          className="origin-center animate-spin stroke-[#FFC633]"
+        />
+      </svg>
+      <img
+        src={pandaLoading}
+        className="absolute w-[50%]"
+        alt="로딩 중인 판다"
+      />
     </div>
   );
 };

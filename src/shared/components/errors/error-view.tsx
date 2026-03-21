@@ -6,11 +6,11 @@ type ErrorViewProps = {
 
 const ErrorView = ({ onGoHome }: ErrorViewProps) => {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#FAFAFA] px-6 py-8">
+    <section className="relative max-h-screen overflow-hidden bg-[#FAFAFA] px-6 py-8">
       <header className="flex justify-center">
-        <p className="font-['Readex_Pro',sans-serif] text-[2.5rem] font-medium text-[#474747]">
+        <h1 className="font-['Readex_Pro',sans-serif] text-[1.7rem] font-medium tracking-[-0.03em] text-[#474747] md:text-[3rem] lg:text-[4rem]">
           - telegro -
-        </p>
+        </h1>
       </header>
 
       <div className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-[90rem] items-center justify-center">
