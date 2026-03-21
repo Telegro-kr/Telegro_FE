@@ -11,11 +11,11 @@ const NotFoundView = ({ onGoHome }: NotFoundViewProps) => {
             <img
               src="/404.svg"
               alt="404 페이지를 찾을 수 없습니다"
-              className="h-[35rem] w-[52rem] max-w-full object-contain"
+              className="h-[33rem] w-[50rem] max-w-full object-contain"
             />
-            <div className="-mt-[5rem] text-center">
+            <div className="flex-col-center -mt-[5rem] gap-1 text-center">
               <p className="title1">찾으시는 페이지가 없습니다.</p>
-              <p className="caption5">
+              <p className="text-2xl font-medium text-[#6D6D6D]">
                 잘못된 접근이거나 요청하신 페이지를 찾을 수 없습니다. <br />
                 입력하신 페이지의 주소가 정확한지 다시 한 번 확인해 주시기
                 바랍니다.
