@@ -46,6 +46,14 @@
     color: #121212;
   }
 
+  body,
+  button,
+  input,
+  select,
+  textarea {
+    font-family: var(--font-sans);
+  }
+
   body {
     background-color: #fafafa;
   }
@@ -117,6 +125,18 @@
 
     100% {
       transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes login-card-rise {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 4rem, 0) scale(0.96);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
     }
   }
 }

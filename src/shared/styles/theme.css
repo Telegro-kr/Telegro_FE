@@ -1,14 +1,16 @@
 @theme {
+  --font-sans:
+    'Pretendard',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+
   /* Brand (primary) */
-  --color-primary-900: #4b0082;
-  --color-primary-800: #5e0ea1;
-  --color-primary-700: #711ebf;
-  --color-primary-600: #853fd6;
-  --color-primary-500: #9961e8;
-  --color-primary-400: #b48cf0;
-  --color-primary-300: #d0b5f6;
-  --color-primary-200: #e5d8fb;
-  --color-primary-100: #f3ecfe;
+  --color-primary: #ffc633;
 
   /* Accent (포인트/하이라이트) */
   --color-accent-900: #5a7a17;
@@ -56,21 +58,171 @@
 
 @layer utilities {
   /* Shadow */
-  .u-shadow-md { box-shadow: var(--shadow-md); }
-  .u-shadow-lg { box-shadow: var(--shadow-lg); }
+  .u-shadow-md {
+    box-shadow: var(--shadow-md);
+  }
+  .u-shadow-lg {
+    box-shadow: var(--shadow-lg);
+  }
 
   /* Typography */
-  .text-title-lg { font-weight: 700; font-size: 2.4rem; line-height: 1.4; letter-spacing: -0.01em; }
-  .text-title-md { font-weight: 600; font-size: 2.0rem; line-height: 1.4; }
-  .text-subtitle  { font-weight: 600; font-size: 1.8rem; line-height: 1.5; }
-  .text-body-b    { font-weight: 700; font-size: 1.6rem; line-height: 1.5; }
-  .text-body      { font-weight: 500; font-size: 1.6rem; line-height: 1.5; }
-  .text-caption   { font-weight: 500; font-size: 1.4rem; line-height: 1.5; }
-  .text-mini      { font-weight: 500; font-size: 1.2rem; line-height: 1.5; }
+  /* ===== Typo ===== */
+  .title1 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 3rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .title2 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 2.8rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .title3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 2.4rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .title4 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .title5 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.8rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .title6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.6rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+
+  .body1 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 2.2rem;
+    line-height: 150%;
+    letter-spacing: var(--ls);
+  }
+  .body2 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 150%;
+    letter-spacing: var(--ls);
+  }
+  .body3 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.8rem;
+    line-height: 150%;
+    letter-spacing: var(--ls);
+  }
+  .body4 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 150%;
+    letter-spacing: var(--ls);
+  }
+  .body5 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 150%;
+    letter-spacing: var(--ls);
+  }
+
+  .button1 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .button2 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.8rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .button3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.6rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .button4 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+
+  .caption1 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .caption2 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .caption3 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .caption4 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.2rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .caption5 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.2rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
+  .caption6 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: var(--lh);
+    letter-spacing: var(--ls);
+  }
 
   /* Scrollbar helper */
   .u-scrollbar-hide {
-    &::-webkit-scrollbar { display: none; }
+    &::-webkit-scrollbar {
+      display: none;
+    }
     scrollbar-width: none;
   }
 }
