@@ -1,14 +1,11 @@
-import { useSetAtom } from 'jotai';
+import { type SignUpRequestDto, telegroInvalidate, useLogin, useSignup } from '@apis/telegro';
+import { accessTokenAtom, resetSessionAtom, type ServerRole, userRoleAtom } from '@state/session';
 import { useQueryClient } from '@tanstack/react-query';
-import { telegroInvalidate, useLogin } from '@apis/telegro';
-import {
-  accessTokenAtom,
-  resetSessionAtom,
-  type ServerRole,
-  userRoleAtom,
-} from '@state/session';
+import { useSetAtom } from 'jotai';
 
 type LoginPayload = { id: string; password: string };
+
+type SignupPayload = Required<SignUpRequestDto>;
 
 export function useAuth() {
   const setToken = useSetAtom(accessTokenAtom);
@@ -16,6 +13,7 @@ export function useAuth() {
   const reset = useSetAtom(resetSessionAtom);
   const queryClient = useQueryClient();
   const loginMutation = useLogin();
+  const signupMutation = useSignup();
 
   const login = async (payload: LoginPayload) => {
     const response = await loginMutation.mutateAsync({ data: payload });
@@ -37,6 +35,10 @@ export function useAuth() {
     return { token, role };
   };
 
+  const signup = async (payload: SignupPayload) => {
+    return signupMutation.mutateAsync({ data: payload });
+  };
+
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userRole');
@@ -46,8 +48,11 @@ export function useAuth() {
 
   return {
     login,
+    signup,
     logout,
     isLoginPending: loginMutation.isPending,
+    isSignupPending: signupMutation.isPending,
     loginError: loginMutation.error,
+    signupError: signupMutation.error,
   };
 }
