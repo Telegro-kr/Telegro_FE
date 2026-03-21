@@ -62,6 +62,41 @@ const INITIAL_FORM: SignupForm = {
 const POSTCODE_SCRIPT_ID = 'daum-postcode-script';
 const POSTCODE_SCRIPT_SRC = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
 
+const COPY = {
+  signupFail: '\ud68c\uc6d0\uac00\uc785\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.',
+  fillRequired: '\uae30\ubcf8 \uc815\ubcf4\ub97c \ubaa8\ub450 \uc785\ub825\ud574 \uc8fc\uc138\uc694.',
+  passwordMismatch: '\ube44\ubc00\ubc88\ud638 \ud655\uc778\uc774 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.',
+  searchLoading: '\uc8fc\uc18c \uac80\uc0c9\uc744 \ubd88\ub7ec\uc624\ub294 \uc911\uc785\ub2c8\ub2e4. \uc7a0\uc2dc \ud6c4 \ub2e4\uc2dc \uc2dc\ub3c4\ud574 \uc8fc\uc138\uc694.',
+  signupDone: '\ud68c\uc6d0\uac00\uc785\uc774 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ub85c\uadf8\uc778\ud574 \uc8fc\uc138\uc694.',
+  altSignup: '\ud68c\uc6d0\uac00\uc785',
+  backToLogin: '\ub85c\uadf8\uc778\uc73c\ub85c \ub3cc\uc544\uac00\uae30',
+  next: '\ub2e4\uc74c',
+  back: '\uc774\uc804',
+  signup: '\ud68c\uc6d0\uac00\uc785',
+  signupPending: '\uac00\uc785 \uc911...',
+  moveToLogin: '\ub85c\uadf8\uc778\uc73c\ub85c \uc774\ub3d9',
+  userId: '\uc544\uc774\ub514',
+  name: '\uc774\ub984',
+  email: '\uc774\uba54\uc77c',
+  password: '\ube44\ubc00\ubc88\ud638',
+  confirmPassword: '\ube44\ubc00\ubc88\ud638 \ud655\uc778',
+  phone: '\ud734\ub300\ud3f0 \ubc88\ud638',
+  zipCode: '\uc6b0\ud3b8\ubc88\ud638',
+  address: '\uc8fc\uc18c',
+  addressDetail: '\uc0c1\uc138 \uc8fc\uc18c',
+  enterUserId: '\uc544\uc774\ub514\ub97c \uc785\ub825\ud574 \uc8fc\uc138\uc694',
+  enterName: '\uc774\ub984\uc744 \uc785\ub825\ud574 \uc8fc\uc138\uc694',
+  enterEmail: '\uc774\uba54\uc77c\uc744 \uc785\ub825\ud574 \uc8fc\uc138\uc694',
+  enterPassword: '\ube44\ubc00\ubc88\ud638\ub97c \uc785\ub825\ud574 \uc8fc\uc138\uc694',
+  enterConfirmPassword: '\ube44\ubc00\ubc88\ud638\ub97c \ud55c \ubc88 \ub354 \uc785\ub825\ud574 \uc8fc\uc138\uc694',
+  enterPhone: '\ud734\ub300\ud3f0 \ubc88\ud638\ub97c \uc785\ub825\ud574 \uc8fc\uc138\uc694',
+  searchZipCode: '\uc6b0\ud3b8\ubc88\ud638\ub97c \uac80\uc0c9\ud574 \uc8fc\uc138\uc694',
+  search: '\uac80\uc0c9',
+  loading: '\ub85c\ub529 \uc911',
+  autoAddress: '\uc8fc\uc18c \uac80\uc0c9\uc73c\ub85c \uc790\ub3d9 \uc785\ub825\ub429\ub2c8\ub2e4',
+  enterAddressDetail: '\uc0c1\uc138 \uc8fc\uc18c\ub97c \uc785\ub825\ud574 \uc8fc\uc138\uc694',
+} as const;
+
 function getErrorMessage(error: unknown) {
   if (
     typeof error === 'object' &&
@@ -78,7 +113,7 @@ function getErrorMessage(error: unknown) {
     return error.response.data.message;
   }
 
-  return '회원가입에 실패했습니다.';
+  return COPY.signupFail;
 }
 
 function buildRoadAddress(data: DaumPostcodeData) {
@@ -110,7 +145,6 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
     }
 
     const existingScript = document.getElementById(POSTCODE_SCRIPT_ID) as HTMLScriptElement | null;
-
     const handleLoad = () => setIsPostcodeReady(true);
 
     if (existingScript) {
@@ -146,12 +180,12 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
 
   function handleNext() {
     if (!firstStepValid) {
-      toastError('기본 정보를 모두 입력해 주세요.');
+      toastError(COPY.fillRequired);
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      toastError('비밀번호 확인이 일치하지 않습니다.');
+      toastError(COPY.passwordMismatch);
       return;
     }
 
@@ -160,7 +194,7 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
 
   function handleAddressSearch() {
     if (!window.daum?.Postcode) {
-      toastError('주소 검색을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
+      toastError(COPY.searchLoading);
       return;
     }
 
@@ -179,12 +213,12 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {
-      toastError('비밀번호 확인이 일치하지 않습니다.');
+      toastError(COPY.passwordMismatch);
       return;
     }
 
     if (!canSubmit) {
-      toastError('회원가입 정보를 모두 입력해 주세요.');
+      toastError(COPY.fillRequired);
       return;
     }
 
@@ -200,7 +234,7 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
         addressDetail: form.addressDetail.trim(),
       });
 
-      toastSuccess('회원가입이 완료되었습니다. 로그인해 주세요.');
+      toastSuccess(COPY.signupDone);
       onBackToLogin();
     } catch (error) {
       toastError(getErrorMessage(error));
@@ -212,8 +246,8 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
       <AuthCardShell
         header={
           <div className="flex items-center justify-between">
-            <img src={signupLogo} alt="회원가입" className="size-[5.6rem]" />
-            <button type="button" onClick={onBackToLogin} aria-label="로그인으로 돌아가기">
+            <img src={signupLogo} alt={COPY.altSignup} className="size-[5.6rem]" />
+            <button type="button" onClick={onBackToLogin} aria-label={COPY.backToLogin}>
               <Icon name="signup-back" className="text-gray-200" size={4.8} rotate={180} />
             </button>
           </div>
@@ -221,20 +255,20 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
         footer={
           <div className="flex flex-col gap-3">
             {isFirstStep ? (
-              <AuthActionButton onClick={handleNext}>다음</AuthActionButton>
+              <AuthActionButton onClick={handleNext}>{COPY.next}</AuthActionButton>
             ) : (
               <div className="grid grid-cols-2 gap-3">
                 <AuthActionButton tone="ghost" onClick={() => setStep(1)}>
-                  이전
+                  {COPY.back}
                 </AuthActionButton>
                 <AuthActionButton type="submit" disabled={isSignupPending}>
-                  {isSignupPending ? '가입 중...' : '회원가입'}
+                  {isSignupPending ? COPY.signupPending : COPY.signup}
                 </AuthActionButton>
               </div>
             )}
 
             <AuthActionButton tone="secondary" onClick={onBackToLogin}>
-              로그인으로 이동
+              {COPY.moveToLogin}
             </AuthActionButton>
           </div>
         }
@@ -245,40 +279,40 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
           {isFirstStep ? (
             <div className="flex flex-col gap-5">
               <AuthField
-                label="아이디"
+                label={COPY.userId}
                 value={form.userid}
                 onChange={updateField('userid')}
-                placeholder="아이디를 입력해 주세요"
+                placeholder={COPY.enterUserId}
                 autoComplete="username"
               />
               <AuthField
-                label="이름"
+                label={COPY.name}
                 value={form.username}
                 onChange={updateField('username')}
-                placeholder="이름을 입력해 주세요"
+                placeholder={COPY.enterName}
                 autoComplete="name"
               />
               <AuthField
-                label="이메일"
+                label={COPY.email}
                 value={form.email}
                 onChange={updateField('email')}
-                placeholder="이메일을 입력해 주세요"
+                placeholder={COPY.enterEmail}
                 autoComplete="email"
                 type="email"
               />
               <AuthField
-                label="비밀번호"
+                label={COPY.password}
                 value={form.password}
                 onChange={updateField('password')}
-                placeholder="비밀번호를 입력해 주세요"
+                placeholder={COPY.enterPassword}
                 autoComplete="new-password"
                 type="password"
               />
               <AuthField
-                label="비밀번호 확인"
+                label={COPY.confirmPassword}
                 value={form.confirmPassword}
                 onChange={updateField('confirmPassword')}
-                placeholder="비밀번호를 한 번 더 입력해 주세요"
+                placeholder={COPY.enterConfirmPassword}
                 autoComplete="new-password"
                 type="password"
               />
@@ -286,22 +320,22 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
           ) : (
             <div className="flex flex-col gap-5">
               <AuthField
-                label="휴대폰 번호"
+                label={COPY.phone}
                 value={form.phone}
                 onChange={updateField('phone')}
-                placeholder="휴대폰 번호를 입력해 주세요"
+                placeholder={COPY.enterPhone}
                 autoComplete="tel"
               />
 
               <label className="flex flex-col gap-2">
                 <span className="font-['Pretendard',sans-serif] font-semibold text-[#2B2B2B] text-[1.25rem]">
-                  우편번호
+                  {COPY.zipCode}
                 </span>
                 <div className="grid grid-cols-[1fr_auto] gap-3">
                   <input
                     value={form.zipCode}
                     onChange={updateField('zipCode')}
-                    placeholder="우편번호를 검색해 주세요"
+                    placeholder={COPY.searchZipCode}
                     autoComplete="postal-code"
                     className="h-[4.2rem] rounded-[0.7rem] border border-[#E9E9E9] px-4 font-['Pretendard',sans-serif] text-[#2B2B2B] text-[1.25rem] outline-none transition placeholder:text-[#B7B7B7] focus:border-[#FFC633]"
                     readOnly
@@ -309,28 +343,28 @@ export function SignupCard({ onBackToLogin }: SignupCardProps) {
                   <AuthActionButton
                     type="button"
                     tone="ghost"
-                    className="px-5"
+                    className="h-[4.2rem] px-5"
                     onClick={handleAddressSearch}
                     disabled={!isPostcodeReady}
                   >
-                    {isPostcodeReady ? '검색' : '로딩 중'}
+                    {isPostcodeReady ? COPY.search : COPY.loading}
                   </AuthActionButton>
                 </div>
               </label>
 
               <AuthField
-                label="주소"
+                label={COPY.address}
                 value={form.address}
                 onChange={updateField('address')}
-                placeholder="주소 검색으로 자동 입력됩니다"
+                placeholder={COPY.autoAddress}
                 autoComplete="street-address"
                 readOnly
               />
               <AuthField
-                label="상세 주소"
+                label={COPY.addressDetail}
                 value={form.addressDetail}
                 onChange={updateField('addressDetail')}
-                placeholder="상세 주소를 입력해 주세요"
+                placeholder={COPY.enterAddressDetail}
               />
             </div>
           )}
