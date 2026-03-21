@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 type AuthMode = 'login' | 'signup';
 
-export default function LoginPage() {
+const LoginPage = () => {
   const [mode, setMode] = useState<AuthMode>('login');
 
   return (
@@ -16,4 +16,6 @@ export default function LoginPage() {
       )}
     </section>
   );
-}
+};
+
+export default LoginPage;

@@ -1,6 +1,6 @@
 import logoImage from '@/assets/images/Landing/logo.svg';
 
-export default function PublicFooter() {
+const PublicFooter = () => {
   return (
     <footer className="relative z-10 bg-[rgba(9,9,9,0.8)] px-6 py-12 text-white md:px-12 lg:px-16">
       <div className="mx-auto max-w-[1440px] space-y-8">
@@ -71,4 +71,6 @@ export default function PublicFooter() {
       </div>
     </footer>
   );
-}
+};
+
+export default PublicFooter;

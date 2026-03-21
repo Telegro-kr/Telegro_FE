@@ -103,7 +103,7 @@ const productCards = [
 
 const marqueeCards = [...productCards, ...productCards];
 
-export default function PublicHome() {
+const PublicHome = () => {
   return (
     <>
       <section className="relative flex items-center justify-center overflow-x-clip overflow-y-visible px-6 pt-6 pb-28 md:min-h-[60rem] md:px-12 md:pt-8 lg:px-16 lg:pt-4">
@@ -241,4 +241,6 @@ export default function PublicHome() {
       </section>
     </>
   );
-}
+};
+
+export default PublicHome;

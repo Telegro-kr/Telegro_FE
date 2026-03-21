@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-export default function LoopLoading({ size = 40 }) {
+const LoopLoading = ({ size = 40 }) => {
   const BAR_COUNT = 10;
   const bars = useMemo(() => Array.from({ length: BAR_COUNT }, () => crypto.randomUUID()), []);
   const step = 360 / BAR_COUNT;
@@ -39,4 +39,6 @@ export default function LoopLoading({ size = 40 }) {
       </div>
     </div>
   );
-}
+};
+
+export default LoopLoading;

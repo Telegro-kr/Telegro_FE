@@ -1,6 +1,6 @@
 import { Outlet, Link } from 'react-router-dom';
 
-export default function MemberLayout() {
+const MemberLayout = () => {
   return (
     <div>
       <header style={{ padding: 12, borderBottom: '1px solid #eee' }}>
@@ -18,4 +18,6 @@ export default function MemberLayout() {
       <footer style={{ padding: 12, borderTop: '1px solid #eee' }}>© Member</footer>
     </div>
   );
-}
+};
+
+export default MemberLayout;

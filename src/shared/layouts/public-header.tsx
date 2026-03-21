@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
   },
 ];
 
-export default function PublicHeader() {
+const PublicHeader = () => {
   const [isExploreOpen, setIsExploreOpen] = useState(false);
   const location = useLocation();
 
@@ -154,4 +154,6 @@ export default function PublicHeader() {
       </div>
     </header>
   );
-}
+};
+
+export default PublicHeader;
