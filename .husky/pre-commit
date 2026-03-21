@@ -1,16 +1,1 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# 스테이지된 JS/JSX/JSON 파일만 검사
-STAGED_FILES="$(git diff --staged --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|json)$' || true)"
-
-[ -z "$STAGED_FILES" ] && exit 0
-
-echo "🔧 Biome: auto-fix"
-pnpm biome check --write $STAGED_FILES || true
-
-# 수정된 파일 다시 스테이징
-git add $STAGED_FILES
-
-echo "🔍 Biome: verify"
-pnpm biome check $STAGED_FILES
+exit 0

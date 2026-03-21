@@ -219,11 +219,7 @@ export default function PublicHome() {
           <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-[#fafafa] to-transparent md:w-20" />
           <div className="flex w-max gap-8 px-6 motion-safe:animate-[product-marquee_28s_linear_infinite] md:gap-10 md:px-12 lg:gap-12 lg:px-16">
             {marqueeCards.map((card, index) => (
-              <Link
-                key={`${card.title}-${index}`}
-                to={card.path}
-                className="group block shrink-0"
-              >
+              <Link key={`${card.title}-${index}`} to={card.path} className="group block shrink-0">
                 <article className="relative h-[42rem] w-[28rem] overflow-hidden rounded-[4rem] bg-gradient-to-b from-[#f5f2ec] to-[#fff3d5] md:h-[50rem] md:w-[34rem] lg:h-[59.1rem] lg:w-[40rem]">
                   <div className="absolute top-8 left-8 z-10">
                     <h4 className="font-['Prata',serif] text-[2.6rem] tracking-[-0.03em] text-[#474747] md:text-[3rem]">

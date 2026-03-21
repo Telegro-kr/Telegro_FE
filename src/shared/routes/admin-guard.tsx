@@ -5,7 +5,6 @@ import { isAdminAtom } from '@state/session';
 export default function AdminGuard() {
   const isAdmin = useAtomValue(isAdminAtom);
   const loc = useLocation();
-  if (!isAdmin)
-    return <Navigate to="/forbidden" replace state={{ from: loc }} />;
+  if (!isAdmin) return <Navigate to="/forbidden" replace state={{ from: loc }} />;
   return <Outlet />;
 }

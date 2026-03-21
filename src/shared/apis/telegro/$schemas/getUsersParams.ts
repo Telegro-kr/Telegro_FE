@@ -8,10 +8,10 @@
 import type { GetUsersFilteredBy } from './getUsersFilteredBy';
 
 export type GetUsersParams = {
-/**
- * 단가 적용 필터링
- */
-filteredBy?: GetUsersFilteredBy;
-page: number;
-size: number;
+  /**
+   * 단가 적용 필터링
+   */
+  filteredBy?: GetUsersFilteredBy;
+  page: number;
+  size: number;
 };

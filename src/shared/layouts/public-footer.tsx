@@ -7,11 +7,7 @@ export default function PublicFooter() {
         <div className="flex items-start justify-between gap-8 lg:flex-row lg:items-center">
           <div className="flex items-center gap-3">
             <div className="flex h-[4.2rem] w-[4.2rem] items-center justify-center rounded-full bg-[#c1c7cd]">
-              <img
-                src={logoImage}
-                alt="Telegro logo"
-                className="h-[3.4rem] w-[3.4rem]"
-              />
+              <img src={logoImage} alt="Telegro logo" className="h-[3.4rem] w-[3.4rem]" />
             </div>
             <span className="font-['Roboto',sans-serif] text-[2.4rem] font-bold text-[#c1c7cd]">
               Telegro
@@ -58,14 +54,10 @@ export default function PublicFooter() {
             텔레그로(서연전자)
           </p>
           <div className="space-y-2 font-['Noto_Sans_KR',sans-serif] text-[1.5rem] font-medium text-[#e8e8e8]">
-            <p>
-              주소: 서울특별시 광진구 광나루로56길 85 테크노마트 21 8층 A30,
-              31호
-            </p>
+            <p>주소: 서울특별시 광진구 광나루로56길 85 테크노마트 21 8층 A30, 31호</p>
             <p>고객센터: 070-4111-5733</p>
             <p>
-              A/S 물류배송지: 경기도 남양주시 오남읍 양지로281번길 101로젠택배
-              평내영업소(서연전자)
+              A/S 물류배송지: 경기도 남양주시 오남읍 양지로281번길 101로젠택배 평내영업소(서연전자)
             </p>
             <p>사업자 등록번호: 215-18-12286</p>
           </div>

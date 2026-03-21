@@ -1,8 +1,4 @@
-import {
-  AuthActionButton,
-  AuthCardShell,
-  AuthField,
-} from '@components/auth/auth-card';
+import { AuthActionButton, AuthCardShell, AuthField } from '@components/auth/auth-card';
 import { SignupCard } from '@components/auth/signup-card';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
 import { useAuth } from '@hooks/use-auth';
@@ -82,8 +78,7 @@ export function LoginCard({ className, onSignupClick }: LoginCardProps) {
         className={className}
         title={
           <>
-            <span className="title3 text-primary">Telegro</span>에 오신 것을
-            환영합니다
+            <span className="title3 text-primary">Telegro</span>에 오신 것을 환영합니다
           </>
         }
         description={
@@ -96,12 +91,10 @@ export function LoginCard({ className, onSignupClick }: LoginCardProps) {
         footer={
           <div className="flex-col-center caption5 gap-1 text-center whitespace-nowrap text-gray-500">
             <p>
-              서비스 이용 시 <span className="underline">이용약관</span>에
-              동의하고
+              서비스 이용 시 <span className="underline">이용약관</span>에 동의하고
             </p>
             <p>
-              <span className="underline">개인정보 처리방침</span> 내용을 확인한
-              것으로 간주합니다.
+              <span className="underline">개인정보 처리방침</span> 내용을 확인한 것으로 간주합니다.
             </p>
           </div>
         }

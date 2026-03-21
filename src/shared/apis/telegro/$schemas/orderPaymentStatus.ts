@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type OrderPaymentStatus = typeof OrderPaymentStatus[keyof typeof OrderPaymentStatus];
-
+export type OrderPaymentStatus = (typeof OrderPaymentStatus)[keyof typeof OrderPaymentStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const OrderPaymentStatus = {

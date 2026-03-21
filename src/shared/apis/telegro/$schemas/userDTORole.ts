@@ -9,8 +9,7 @@
 /**
  * 단가 적용
  */
-export type UserDTORole = typeof UserDTORole[keyof typeof UserDTORole];
-
+export type UserDTORole = (typeof UserDTORole)[keyof typeof UserDTORole];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UserDTORole = {

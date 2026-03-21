@@ -15,9 +15,7 @@ export default function MemberLayout() {
       <main style={{ padding: 16 }}>
         <Outlet />
       </main>
-      <footer style={{ padding: 12, borderTop: '1px solid #eee' }}>
-        © Member
-      </footer>
+      <footer style={{ padding: 12, borderTop: '1px solid #eee' }}>© Member</footer>
     </div>
   );
 }

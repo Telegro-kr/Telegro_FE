@@ -8,7 +8,7 @@
 import type { GetProductsCategory } from './getProductsCategory';
 
 export type GetProductsParams = {
-category: GetProductsCategory;
-page: number;
-size: number;
+  category: GetProductsCategory;
+  page: number;
+  size: number;
 };

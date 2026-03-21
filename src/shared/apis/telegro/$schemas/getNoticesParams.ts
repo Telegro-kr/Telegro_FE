@@ -7,6 +7,6 @@
  */
 
 export type GetNoticesParams = {
-page: number;
-size: number;
+  page: number;
+  size: number;
 };

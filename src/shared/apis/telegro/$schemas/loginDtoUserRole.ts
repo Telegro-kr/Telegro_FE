@@ -9,8 +9,7 @@
 /**
  * user 등급
  */
-export type LoginDtoUserRole = typeof LoginDtoUserRole[keyof typeof LoginDtoUserRole];
-
+export type LoginDtoUserRole = (typeof LoginDtoUserRole)[keyof typeof LoginDtoUserRole];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const LoginDtoUserRole = {

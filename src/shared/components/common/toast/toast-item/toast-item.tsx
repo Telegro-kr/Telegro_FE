@@ -65,26 +65,19 @@ const ToastItem = ({ variant, message, visible, onClose }: ToastItemProps) => {
         'max-w-100 rounded-sm bg-gray-600 px-[2rem] py-[1rem]',
         'inline-flex flex-col items-start justify-start gap-2.5',
         'transition-all duration-150',
-        visible
-          ? 'translate-y-0 opacity-100'
-          : 'pointer-events-none -translate-y-2 opacity-0',
+        visible ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-2 opacity-0',
       )}
       role="status"
       aria-live="polite"
     >
       <div className="inline-flex items-center justify-start gap-3 self-stretch">
         <div
-          className={cn(
-            'flex h-8 w-8 shrink-0 items-center justify-center rounded-md',
-            iconColor,
-          )}
+          className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-md', iconColor)}
         >
           <Icon name={iconName} className="h-8 w-8" />
         </div>
 
-        <p className="flex-1 text-[1.6rem] font-semibold break-words text-gray-100">
-          {message}
-        </p>
+        <p className="flex-1 text-[1.6rem] font-semibold break-words text-gray-100">{message}</p>
       </div>
 
       <button type="button" onClick={onClose} className={srOnly}>

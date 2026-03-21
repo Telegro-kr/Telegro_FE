@@ -7,12 +7,12 @@
  */
 
 export type GetPresignedUrlParams = {
-/**
- * 이미지 저장 시 prefix
- */
-prefix: string;
-/**
- * 파일명
- */
-fileName?: string;
+  /**
+   * 이미지 저장 시 prefix
+   */
+  prefix: string;
+  /**
+   * 파일명
+   */
+  fileName?: string;
 };

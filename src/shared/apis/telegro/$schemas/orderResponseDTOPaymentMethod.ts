@@ -9,8 +9,8 @@
 /**
  * 결제 방법
  */
-export type OrderResponseDTOPaymentMethod = typeof OrderResponseDTOPaymentMethod[keyof typeof OrderResponseDTOPaymentMethod];
-
+export type OrderResponseDTOPaymentMethod =
+  (typeof OrderResponseDTOPaymentMethod)[keyof typeof OrderResponseDTOPaymentMethod];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const OrderResponseDTOPaymentMethod = {

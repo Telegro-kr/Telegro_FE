@@ -9,8 +9,8 @@
 /**
  * 상품 카테고리
  */
-export type CartResponseDTOProductCategory = typeof CartResponseDTOProductCategory[keyof typeof CartResponseDTOProductCategory];
-
+export type CartResponseDTOProductCategory =
+  (typeof CartResponseDTOProductCategory)[keyof typeof CartResponseDTOProductCategory];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CartResponseDTOProductCategory = {

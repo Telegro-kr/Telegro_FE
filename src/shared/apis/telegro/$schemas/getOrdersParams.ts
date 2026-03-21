@@ -7,13 +7,13 @@
  */
 
 export type GetOrdersParams = {
-/**
- * 필터
- */
-filterBy?: string;
-q?: string;
-startDate?: string;
-endDate?: string;
-page?: number;
-size?: number;
+  /**
+   * 필터
+   */
+  filterBy?: string;
+  q?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  size?: number;
 };
