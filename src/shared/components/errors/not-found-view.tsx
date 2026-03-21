@@ -5,12 +5,6 @@ type NotFoundViewProps = {
 const NotFoundView = ({ onGoHome }: NotFoundViewProps) => {
   return (
     <section className="relative max-h-screen overflow-hidden bg-[#FAFAFA] px-6 py-8">
-      <header className="flex justify-center">
-        <h1 className="font-['Readex_Pro',sans-serif] text-[1.7rem] font-medium tracking-[-0.03em] text-[#474747] md:text-[3rem] lg:text-[4rem]">
-          - telegro -
-        </h1>
-      </header>
-
       <div className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-[90rem] items-center justify-center">
         <div className="flex-col-center gap-20">
           <div className="flex-col-center -gap-2">
