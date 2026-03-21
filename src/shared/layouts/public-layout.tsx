@@ -6,7 +6,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import PublicFooter from './public-footer';
 import PublicHeader from './public-header';
 
-export default function PublicLayout() {
+const PublicLayout = () => {
   const location = useLocation();
   const isLoggedIn = useAtomValue(isLoggedInAtom);
   const [isLoginOverlayDismissed, setIsLoginOverlayDismissed] = useState(false);
@@ -32,4 +32,6 @@ export default function PublicLayout() {
       ) : null}
     </div>
   );
-}
+};
+
+export default PublicLayout;

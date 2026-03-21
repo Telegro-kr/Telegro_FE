@@ -8,7 +8,7 @@ import { Provider as JotaiProvider } from 'jotai';
 import { Suspense } from 'react';
 import { RouterProvider } from 'react-router-dom';
 
-export default function App() {
+const App = () => {
   return (
     <JotaiProvider>
       <QueryClientProvider client={queryClient}>
@@ -20,4 +20,6 @@ export default function App() {
       </QueryClientProvider>
     </JotaiProvider>
   );
-}
+};
+
+export default App;

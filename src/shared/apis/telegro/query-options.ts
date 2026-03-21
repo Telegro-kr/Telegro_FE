@@ -1,8 +1,4 @@
-import type {
-  QueryFunction,
-  QueryKey,
-  UseQueryOptions,
-} from '@tanstack/react-query';
+import type { QueryFunction, QueryKey, UseQueryOptions } from '@tanstack/react-query';
 
 /**
  * queryKey / queryFn을 포함한 옵션을 받아
@@ -10,10 +6,7 @@ import type {
  * (생성된 코드에서 추가로 DataTag 캐스팅을 하므로 여기선 QueryKey만 보장)
  */
 export function customQueryOptions<TQueryFnData, TError, TData>(
-  options: Omit<
-    UseQueryOptions<TQueryFnData, TError, TData>,
-    'queryKey' | 'queryFn'
-  > & {
+  options: Omit<UseQueryOptions<TQueryFnData, TError, TData>, 'queryKey' | 'queryFn'> & {
     queryKey: QueryKey;
     queryFn: QueryFunction<TQueryFnData, QueryKey>;
   },

@@ -5,10 +5,7 @@
  * Telegro API 문서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -21,7 +18,7 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
+  UseQueryResult,
 } from '@tanstack/react-query';
 
 import type {
@@ -147,2914 +144,4012 @@ import type {
   UserRequestDTO,
   ValidatePayment401,
   ValidatePayment404,
-  WebhookDTO
+  WebhookDTO,
 } from './$schemas';
 
 import { axiosInstance } from './axios-instance';
-import type { ErrorType , BodyType } from './axios-instance';
+import type { ErrorType, BodyType } from './axios-instance';
 import { customMutationOptions } from './mutation-options';
 import { customQueryOptions } from './query-options';
 
-
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-
 
 /**
  * 장바구니에 상품의 정보를 수정합니다.
  */
 export const updateCartItem = (
-    cartId: number,
-    cartRequestDTO: BodyType<CartRequestDTO>,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseCreatedCartDTO>(
-      {url: `/api/carts/${cartId}`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: cartRequestDTO
+  cartId: number,
+  cartRequestDTO: BodyType<CartRequestDTO>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<SuccessResponseCreatedCartDTO>(
+    {
+      url: `/api/carts/${cartId}`,
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      data: cartRequestDTO,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useUpdateCartItemMutationOptions = <
+  TError = ErrorType<UpdateCartItem401 | UpdateCartItem404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateCartItem>>,
+    TError,
+    { cartId: number; data: BodyType<CartRequestDTO> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateCartItem>>,
+  TError,
+  { cartId: number; data: BodyType<CartRequestDTO> },
+  TContext
+> => {
+  const mutationKey = ['updateCartItem'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useUpdateCartItemMutationOptions = <TError = ErrorType<UpdateCartItem401 | UpdateCartItem404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCartItem>>, TError,{cartId: number;data: BodyType<CartRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateCartItem>>, TError,{cartId: number;data: BodyType<CartRequestDTO>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateCartItem>>,
+    { cartId: number; data: BodyType<CartRequestDTO> }
+  > = (props) => {
+    const { cartId, data } = props ?? {};
 
-const mutationKey = ['updateCartItem'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return updateCartItem(cartId, data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/carts/{cartId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCartItem>>, {cartId: number;data: BodyType<CartRequestDTO>}> = (props) => {
-          const {cartId,data} = props ?? {};
+export type UpdateCartItemMutationResult = NonNullable<Awaited<ReturnType<typeof updateCartItem>>>;
+export type UpdateCartItemMutationBody = BodyType<CartRequestDTO>;
+export type UpdateCartItemMutationError = ErrorType<UpdateCartItem401 | UpdateCartItem404>;
 
-          return  updateCartItem(cartId,data,requestOptions)
-        }
+export const useUpdateCartItem = <
+  TError = ErrorType<UpdateCartItem401 | UpdateCartItem404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateCartItem>>,
+      TError,
+      { cartId: number; data: BodyType<CartRequestDTO> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateCartItem>>,
+  TError,
+  { cartId: number; data: BodyType<CartRequestDTO> },
+  TContext
+> => {
+  const mutationOptions = useUpdateCartItemMutationOptions(options);
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/carts/{cartId}` });
+  return useMutation(mutationOptions, queryClient);
+};
 
-
-  return  customOptions}
-
-    export type UpdateCartItemMutationResult = NonNullable<Awaited<ReturnType<typeof updateCartItem>>>
-    export type UpdateCartItemMutationBody = BodyType<CartRequestDTO>
-    export type UpdateCartItemMutationError = ErrorType<UpdateCartItem401 | UpdateCartItem404>
-
-    export const useUpdateCartItem = <TError = ErrorType<UpdateCartItem401 | UpdateCartItem404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCartItem>>, TError,{cartId: number;data: BodyType<CartRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateCartItem>>,
-        TError,
-        {cartId: number;data: BodyType<CartRequestDTO>},
-        TContext
-      > => {
-
-      const mutationOptions = useUpdateCartItemMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 장바구니에 상품을 삭제합니다.
  */
-export const deleteCartItem = (
-    cartId: number,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/api/carts/${cartId}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+export const deleteCartItem = (cartId: number, options?: SecondParameter<typeof axiosInstance>) => {
+  return axiosInstance<SuccessResponseBoolean>(
+    { url: `/api/carts/${cartId}`, method: 'DELETE' },
+    options,
+  );
+};
 
+export const useDeleteCartItemMutationOptions = <
+  TError = ErrorType<DeleteCartItem401 | DeleteCartItem404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteCartItem>>,
+    TError,
+    { cartId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteCartItem>>,
+  TError,
+  { cartId: number },
+  TContext
+> => {
+  const mutationKey = ['deleteCartItem'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useDeleteCartItemMutationOptions = <TError = ErrorType<DeleteCartItem401 | DeleteCartItem404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCartItem>>, TError,{cartId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteCartItem>>, TError,{cartId: number}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteCartItem>>,
+    { cartId: number }
+  > = (props) => {
+    const { cartId } = props ?? {};
 
-const mutationKey = ['deleteCartItem'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return deleteCartItem(cartId, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/carts/{cartId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteCartItem>>, {cartId: number}> = (props) => {
-          const {cartId} = props ?? {};
+export type DeleteCartItemMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCartItem>>>;
 
-          return  deleteCartItem(cartId,requestOptions)
-        }
+export type DeleteCartItemMutationError = ErrorType<DeleteCartItem401 | DeleteCartItem404>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/carts/{cartId}` });
+export const useDeleteCartItem = <
+  TError = ErrorType<DeleteCartItem401 | DeleteCartItem404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteCartItem>>,
+      TError,
+      { cartId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteCartItem>>,
+  TError,
+  { cartId: number },
+  TContext
+> => {
+  const mutationOptions = useDeleteCartItemMutationOptions(options);
 
+  return useMutation(mutationOptions, queryClient);
+};
 
-  return  customOptions}
-
-    export type DeleteCartItemMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCartItem>>>
-    
-    export type DeleteCartItemMutationError = ErrorType<DeleteCartItem401 | DeleteCartItem404>
-
-    export const useDeleteCartItem = <TError = ErrorType<DeleteCartItem401 | DeleteCartItem404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCartItem>>, TError,{cartId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteCartItem>>,
-        TError,
-        {cartId: number},
-        TContext
-      > => {
-
-      const mutationOptions = useDeleteCartItemMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 웹훅 수신을 받고 결제 검증 과정 거친 후 결제 상태를 변경한다.
  * @summary 결제 검증 및 결제 상태 변경
  */
 export const updatePaymentStatus = (
-    webhookDTO: BodyType<WebhookDTO>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  webhookDTO: BodyType<WebhookDTO>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseObject>(
-      {url: `/payments/update`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: webhookDTO, signal
+  return axiosInstance<SuccessResponseObject>(
+    {
+      url: `/payments/update`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: webhookDTO,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useUpdatePaymentStatusMutationOptions = <
+  TError = ErrorType<UpdatePaymentStatus401 | UpdatePaymentStatus404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePaymentStatus>>,
+    TError,
+    { data: BodyType<WebhookDTO> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updatePaymentStatus>>,
+  TError,
+  { data: BodyType<WebhookDTO> },
+  TContext
+> => {
+  const mutationKey = ['updatePaymentStatus'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useUpdatePaymentStatusMutationOptions = <TError = ErrorType<UpdatePaymentStatus401 | UpdatePaymentStatus404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePaymentStatus>>, TError,{data: BodyType<WebhookDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof updatePaymentStatus>>, TError,{data: BodyType<WebhookDTO>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePaymentStatus>>,
+    { data: BodyType<WebhookDTO> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['updatePaymentStatus'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return updatePaymentStatus(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/payments/update` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePaymentStatus>>, {data: BodyType<WebhookDTO>}> = (props) => {
-          const {data} = props ?? {};
+export type UpdatePaymentStatusMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePaymentStatus>>
+>;
+export type UpdatePaymentStatusMutationBody = BodyType<WebhookDTO>;
+export type UpdatePaymentStatusMutationError = ErrorType<
+  UpdatePaymentStatus401 | UpdatePaymentStatus404
+>;
 
-          return  updatePaymentStatus(data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/payments/update` });
-
-
-  return  customOptions}
-
-    export type UpdatePaymentStatusMutationResult = NonNullable<Awaited<ReturnType<typeof updatePaymentStatus>>>
-    export type UpdatePaymentStatusMutationBody = BodyType<WebhookDTO>
-    export type UpdatePaymentStatusMutationError = ErrorType<UpdatePaymentStatus401 | UpdatePaymentStatus404>
-
-    /**
+/**
  * @summary 결제 검증 및 결제 상태 변경
  */
-export const useUpdatePaymentStatus = <TError = ErrorType<UpdatePaymentStatus401 | UpdatePaymentStatus404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePaymentStatus>>, TError,{data: BodyType<WebhookDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updatePaymentStatus>>,
-        TError,
-        {data: BodyType<WebhookDTO>},
-        TContext
-      > => {
+export const useUpdatePaymentStatus = <
+  TError = ErrorType<UpdatePaymentStatus401 | UpdatePaymentStatus404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updatePaymentStatus>>,
+      TError,
+      { data: BodyType<WebhookDTO> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updatePaymentStatus>>,
+  TError,
+  { data: BodyType<WebhookDTO> },
+  TContext
+> => {
+  const mutationOptions = useUpdatePaymentStatusMutationOptions(options);
 
-      const mutationOptions = useUpdatePaymentStatusMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 상점 접속을 기록합니다.
  */
 export const recordHits = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/hits`, method: 'POST', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseBoolean>({ url: `/hits`, method: 'POST', signal }, options);
+};
 
+export const useRecordHitsMutationOptions = <
+  TError = ErrorType<RecordHits401 | RecordHits404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof recordHits>>, TError, void, TContext>;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<Awaited<ReturnType<typeof recordHits>>, TError, void, TContext> => {
+  const mutationKey = ['recordHits'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useRecordHitsMutationOptions = <TError = ErrorType<RecordHits401 | RecordHits404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recordHits>>, TError,void, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof recordHits>>, TError,void, TContext> => {
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof recordHits>>, void> = () => {
+    return recordHits(requestOptions);
+  };
 
-const mutationKey = ['recordHits'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+  const customOptions = customMutationOptions({ ...mutationOptions, mutationFn }, { url: `/hits` });
 
-      
+  return customOptions;
+};
 
+export type RecordHitsMutationResult = NonNullable<Awaited<ReturnType<typeof recordHits>>>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof recordHits>>, void> = () => {
-          
+export type RecordHitsMutationError = ErrorType<RecordHits401 | RecordHits404>;
 
-          return  recordHits(requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/hits` });
-
-
-  return  customOptions}
-
-    export type RecordHitsMutationResult = NonNullable<Awaited<ReturnType<typeof recordHits>>>
-    
-    export type RecordHitsMutationError = ErrorType<RecordHits401 | RecordHits404>
-
-    /**
+/**
  * @summary 상점 접속을 기록합니다.
  */
-export const useRecordHits = <TError = ErrorType<RecordHits401 | RecordHits404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recordHits>>, TError,void, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof recordHits>>,
-        TError,
-        void,
-        TContext
-      > => {
+export const useRecordHits = <
+  TError = ErrorType<RecordHits401 | RecordHits404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<Awaited<ReturnType<typeof recordHits>>, TError, void, TContext>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof recordHits>>, TError, void, TContext> => {
+  const mutationOptions = useRecordHitsMutationOptions(options);
 
-      const mutationOptions = useRecordHitsMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 자체 회원 가입
  */
 export const signup = (
-    signUpRequestDto: BodyType<SignUpRequestDto>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  signUpRequestDto: BodyType<SignUpRequestDto>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseObject>(
-      {url: `/auth/signup`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: signUpRequestDto, signal
+  return axiosInstance<SuccessResponseObject>(
+    {
+      url: `/auth/signup`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: signUpRequestDto,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useSignupMutationOptions = <
+  TError = ErrorType<Signup401 | Signup404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof signup>>,
+    TError,
+    { data: BodyType<SignUpRequestDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof signup>>,
+  TError,
+  { data: BodyType<SignUpRequestDto> },
+  TContext
+> => {
+  const mutationKey = ['signup'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useSignupMutationOptions = <TError = ErrorType<Signup401 | Signup404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signup>>, TError,{data: BodyType<SignUpRequestDto>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof signup>>, TError,{data: BodyType<SignUpRequestDto>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof signup>>,
+    { data: BodyType<SignUpRequestDto> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['signup'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return signup(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/auth/signup` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof signup>>, {data: BodyType<SignUpRequestDto>}> = (props) => {
-          const {data} = props ?? {};
+export type SignupMutationResult = NonNullable<Awaited<ReturnType<typeof signup>>>;
+export type SignupMutationBody = BodyType<SignUpRequestDto>;
+export type SignupMutationError = ErrorType<Signup401 | Signup404>;
 
-          return  signup(data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/auth/signup` });
-
-
-  return  customOptions}
-
-    export type SignupMutationResult = NonNullable<Awaited<ReturnType<typeof signup>>>
-    export type SignupMutationBody = BodyType<SignUpRequestDto>
-    export type SignupMutationError = ErrorType<Signup401 | Signup404>
-
-    /**
+/**
  * @summary 자체 회원 가입
  */
-export const useSignup = <TError = ErrorType<Signup401 | Signup404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signup>>, TError,{data: BodyType<SignUpRequestDto>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof signup>>,
-        TError,
-        {data: BodyType<SignUpRequestDto>},
-        TContext
-      > => {
+export const useSignup = <TError = ErrorType<Signup401 | Signup404>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof signup>>,
+      TError,
+      { data: BodyType<SignUpRequestDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof signup>>,
+  TError,
+  { data: BodyType<SignUpRequestDto> },
+  TContext
+> => {
+  const mutationOptions = useSignupMutationOptions(options);
 
-      const mutationOptions = useSignupMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 자체 로그인
  */
 export const login = (
-    loginRequestDto: BodyType<LoginRequestDto>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  loginRequestDto: BodyType<LoginRequestDto>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseLoginDto>(
-      {url: `/auth/login`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: loginRequestDto, signal
+  return axiosInstance<SuccessResponseLoginDto>(
+    {
+      url: `/auth/login`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: loginRequestDto,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useLoginMutationOptions = <
+  TError = ErrorType<Login401 | Login404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof login>>,
+    TError,
+    { data: BodyType<LoginRequestDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof login>>,
+  TError,
+  { data: BodyType<LoginRequestDto> },
+  TContext
+> => {
+  const mutationKey = ['login'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useLoginMutationOptions = <TError = ErrorType<Login401 | Login404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof login>>, TError,{data: BodyType<LoginRequestDto>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof login>>, TError,{data: BodyType<LoginRequestDto>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof login>>,
+    { data: BodyType<LoginRequestDto> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['login'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return login(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/auth/login` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof login>>, {data: BodyType<LoginRequestDto>}> = (props) => {
-          const {data} = props ?? {};
+export type LoginMutationResult = NonNullable<Awaited<ReturnType<typeof login>>>;
+export type LoginMutationBody = BodyType<LoginRequestDto>;
+export type LoginMutationError = ErrorType<Login401 | Login404>;
 
-          return  login(data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/auth/login` });
-
-
-  return  customOptions}
-
-    export type LoginMutationResult = NonNullable<Awaited<ReturnType<typeof login>>>
-    export type LoginMutationBody = BodyType<LoginRequestDto>
-    export type LoginMutationError = ErrorType<Login401 | Login404>
-
-    /**
+/**
  * @summary 자체 로그인
  */
-export const useLogin = <TError = ErrorType<Login401 | Login404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof login>>, TError,{data: BodyType<LoginRequestDto>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof login>>,
-        TError,
-        {data: BodyType<LoginRequestDto>},
-        TContext
-      > => {
+export const useLogin = <TError = ErrorType<Login401 | Login404>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof login>>,
+      TError,
+      { data: BodyType<LoginRequestDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof login>>,
+  TError,
+  { data: BodyType<LoginRequestDto> },
+  TContext
+> => {
+  const mutationOptions = useLoginMutationOptions(options);
 
-      const mutationOptions = useLoginMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 배송지를 추가합니다.
  */
 export const addDeliveryAddress = (
-    deliveryAddress: BodyType<DeliveryAddress>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  deliveryAddress: BodyType<DeliveryAddress>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseCreateAddressDTO>(
-      {url: `/api/users/address`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: deliveryAddress, signal
+  return axiosInstance<SuccessResponseCreateAddressDTO>(
+    {
+      url: `/api/users/address`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: deliveryAddress,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useAddDeliveryAddressMutationOptions = <
+  TError = ErrorType<AddDeliveryAddress401 | AddDeliveryAddress404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addDeliveryAddress>>,
+    TError,
+    { data: BodyType<DeliveryAddress> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addDeliveryAddress>>,
+  TError,
+  { data: BodyType<DeliveryAddress> },
+  TContext
+> => {
+  const mutationKey = ['addDeliveryAddress'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useAddDeliveryAddressMutationOptions = <TError = ErrorType<AddDeliveryAddress401 | AddDeliveryAddress404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addDeliveryAddress>>, TError,{data: BodyType<DeliveryAddress>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof addDeliveryAddress>>, TError,{data: BodyType<DeliveryAddress>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addDeliveryAddress>>,
+    { data: BodyType<DeliveryAddress> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['addDeliveryAddress'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return addDeliveryAddress(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/users/address` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addDeliveryAddress>>, {data: BodyType<DeliveryAddress>}> = (props) => {
-          const {data} = props ?? {};
+export type AddDeliveryAddressMutationResult = NonNullable<
+  Awaited<ReturnType<typeof addDeliveryAddress>>
+>;
+export type AddDeliveryAddressMutationBody = BodyType<DeliveryAddress>;
+export type AddDeliveryAddressMutationError = ErrorType<
+  AddDeliveryAddress401 | AddDeliveryAddress404
+>;
 
-          return  addDeliveryAddress(data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/users/address` });
-
-
-  return  customOptions}
-
-    export type AddDeliveryAddressMutationResult = NonNullable<Awaited<ReturnType<typeof addDeliveryAddress>>>
-    export type AddDeliveryAddressMutationBody = BodyType<DeliveryAddress>
-    export type AddDeliveryAddressMutationError = ErrorType<AddDeliveryAddress401 | AddDeliveryAddress404>
-
-    /**
+/**
  * @summary 배송지를 추가합니다.
  */
-export const useAddDeliveryAddress = <TError = ErrorType<AddDeliveryAddress401 | AddDeliveryAddress404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addDeliveryAddress>>, TError,{data: BodyType<DeliveryAddress>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof addDeliveryAddress>>,
-        TError,
-        {data: BodyType<DeliveryAddress>},
-        TContext
-      > => {
+export const useAddDeliveryAddress = <
+  TError = ErrorType<AddDeliveryAddress401 | AddDeliveryAddress404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof addDeliveryAddress>>,
+      TError,
+      { data: BodyType<DeliveryAddress> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof addDeliveryAddress>>,
+  TError,
+  { data: BodyType<DeliveryAddress> },
+  TContext
+> => {
+  const mutationOptions = useAddDeliveryAddressMutationOptions(options);
 
-      const mutationOptions = useAddDeliveryAddressMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 기본 배송지를 설정합니다.
  */
 export const setDefaultDeliveryAddress = (
-    addressId: number,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  addressId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/api/users/address/${addressId}/set-default`, method: 'POST', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseBoolean>(
+    { url: `/api/users/address/${addressId}/set-default`, method: 'POST', signal },
+    options,
+  );
+};
 
+export const useSetDefaultDeliveryAddressMutationOptions = <
+  TError = ErrorType<SetDefaultDeliveryAddress401 | SetDefaultDeliveryAddress404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof setDefaultDeliveryAddress>>,
+    TError,
+    { addressId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof setDefaultDeliveryAddress>>,
+  TError,
+  { addressId: number },
+  TContext
+> => {
+  const mutationKey = ['setDefaultDeliveryAddress'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useSetDefaultDeliveryAddressMutationOptions = <TError = ErrorType<SetDefaultDeliveryAddress401 | SetDefaultDeliveryAddress404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setDefaultDeliveryAddress>>, TError,{addressId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof setDefaultDeliveryAddress>>, TError,{addressId: number}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof setDefaultDeliveryAddress>>,
+    { addressId: number }
+  > = (props) => {
+    const { addressId } = props ?? {};
 
-const mutationKey = ['setDefaultDeliveryAddress'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return setDefaultDeliveryAddress(addressId, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/users/address/{addressId}/set-default` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setDefaultDeliveryAddress>>, {addressId: number}> = (props) => {
-          const {addressId} = props ?? {};
+export type SetDefaultDeliveryAddressMutationResult = NonNullable<
+  Awaited<ReturnType<typeof setDefaultDeliveryAddress>>
+>;
 
-          return  setDefaultDeliveryAddress(addressId,requestOptions)
-        }
+export type SetDefaultDeliveryAddressMutationError = ErrorType<
+  SetDefaultDeliveryAddress401 | SetDefaultDeliveryAddress404
+>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/users/address/{addressId}/set-default` });
-
-
-  return  customOptions}
-
-    export type SetDefaultDeliveryAddressMutationResult = NonNullable<Awaited<ReturnType<typeof setDefaultDeliveryAddress>>>
-    
-    export type SetDefaultDeliveryAddressMutationError = ErrorType<SetDefaultDeliveryAddress401 | SetDefaultDeliveryAddress404>
-
-    /**
+/**
  * @summary 기본 배송지를 설정합니다.
  */
-export const useSetDefaultDeliveryAddress = <TError = ErrorType<SetDefaultDeliveryAddress401 | SetDefaultDeliveryAddress404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setDefaultDeliveryAddress>>, TError,{addressId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof setDefaultDeliveryAddress>>,
-        TError,
-        {addressId: number},
-        TContext
-      > => {
+export const useSetDefaultDeliveryAddress = <
+  TError = ErrorType<SetDefaultDeliveryAddress401 | SetDefaultDeliveryAddress404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof setDefaultDeliveryAddress>>,
+      TError,
+      { addressId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof setDefaultDeliveryAddress>>,
+  TError,
+  { addressId: number },
+  TContext
+> => {
+  const mutationOptions = useSetDefaultDeliveryAddressMutationOptions(options);
 
-      const mutationOptions = useSetDefaultDeliveryAddressMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 상품을 등록합니다.
  */
 export const createProduct = (
-    productRequestDTO: BodyType<ProductRequestDTO>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  productRequestDTO: BodyType<ProductRequestDTO>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseCreatedProductDTO>(
-      {url: `/api/products`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: productRequestDTO, signal
+  return axiosInstance<SuccessResponseCreatedProductDTO>(
+    {
+      url: `/api/products`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: productRequestDTO,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useCreateProductMutationOptions = <
+  TError = ErrorType<CreateProduct401 | CreateProduct404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createProduct>>,
+    TError,
+    { data: BodyType<ProductRequestDTO> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createProduct>>,
+  TError,
+  { data: BodyType<ProductRequestDTO> },
+  TContext
+> => {
+  const mutationKey = ['createProduct'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useCreateProductMutationOptions = <TError = ErrorType<CreateProduct401 | CreateProduct404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProduct>>, TError,{data: BodyType<ProductRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof createProduct>>, TError,{data: BodyType<ProductRequestDTO>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createProduct>>,
+    { data: BodyType<ProductRequestDTO> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['createProduct'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return createProduct(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/products` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProduct>>, {data: BodyType<ProductRequestDTO>}> = (props) => {
-          const {data} = props ?? {};
+export type CreateProductMutationResult = NonNullable<Awaited<ReturnType<typeof createProduct>>>;
+export type CreateProductMutationBody = BodyType<ProductRequestDTO>;
+export type CreateProductMutationError = ErrorType<CreateProduct401 | CreateProduct404>;
 
-          return  createProduct(data,requestOptions)
-        }
+export const useCreateProduct = <
+  TError = ErrorType<CreateProduct401 | CreateProduct404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createProduct>>,
+      TError,
+      { data: BodyType<ProductRequestDTO> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createProduct>>,
+  TError,
+  { data: BodyType<ProductRequestDTO> },
+  TContext
+> => {
+  const mutationOptions = useCreateProductMutationOptions(options);
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/products` });
+  return useMutation(mutationOptions, queryClient);
+};
 
-
-  return  customOptions}
-
-    export type CreateProductMutationResult = NonNullable<Awaited<ReturnType<typeof createProduct>>>
-    export type CreateProductMutationBody = BodyType<ProductRequestDTO>
-    export type CreateProductMutationError = ErrorType<CreateProduct401 | CreateProduct404>
-
-    export const useCreateProduct = <TError = ErrorType<CreateProduct401 | CreateProduct404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProduct>>, TError,{data: BodyType<ProductRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createProduct>>,
-        TError,
-        {data: BodyType<ProductRequestDTO>},
-        TContext
-      > => {
-
-      const mutationOptions = useCreateProductMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 결제 검증 후 결제 확정을 한다.
  * @summary 결제 검증
  */
 export const validatePayment = (
-    impUid: string,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  impUid: string,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseObject>(
-      {url: `/api/payments/${impUid}`, method: 'POST', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseObject>(
+    { url: `/api/payments/${impUid}`, method: 'POST', signal },
+    options,
+  );
+};
 
+export const useValidatePaymentMutationOptions = <
+  TError = ErrorType<ValidatePayment401 | ValidatePayment404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof validatePayment>>,
+    TError,
+    { impUid: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof validatePayment>>,
+  TError,
+  { impUid: string },
+  TContext
+> => {
+  const mutationKey = ['validatePayment'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useValidatePaymentMutationOptions = <TError = ErrorType<ValidatePayment401 | ValidatePayment404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof validatePayment>>, TError,{impUid: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof validatePayment>>, TError,{impUid: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof validatePayment>>,
+    { impUid: string }
+  > = (props) => {
+    const { impUid } = props ?? {};
 
-const mutationKey = ['validatePayment'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return validatePayment(impUid, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/payments/{impUid}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof validatePayment>>, {impUid: string}> = (props) => {
-          const {impUid} = props ?? {};
+export type ValidatePaymentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof validatePayment>>
+>;
 
-          return  validatePayment(impUid,requestOptions)
-        }
+export type ValidatePaymentMutationError = ErrorType<ValidatePayment401 | ValidatePayment404>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/payments/{impUid}` });
-
-
-  return  customOptions}
-
-    export type ValidatePaymentMutationResult = NonNullable<Awaited<ReturnType<typeof validatePayment>>>
-    
-    export type ValidatePaymentMutationError = ErrorType<ValidatePayment401 | ValidatePayment404>
-
-    /**
+/**
  * @summary 결제 검증
  */
-export const useValidatePayment = <TError = ErrorType<ValidatePayment401 | ValidatePayment404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof validatePayment>>, TError,{impUid: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof validatePayment>>,
-        TError,
-        {impUid: string},
-        TContext
-      > => {
+export const useValidatePayment = <
+  TError = ErrorType<ValidatePayment401 | ValidatePayment404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof validatePayment>>,
+      TError,
+      { impUid: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof validatePayment>>,
+  TError,
+  { impUid: string },
+  TContext
+> => {
+  const mutationOptions = useValidatePaymentMutationOptions(options);
 
-      const mutationOptions = useValidatePaymentMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 결제를 취소하고, 주문 상태를 변경한다
  * @summary 결제 취소
  */
 export const cancelPayment = (
-    orderId: number,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  orderId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseObject>(
-      {url: `/api/payments/cancel/${orderId}`, method: 'POST', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseObject>(
+    { url: `/api/payments/cancel/${orderId}`, method: 'POST', signal },
+    options,
+  );
+};
 
+export const useCancelPaymentMutationOptions = <
+  TError = ErrorType<CancelPayment401 | CancelPayment404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof cancelPayment>>,
+    TError,
+    { orderId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof cancelPayment>>,
+  TError,
+  { orderId: number },
+  TContext
+> => {
+  const mutationKey = ['cancelPayment'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useCancelPaymentMutationOptions = <TError = ErrorType<CancelPayment401 | CancelPayment404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelPayment>>, TError,{orderId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof cancelPayment>>, TError,{orderId: number}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof cancelPayment>>,
+    { orderId: number }
+  > = (props) => {
+    const { orderId } = props ?? {};
 
-const mutationKey = ['cancelPayment'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return cancelPayment(orderId, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/payments/cancel/{orderId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof cancelPayment>>, {orderId: number}> = (props) => {
-          const {orderId} = props ?? {};
+export type CancelPaymentMutationResult = NonNullable<Awaited<ReturnType<typeof cancelPayment>>>;
 
-          return  cancelPayment(orderId,requestOptions)
-        }
+export type CancelPaymentMutationError = ErrorType<CancelPayment401 | CancelPayment404>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/payments/cancel/{orderId}` });
-
-
-  return  customOptions}
-
-    export type CancelPaymentMutationResult = NonNullable<Awaited<ReturnType<typeof cancelPayment>>>
-    
-    export type CancelPaymentMutationError = ErrorType<CancelPayment401 | CancelPayment404>
-
-    /**
+/**
  * @summary 결제 취소
  */
-export const useCancelPayment = <TError = ErrorType<CancelPayment401 | CancelPayment404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelPayment>>, TError,{orderId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof cancelPayment>>,
-        TError,
-        {orderId: number},
-        TContext
-      > => {
+export const useCancelPayment = <
+  TError = ErrorType<CancelPayment401 | CancelPayment404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof cancelPayment>>,
+      TError,
+      { orderId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof cancelPayment>>,
+  TError,
+  { orderId: number },
+  TContext
+> => {
+  const mutationOptions = useCancelPaymentMutationOptions(options);
 
-      const mutationOptions = useCancelPaymentMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 주문 정보 입력 후 결제하기를 누르면 주문 테이블이 저장된다.
  * @summary 주문을 처리합니다.
  */
 export const completeOrder = (
-    orderRequestDTO: BodyType<OrderRequestDTO>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  orderRequestDTO: BodyType<OrderRequestDTO>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseOrderResponseDTO>(
-      {url: `/api/orders/done`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: orderRequestDTO, signal
+  return axiosInstance<SuccessResponseOrderResponseDTO>(
+    {
+      url: `/api/orders/done`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: orderRequestDTO,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useCompleteOrderMutationOptions = <
+  TError = ErrorType<CompleteOrder401 | CompleteOrder404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof completeOrder>>,
+    TError,
+    { data: BodyType<OrderRequestDTO> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof completeOrder>>,
+  TError,
+  { data: BodyType<OrderRequestDTO> },
+  TContext
+> => {
+  const mutationKey = ['completeOrder'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useCompleteOrderMutationOptions = <TError = ErrorType<CompleteOrder401 | CompleteOrder404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof completeOrder>>, TError,{data: BodyType<OrderRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof completeOrder>>, TError,{data: BodyType<OrderRequestDTO>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof completeOrder>>,
+    { data: BodyType<OrderRequestDTO> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['completeOrder'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return completeOrder(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/orders/done` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof completeOrder>>, {data: BodyType<OrderRequestDTO>}> = (props) => {
-          const {data} = props ?? {};
+export type CompleteOrderMutationResult = NonNullable<Awaited<ReturnType<typeof completeOrder>>>;
+export type CompleteOrderMutationBody = BodyType<OrderRequestDTO>;
+export type CompleteOrderMutationError = ErrorType<CompleteOrder401 | CompleteOrder404>;
 
-          return  completeOrder(data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/orders/done` });
-
-
-  return  customOptions}
-
-    export type CompleteOrderMutationResult = NonNullable<Awaited<ReturnType<typeof completeOrder>>>
-    export type CompleteOrderMutationBody = BodyType<OrderRequestDTO>
-    export type CompleteOrderMutationError = ErrorType<CompleteOrder401 | CompleteOrder404>
-
-    /**
+/**
  * @summary 주문을 처리합니다.
  */
-export const useCompleteOrder = <TError = ErrorType<CompleteOrder401 | CompleteOrder404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof completeOrder>>, TError,{data: BodyType<OrderRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof completeOrder>>,
-        TError,
-        {data: BodyType<OrderRequestDTO>},
-        TContext
-      > => {
+export const useCompleteOrder = <
+  TError = ErrorType<CompleteOrder401 | CompleteOrder404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof completeOrder>>,
+      TError,
+      { data: BodyType<OrderRequestDTO> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof completeOrder>>,
+  TError,
+  { data: BodyType<OrderRequestDTO> },
+  TContext
+> => {
+  const mutationOptions = useCompleteOrderMutationOptions(options);
 
-      const mutationOptions = useCompleteOrderMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 장바구니에서 주문 클릭시 해당 장바구니들의 id를 리스트로 받는다. id로 필요 정보를 찾아 주문 테이블을 생성하고 이를 세션에 임시 저장한다.
  * @summary 주문을 임시 등록합니다.
  */
 export const createOrder = (
-    createOrderBody: BodyType<number[]>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  createOrderBody: BodyType<number[]>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseTemporaryOrderDTO>(
-      {url: `/api/orders/create`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createOrderBody, signal
+  return axiosInstance<SuccessResponseTemporaryOrderDTO>(
+    {
+      url: `/api/orders/create`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createOrderBody,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useCreateOrderMutationOptions = <
+  TError = ErrorType<CreateOrder401 | CreateOrder404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createOrder>>,
+    TError,
+    { data: BodyType<number[]> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createOrder>>,
+  TError,
+  { data: BodyType<number[]> },
+  TContext
+> => {
+  const mutationKey = ['createOrder'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useCreateOrderMutationOptions = <TError = ErrorType<CreateOrder401 | CreateOrder404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createOrder>>, TError,{data: BodyType<number[]>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof createOrder>>, TError,{data: BodyType<number[]>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createOrder>>,
+    { data: BodyType<number[]> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['createOrder'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return createOrder(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/orders/create` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createOrder>>, {data: BodyType<number[]>}> = (props) => {
-          const {data} = props ?? {};
+export type CreateOrderMutationResult = NonNullable<Awaited<ReturnType<typeof createOrder>>>;
+export type CreateOrderMutationBody = BodyType<number[]>;
+export type CreateOrderMutationError = ErrorType<CreateOrder401 | CreateOrder404>;
 
-          return  createOrder(data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/orders/create` });
-
-
-  return  customOptions}
-
-    export type CreateOrderMutationResult = NonNullable<Awaited<ReturnType<typeof createOrder>>>
-    export type CreateOrderMutationBody = BodyType<number[]>
-    export type CreateOrderMutationError = ErrorType<CreateOrder401 | CreateOrder404>
-
-    /**
+/**
  * @summary 주문을 임시 등록합니다.
  */
-export const useCreateOrder = <TError = ErrorType<CreateOrder401 | CreateOrder404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createOrder>>, TError,{data: BodyType<number[]>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createOrder>>,
-        TError,
-        {data: BodyType<number[]>},
-        TContext
-      > => {
+export const useCreateOrder = <
+  TError = ErrorType<CreateOrder401 | CreateOrder404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createOrder>>,
+      TError,
+      { data: BodyType<number[]> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createOrder>>,
+  TError,
+  { data: BodyType<number[]> },
+  TContext
+> => {
+  const mutationOptions = useCreateOrderMutationOptions(options);
 
-      const mutationOptions = useCreateOrderMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 공지사항 게시글을 작성합니다.
  */
 export const createNotice = (
-    notice: BodyType<Notice>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  notice: BodyType<Notice>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseCreatedNoticeDTO>(
-      {url: `/api/notices`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: notice, signal
+  return axiosInstance<SuccessResponseCreatedNoticeDTO>(
+    {
+      url: `/api/notices`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: notice,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useCreateNoticeMutationOptions = <
+  TError = ErrorType<CreateNotice401 | CreateNotice404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createNotice>>,
+    TError,
+    { data: BodyType<Notice> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createNotice>>,
+  TError,
+  { data: BodyType<Notice> },
+  TContext
+> => {
+  const mutationKey = ['createNotice'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useCreateNoticeMutationOptions = <TError = ErrorType<CreateNotice401 | CreateNotice404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNotice>>, TError,{data: BodyType<Notice>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof createNotice>>, TError,{data: BodyType<Notice>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createNotice>>,
+    { data: BodyType<Notice> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['createNotice'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return createNotice(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/notices` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createNotice>>, {data: BodyType<Notice>}> = (props) => {
-          const {data} = props ?? {};
+export type CreateNoticeMutationResult = NonNullable<Awaited<ReturnType<typeof createNotice>>>;
+export type CreateNoticeMutationBody = BodyType<Notice>;
+export type CreateNoticeMutationError = ErrorType<CreateNotice401 | CreateNotice404>;
 
-          return  createNotice(data,requestOptions)
-        }
+export const useCreateNotice = <
+  TError = ErrorType<CreateNotice401 | CreateNotice404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createNotice>>,
+      TError,
+      { data: BodyType<Notice> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createNotice>>,
+  TError,
+  { data: BodyType<Notice> },
+  TContext
+> => {
+  const mutationOptions = useCreateNoticeMutationOptions(options);
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/notices` });
+  return useMutation(mutationOptions, queryClient);
+};
 
-
-  return  customOptions}
-
-    export type CreateNoticeMutationResult = NonNullable<Awaited<ReturnType<typeof createNotice>>>
-    export type CreateNoticeMutationBody = BodyType<Notice>
-    export type CreateNoticeMutationError = ErrorType<CreateNotice401 | CreateNotice404>
-
-    export const useCreateNotice = <TError = ErrorType<CreateNotice401 | CreateNotice404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createNotice>>, TError,{data: BodyType<Notice>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createNotice>>,
-        TError,
-        {data: BodyType<Notice>},
-        TContext
-      > => {
-
-      const mutationOptions = useCreateNoticeMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 공지사항 팝업 게시글을 설정합니다.
  */
 export const setPopNotice = (
-    noticeId: number,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  noticeId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/api/notices/${noticeId}/popup`, method: 'POST', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseBoolean>(
+    { url: `/api/notices/${noticeId}/popup`, method: 'POST', signal },
+    options,
+  );
+};
 
+export const useSetPopNoticeMutationOptions = <
+  TError = ErrorType<SetPopNotice401 | SetPopNotice404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof setPopNotice>>,
+    TError,
+    { noticeId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof setPopNotice>>,
+  TError,
+  { noticeId: number },
+  TContext
+> => {
+  const mutationKey = ['setPopNotice'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useSetPopNoticeMutationOptions = <TError = ErrorType<SetPopNotice401 | SetPopNotice404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPopNotice>>, TError,{noticeId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof setPopNotice>>, TError,{noticeId: number}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof setPopNotice>>,
+    { noticeId: number }
+  > = (props) => {
+    const { noticeId } = props ?? {};
 
-const mutationKey = ['setPopNotice'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return setPopNotice(noticeId, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/notices/{noticeId}/popup` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setPopNotice>>, {noticeId: number}> = (props) => {
-          const {noticeId} = props ?? {};
+export type SetPopNoticeMutationResult = NonNullable<Awaited<ReturnType<typeof setPopNotice>>>;
 
-          return  setPopNotice(noticeId,requestOptions)
-        }
+export type SetPopNoticeMutationError = ErrorType<SetPopNotice401 | SetPopNotice404>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/notices/{noticeId}/popup` });
+export const useSetPopNotice = <
+  TError = ErrorType<SetPopNotice401 | SetPopNotice404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof setPopNotice>>,
+      TError,
+      { noticeId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof setPopNotice>>,
+  TError,
+  { noticeId: number },
+  TContext
+> => {
+  const mutationOptions = useSetPopNoticeMutationOptions(options);
 
+  return useMutation(mutationOptions, queryClient);
+};
 
-  return  customOptions}
-
-    export type SetPopNoticeMutationResult = NonNullable<Awaited<ReturnType<typeof setPopNotice>>>
-    
-    export type SetPopNoticeMutationError = ErrorType<SetPopNotice401 | SetPopNotice404>
-
-    export const useSetPopNotice = <TError = ErrorType<SetPopNotice401 | SetPopNotice404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPopNotice>>, TError,{noticeId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof setPopNotice>>,
-        TError,
-        {noticeId: number},
-        TContext
-      > => {
-
-      const mutationOptions = useSetPopNoticeMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 export const getPresignedUrl = (
-    params: GetPresignedUrlParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params: GetPresignedUrlParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponsePresignedUrlDto>(
-      {url: `/api/file`, method: 'POST',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponsePresignedUrlDto>(
+    { url: `/api/file`, method: 'POST', params, signal },
+    options,
+  );
+};
 
+export const useGetPresignedUrlMutationOptions = <
+  TError = ErrorType<GetPresignedUrl401 | GetPresignedUrl404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof getPresignedUrl>>,
+    TError,
+    { params: GetPresignedUrlParams },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof getPresignedUrl>>,
+  TError,
+  { params: GetPresignedUrlParams },
+  TContext
+> => {
+  const mutationKey = ['getPresignedUrl'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useGetPresignedUrlMutationOptions = <TError = ErrorType<GetPresignedUrl401 | GetPresignedUrl404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError,{params: GetPresignedUrlParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError,{params: GetPresignedUrlParams}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof getPresignedUrl>>,
+    { params: GetPresignedUrlParams }
+  > = (props) => {
+    const { params } = props ?? {};
 
-const mutationKey = ['getPresignedUrl'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return getPresignedUrl(params, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/file` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getPresignedUrl>>, {params: GetPresignedUrlParams}> = (props) => {
-          const {params} = props ?? {};
+export type GetPresignedUrlMutationResult = NonNullable<
+  Awaited<ReturnType<typeof getPresignedUrl>>
+>;
 
-          return  getPresignedUrl(params,requestOptions)
-        }
+export type GetPresignedUrlMutationError = ErrorType<GetPresignedUrl401 | GetPresignedUrl404>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/file` });
+export const useGetPresignedUrl = <
+  TError = ErrorType<GetPresignedUrl401 | GetPresignedUrl404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof getPresignedUrl>>,
+      TError,
+      { params: GetPresignedUrlParams },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof getPresignedUrl>>,
+  TError,
+  { params: GetPresignedUrlParams },
+  TContext
+> => {
+  const mutationOptions = useGetPresignedUrlMutationOptions(options);
 
+  return useMutation(mutationOptions, queryClient);
+};
 
-  return  customOptions}
-
-    export type GetPresignedUrlMutationResult = NonNullable<Awaited<ReturnType<typeof getPresignedUrl>>>
-    
-    export type GetPresignedUrlMutationError = ErrorType<GetPresignedUrl401 | GetPresignedUrl404>
-
-    export const useGetPresignedUrl = <TError = ErrorType<GetPresignedUrl401 | GetPresignedUrl404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError,{params: GetPresignedUrlParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof getPresignedUrl>>,
-        TError,
-        {params: GetPresignedUrlParams},
-        TContext
-      > => {
-
-      const mutationOptions = useGetPresignedUrlMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 공급 업체를 상세 조회합니다.
  */
 export const getCompanyDetail = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseCompanyDetailDTO>(
-      {url: `/api/companies`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseCompanyDetailDTO>(
+    { url: `/api/companies`, method: 'GET', signal },
+    options,
+  );
+};
 
 export const getGetCompanyDetailQueryKey = () => {
-    return [`/api/companies`] as const;
-    }
+  return [`/api/companies`] as const;
+};
 
-    
-export const useGetCompanyDetailQueryOptions = <TData = Awaited<ReturnType<typeof getCompanyDetail>>, TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
-) => {
+export const useGetCompanyDetailQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCompanyDetail>>,
+  TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>>;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetCompanyDetailQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetCompanyDetailQueryKey();
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCompanyDetail>>> = ({ signal }) =>
+    getCompanyDetail(requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, {});
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCompanyDetail>>> = ({ signal }) => getCompanyDetail(requestOptions, signal);
+  return customOptions as UseQueryOptions<
+    Awaited<ReturnType<typeof getCompanyDetail>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetCompanyDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getCompanyDetail>>>;
+export type GetCompanyDetailQueryError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, {  });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetCompanyDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getCompanyDetail>>>
-export type GetCompanyDetailQueryError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>
-
-
-export function useGetCompanyDetail<TData = Awaited<ReturnType<typeof getCompanyDetail>>, TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>> & Pick<
+export function useGetCompanyDetail<
+  TData = Awaited<ReturnType<typeof getCompanyDetail>>,
+  TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCompanyDetail>>,
           TError,
           Awaited<ReturnType<typeof getCompanyDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCompanyDetail<TData = Awaited<ReturnType<typeof getCompanyDetail>>, TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetCompanyDetail<
+  TData = Awaited<ReturnType<typeof getCompanyDetail>>,
+  TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCompanyDetail>>,
           TError,
           Awaited<ReturnType<typeof getCompanyDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCompanyDetail<TData = Awaited<ReturnType<typeof getCompanyDetail>>, TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetCompanyDetail<
+  TData = Awaited<ReturnType<typeof getCompanyDetail>>,
+  TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary 공급 업체를 상세 조회합니다.
  */
 
-export function useGetCompanyDetail<TData = Awaited<ReturnType<typeof getCompanyDetail>>, TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetCompanyDetail<
+  TData = Awaited<ReturnType<typeof getCompanyDetail>>,
+  TError = ErrorType<GetCompanyDetail401 | GetCompanyDetail404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCompanyDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetCompanyDetailQueryOptions(options);
 
-  const queryOptions = useGetCompanyDetailQueryOptions(options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * @summary 공급 업체를 등록합니다.
  */
 export const createCompany = (
-    companySignUpDTO: BodyType<CompanySignUpDTO>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  companySignUpDTO: BodyType<CompanySignUpDTO>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseObject>(
-      {url: `/api/companies`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: companySignUpDTO, signal
+  return axiosInstance<SuccessResponseObject>(
+    {
+      url: `/api/companies`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: companySignUpDTO,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useCreateCompanyMutationOptions = <
+  TError = ErrorType<CreateCompany401 | CreateCompany404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createCompany>>,
+    TError,
+    { data: BodyType<CompanySignUpDTO> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createCompany>>,
+  TError,
+  { data: BodyType<CompanySignUpDTO> },
+  TContext
+> => {
+  const mutationKey = ['createCompany'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useCreateCompanyMutationOptions = <TError = ErrorType<CreateCompany401 | CreateCompany404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCompany>>, TError,{data: BodyType<CompanySignUpDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof createCompany>>, TError,{data: BodyType<CompanySignUpDTO>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createCompany>>,
+    { data: BodyType<CompanySignUpDTO> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['createCompany'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return createCompany(data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/companies` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createCompany>>, {data: BodyType<CompanySignUpDTO>}> = (props) => {
-          const {data} = props ?? {};
+export type CreateCompanyMutationResult = NonNullable<Awaited<ReturnType<typeof createCompany>>>;
+export type CreateCompanyMutationBody = BodyType<CompanySignUpDTO>;
+export type CreateCompanyMutationError = ErrorType<CreateCompany401 | CreateCompany404>;
 
-          return  createCompany(data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/companies` });
-
-
-  return  customOptions}
-
-    export type CreateCompanyMutationResult = NonNullable<Awaited<ReturnType<typeof createCompany>>>
-    export type CreateCompanyMutationBody = BodyType<CompanySignUpDTO>
-    export type CreateCompanyMutationError = ErrorType<CreateCompany401 | CreateCompany404>
-
-    /**
+/**
  * @summary 공급 업체를 등록합니다.
  */
-export const useCreateCompany = <TError = ErrorType<CreateCompany401 | CreateCompany404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCompany>>, TError,{data: BodyType<CompanySignUpDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createCompany>>,
-        TError,
-        {data: BodyType<CompanySignUpDTO>},
-        TContext
-      > => {
+export const useCreateCompany = <
+  TError = ErrorType<CreateCompany401 | CreateCompany404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createCompany>>,
+      TError,
+      { data: BodyType<CompanySignUpDTO> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createCompany>>,
+  TError,
+  { data: BodyType<CompanySignUpDTO> },
+  TContext
+> => {
+  const mutationOptions = useCreateCompanyMutationOptions(options);
 
-      const mutationOptions = useCreateCompanyMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 장바구니에 상품을 등록합니다.
  */
 export const addCartItem = (
-    productId: number,
-    cartRequestDTO: BodyType<CartRequestDTO>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  productId: number,
+  cartRequestDTO: BodyType<CartRequestDTO>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseCreatedCartDTO>(
-      {url: `/api/carts/${productId}`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: cartRequestDTO, signal
+  return axiosInstance<SuccessResponseCreatedCartDTO>(
+    {
+      url: `/api/carts/${productId}`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: cartRequestDTO,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useAddCartItemMutationOptions = <
+  TError = ErrorType<AddCartItem401 | AddCartItem404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addCartItem>>,
+    TError,
+    { productId: number; data: BodyType<CartRequestDTO> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addCartItem>>,
+  TError,
+  { productId: number; data: BodyType<CartRequestDTO> },
+  TContext
+> => {
+  const mutationKey = ['addCartItem'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useAddCartItemMutationOptions = <TError = ErrorType<AddCartItem401 | AddCartItem404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addCartItem>>, TError,{productId: number;data: BodyType<CartRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof addCartItem>>, TError,{productId: number;data: BodyType<CartRequestDTO>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addCartItem>>,
+    { productId: number; data: BodyType<CartRequestDTO> }
+  > = (props) => {
+    const { productId, data } = props ?? {};
 
-const mutationKey = ['addCartItem'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return addCartItem(productId, data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/carts/{productId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addCartItem>>, {productId: number;data: BodyType<CartRequestDTO>}> = (props) => {
-          const {productId,data} = props ?? {};
+export type AddCartItemMutationResult = NonNullable<Awaited<ReturnType<typeof addCartItem>>>;
+export type AddCartItemMutationBody = BodyType<CartRequestDTO>;
+export type AddCartItemMutationError = ErrorType<AddCartItem401 | AddCartItem404>;
 
-          return  addCartItem(productId,data,requestOptions)
-        }
+export const useAddCartItem = <
+  TError = ErrorType<AddCartItem401 | AddCartItem404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof addCartItem>>,
+      TError,
+      { productId: number; data: BodyType<CartRequestDTO> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof addCartItem>>,
+  TError,
+  { productId: number; data: BodyType<CartRequestDTO> },
+  TContext
+> => {
+  const mutationOptions = useAddCartItemMutationOptions(options);
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/carts/{productId}` });
+  return useMutation(mutationOptions, queryClient);
+};
 
-
-  return  customOptions}
-
-    export type AddCartItemMutationResult = NonNullable<Awaited<ReturnType<typeof addCartItem>>>
-    export type AddCartItemMutationBody = BodyType<CartRequestDTO>
-    export type AddCartItemMutationError = ErrorType<AddCartItem401 | AddCartItem404>
-
-    export const useAddCartItem = <TError = ErrorType<AddCartItem401 | AddCartItem404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addCartItem>>, TError,{productId: number;data: BodyType<CartRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof addCartItem>>,
-        TError,
-        {productId: number;data: BodyType<CartRequestDTO>},
-        TContext
-      > => {
-
-      const mutationOptions = useAddCartItemMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 회원 상세 정보를 조회합니다.
  */
 export const getUserDetail = (
-    userId: number,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  userId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseObject>(
-      {url: `/api/users/${userId}`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseObject>(
+    { url: `/api/users/${userId}`, method: 'GET', signal },
+    options,
+  );
+};
 
-export const getGetUserDetailQueryKey = (userId?: number,) => {
-    return [`/api/users/${userId}`] as const;
-    }
+export const getGetUserDetailQueryKey = (userId?: number) => {
+  return [`/api/users/${userId}`] as const;
+};
 
-    
-export const useGetUserDetailQueryOptions = <TData = Awaited<ReturnType<typeof getUserDetail>>, TError = ErrorType<GetUserDetail401 | GetUserDetail404>>(userId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetUserDetailQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserDetail>>,
+  TError = ErrorType<GetUserDetail401 | GetUserDetail404>,
+>(
+  userId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetUserDetailQueryKey(userId);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserDetailQueryKey(userId);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserDetail>>> = ({ signal }) =>
+    getUserDetail(userId, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { userId });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserDetail>>> = ({ signal }) => getUserDetail(userId, requestOptions, signal);
+  return customOptions as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserDetail>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetUserDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getUserDetail>>>;
+export type GetUserDetailQueryError = ErrorType<GetUserDetail401 | GetUserDetail404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { userId });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUserDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getUserDetail>>>
-export type GetUserDetailQueryError = ErrorType<GetUserDetail401 | GetUserDetail404>
-
-
-export function useGetUserDetail<TData = Awaited<ReturnType<typeof getUserDetail>>, TError = ErrorType<GetUserDetail401 | GetUserDetail404>>(
- userId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>> & Pick<
+export function useGetUserDetail<
+  TData = Awaited<ReturnType<typeof getUserDetail>>,
+  TError = ErrorType<GetUserDetail401 | GetUserDetail404>,
+>(
+  userId: number,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserDetail>>,
           TError,
           Awaited<ReturnType<typeof getUserDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserDetail<TData = Awaited<ReturnType<typeof getUserDetail>>, TError = ErrorType<GetUserDetail401 | GetUserDetail404>>(
- userId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUserDetail<
+  TData = Awaited<ReturnType<typeof getUserDetail>>,
+  TError = ErrorType<GetUserDetail401 | GetUserDetail404>,
+>(
+  userId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserDetail>>,
           TError,
           Awaited<ReturnType<typeof getUserDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserDetail<TData = Awaited<ReturnType<typeof getUserDetail>>, TError = ErrorType<GetUserDetail401 | GetUserDetail404>>(
- userId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUserDetail<
+  TData = Awaited<ReturnType<typeof getUserDetail>>,
+  TError = ErrorType<GetUserDetail401 | GetUserDetail404>,
+>(
+  userId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary 회원 상세 정보를 조회합니다.
  */
 
-export function useGetUserDetail<TData = Awaited<ReturnType<typeof getUserDetail>>, TError = ErrorType<GetUserDetail401 | GetUserDetail404>>(
- userId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUserDetail<
+  TData = Awaited<ReturnType<typeof getUserDetail>>,
+  TError = ErrorType<GetUserDetail401 | GetUserDetail404>,
+>(
+  userId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetUserDetailQueryOptions(userId, options);
 
-  const queryOptions = useGetUserDetailQueryOptions(userId,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
 
+/**
+ * @summary 회원 정보를 삭제합니다.
+ */
+export const deleteUser = (userId: number, options?: SecondParameter<typeof axiosInstance>) => {
+  return axiosInstance<SuccessResponseBoolean>(
+    { url: `/api/users/${userId}`, method: 'DELETE' },
+    options,
+  );
+};
 
+export const useDeleteUserMutationOptions = <
+  TError = ErrorType<DeleteUser401 | DeleteUser404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteUser>>,
+    TError,
+    { userId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteUser>>,
+  TError,
+  { userId: number },
+  TContext
+> => {
+  const mutationKey = ['deleteUser'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUser>>, { userId: number }> = (
+    props,
+  ) => {
+    const { userId } = props ?? {};
+
+    return deleteUser(userId, requestOptions);
+  };
+
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/users/{userId}` },
+  );
+
+  return customOptions;
+};
+
+export type DeleteUserMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUser>>>;
+
+export type DeleteUserMutationError = ErrorType<DeleteUser401 | DeleteUser404>;
 
 /**
  * @summary 회원 정보를 삭제합니다.
  */
-export const deleteUser = (
-    userId: number,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/api/users/${userId}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+export const useDeleteUser = <
+  TError = ErrorType<DeleteUser401 | DeleteUser404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteUser>>,
+      TError,
+      { userId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteUser>>,
+  TError,
+  { userId: number },
+  TContext
+> => {
+  const mutationOptions = useDeleteUserMutationOptions(options);
 
+  return useMutation(mutationOptions, queryClient);
+};
 
-export const useDeleteUserMutationOptions = <TError = ErrorType<DeleteUser401 | DeleteUser404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUser>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteUser>>, TError,{userId: number}, TContext> => {
-
-const mutationKey = ['deleteUser'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUser>>, {userId: number}> = (props) => {
-          const {userId} = props ?? {};
-
-          return  deleteUser(userId,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/users/{userId}` });
-
-
-  return  customOptions}
-
-    export type DeleteUserMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUser>>>
-    
-    export type DeleteUserMutationError = ErrorType<DeleteUser401 | DeleteUser404>
-
-    /**
- * @summary 회원 정보를 삭제합니다.
- */
-export const useDeleteUser = <TError = ErrorType<DeleteUser401 | DeleteUser404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUser>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteUser>>,
-        TError,
-        {userId: number},
-        TContext
-      > => {
-
-      const mutationOptions = useDeleteUserMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 회원 정보를 수정합니다.
  */
 export const updateUser = (
-    userId: number,
-    userRequestDTO: BodyType<UserRequestDTO>,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseLong>(
-      {url: `/api/users/${userId}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: userRequestDTO
+  userId: number,
+  userRequestDTO: BodyType<UserRequestDTO>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<SuccessResponseLong>(
+    {
+      url: `/api/users/${userId}`,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      data: userRequestDTO,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useUpdateUserMutationOptions = <
+  TError = ErrorType<UpdateUser401 | UpdateUser404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateUser>>,
+    TError,
+    { userId: number; data: BodyType<UserRequestDTO> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateUser>>,
+  TError,
+  { userId: number; data: BodyType<UserRequestDTO> },
+  TContext
+> => {
+  const mutationKey = ['updateUser'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useUpdateUserMutationOptions = <TError = ErrorType<UpdateUser401 | UpdateUser404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateUser>>, TError,{userId: number;data: BodyType<UserRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateUser>>, TError,{userId: number;data: BodyType<UserRequestDTO>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateUser>>,
+    { userId: number; data: BodyType<UserRequestDTO> }
+  > = (props) => {
+    const { userId, data } = props ?? {};
 
-const mutationKey = ['updateUser'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return updateUser(userId, data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/users/{userId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateUser>>, {userId: number;data: BodyType<UserRequestDTO>}> = (props) => {
-          const {userId,data} = props ?? {};
+export type UpdateUserMutationResult = NonNullable<Awaited<ReturnType<typeof updateUser>>>;
+export type UpdateUserMutationBody = BodyType<UserRequestDTO>;
+export type UpdateUserMutationError = ErrorType<UpdateUser401 | UpdateUser404>;
 
-          return  updateUser(userId,data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/users/{userId}` });
-
-
-  return  customOptions}
-
-    export type UpdateUserMutationResult = NonNullable<Awaited<ReturnType<typeof updateUser>>>
-    export type UpdateUserMutationBody = BodyType<UserRequestDTO>
-    export type UpdateUserMutationError = ErrorType<UpdateUser401 | UpdateUser404>
-
-    /**
+/**
  * @summary 회원 정보를 수정합니다.
  */
-export const useUpdateUser = <TError = ErrorType<UpdateUser401 | UpdateUser404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateUser>>, TError,{userId: number;data: BodyType<UserRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateUser>>,
-        TError,
-        {userId: number;data: BodyType<UserRequestDTO>},
-        TContext
-      > => {
+export const useUpdateUser = <
+  TError = ErrorType<UpdateUser401 | UpdateUser404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateUser>>,
+      TError,
+      { userId: number; data: BodyType<UserRequestDTO> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateUser>>,
+  TError,
+  { userId: number; data: BodyType<UserRequestDTO> },
+  TContext
+> => {
+  const mutationOptions = useUpdateUserMutationOptions(options);
 
-      const mutationOptions = useUpdateUserMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 배송지를 삭제합니다.
  */
 export const addDeliveryAddress1 = (
-    addressId: number,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/api/users/address/${addressId}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+  addressId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<SuccessResponseBoolean>(
+    { url: `/api/users/address/${addressId}`, method: 'DELETE' },
+    options,
+  );
+};
 
+export const useAddDeliveryAddress1MutationOptions = <
+  TError = ErrorType<AddDeliveryAddress1401 | AddDeliveryAddress1404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addDeliveryAddress1>>,
+    TError,
+    { addressId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addDeliveryAddress1>>,
+  TError,
+  { addressId: number },
+  TContext
+> => {
+  const mutationKey = ['addDeliveryAddress1'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useAddDeliveryAddress1MutationOptions = <TError = ErrorType<AddDeliveryAddress1401 | AddDeliveryAddress1404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addDeliveryAddress1>>, TError,{addressId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof addDeliveryAddress1>>, TError,{addressId: number}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addDeliveryAddress1>>,
+    { addressId: number }
+  > = (props) => {
+    const { addressId } = props ?? {};
 
-const mutationKey = ['addDeliveryAddress1'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return addDeliveryAddress1(addressId, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/users/address/{addressId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addDeliveryAddress1>>, {addressId: number}> = (props) => {
-          const {addressId} = props ?? {};
+export type AddDeliveryAddress1MutationResult = NonNullable<
+  Awaited<ReturnType<typeof addDeliveryAddress1>>
+>;
 
-          return  addDeliveryAddress1(addressId,requestOptions)
-        }
+export type AddDeliveryAddress1MutationError = ErrorType<
+  AddDeliveryAddress1401 | AddDeliveryAddress1404
+>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/users/address/{addressId}` });
-
-
-  return  customOptions}
-
-    export type AddDeliveryAddress1MutationResult = NonNullable<Awaited<ReturnType<typeof addDeliveryAddress1>>>
-    
-    export type AddDeliveryAddress1MutationError = ErrorType<AddDeliveryAddress1401 | AddDeliveryAddress1404>
-
-    /**
+/**
  * @summary 배송지를 삭제합니다.
  */
-export const useAddDeliveryAddress1 = <TError = ErrorType<AddDeliveryAddress1401 | AddDeliveryAddress1404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addDeliveryAddress1>>, TError,{addressId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof addDeliveryAddress1>>,
-        TError,
-        {addressId: number},
-        TContext
-      > => {
+export const useAddDeliveryAddress1 = <
+  TError = ErrorType<AddDeliveryAddress1401 | AddDeliveryAddress1404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof addDeliveryAddress1>>,
+      TError,
+      { addressId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof addDeliveryAddress1>>,
+  TError,
+  { addressId: number },
+  TContext
+> => {
+  const mutationOptions = useAddDeliveryAddress1MutationOptions(options);
 
-      const mutationOptions = useAddDeliveryAddress1MutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 배송지를 수정합니다.
  */
 export const updateDeliveryAddress = (
-    addressId: number,
-    deliveryAddress: BodyType<DeliveryAddress>,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseCreateAddressDTO>(
-      {url: `/api/users/address/${addressId}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: deliveryAddress
+  addressId: number,
+  deliveryAddress: BodyType<DeliveryAddress>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<SuccessResponseCreateAddressDTO>(
+    {
+      url: `/api/users/address/${addressId}`,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      data: deliveryAddress,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useUpdateDeliveryAddressMutationOptions = <
+  TError = ErrorType<UpdateDeliveryAddress401 | UpdateDeliveryAddress404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateDeliveryAddress>>,
+    TError,
+    { addressId: number; data: BodyType<DeliveryAddress> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateDeliveryAddress>>,
+  TError,
+  { addressId: number; data: BodyType<DeliveryAddress> },
+  TContext
+> => {
+  const mutationKey = ['updateDeliveryAddress'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useUpdateDeliveryAddressMutationOptions = <TError = ErrorType<UpdateDeliveryAddress401 | UpdateDeliveryAddress404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateDeliveryAddress>>, TError,{addressId: number;data: BodyType<DeliveryAddress>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateDeliveryAddress>>, TError,{addressId: number;data: BodyType<DeliveryAddress>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateDeliveryAddress>>,
+    { addressId: number; data: BodyType<DeliveryAddress> }
+  > = (props) => {
+    const { addressId, data } = props ?? {};
 
-const mutationKey = ['updateDeliveryAddress'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return updateDeliveryAddress(addressId, data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/users/address/{addressId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateDeliveryAddress>>, {addressId: number;data: BodyType<DeliveryAddress>}> = (props) => {
-          const {addressId,data} = props ?? {};
+export type UpdateDeliveryAddressMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateDeliveryAddress>>
+>;
+export type UpdateDeliveryAddressMutationBody = BodyType<DeliveryAddress>;
+export type UpdateDeliveryAddressMutationError = ErrorType<
+  UpdateDeliveryAddress401 | UpdateDeliveryAddress404
+>;
 
-          return  updateDeliveryAddress(addressId,data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/users/address/{addressId}` });
-
-
-  return  customOptions}
-
-    export type UpdateDeliveryAddressMutationResult = NonNullable<Awaited<ReturnType<typeof updateDeliveryAddress>>>
-    export type UpdateDeliveryAddressMutationBody = BodyType<DeliveryAddress>
-    export type UpdateDeliveryAddressMutationError = ErrorType<UpdateDeliveryAddress401 | UpdateDeliveryAddress404>
-
-    /**
+/**
  * @summary 배송지를 수정합니다.
  */
-export const useUpdateDeliveryAddress = <TError = ErrorType<UpdateDeliveryAddress401 | UpdateDeliveryAddress404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateDeliveryAddress>>, TError,{addressId: number;data: BodyType<DeliveryAddress>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateDeliveryAddress>>,
-        TError,
-        {addressId: number;data: BodyType<DeliveryAddress>},
-        TContext
-      > => {
+export const useUpdateDeliveryAddress = <
+  TError = ErrorType<UpdateDeliveryAddress401 | UpdateDeliveryAddress404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateDeliveryAddress>>,
+      TError,
+      { addressId: number; data: BodyType<DeliveryAddress> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateDeliveryAddress>>,
+  TError,
+  { addressId: number; data: BodyType<DeliveryAddress> },
+  TContext
+> => {
+  const mutationOptions = useUpdateDeliveryAddressMutationOptions(options);
 
-      const mutationOptions = useUpdateDeliveryAddressMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 상품을 삭제합니다.
  */
 export const deleteProduct = (
-    productId: number,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/api/products/${productId}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+  productId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<SuccessResponseBoolean>(
+    { url: `/api/products/${productId}`, method: 'DELETE' },
+    options,
+  );
+};
 
+export const useDeleteProductMutationOptions = <
+  TError = ErrorType<DeleteProduct401 | DeleteProduct404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteProduct>>,
+    TError,
+    { productId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteProduct>>,
+  TError,
+  { productId: number },
+  TContext
+> => {
+  const mutationKey = ['deleteProduct'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useDeleteProductMutationOptions = <TError = ErrorType<DeleteProduct401 | DeleteProduct404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProduct>>, TError,{productId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteProduct>>, TError,{productId: number}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteProduct>>,
+    { productId: number }
+  > = (props) => {
+    const { productId } = props ?? {};
 
-const mutationKey = ['deleteProduct'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return deleteProduct(productId, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/products/{productId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProduct>>, {productId: number}> = (props) => {
-          const {productId} = props ?? {};
+export type DeleteProductMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProduct>>>;
 
-          return  deleteProduct(productId,requestOptions)
-        }
+export type DeleteProductMutationError = ErrorType<DeleteProduct401 | DeleteProduct404>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/products/{productId}` });
-
-
-  return  customOptions}
-
-    export type DeleteProductMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProduct>>>
-    
-    export type DeleteProductMutationError = ErrorType<DeleteProduct401 | DeleteProduct404>
-
-    /**
+/**
  * @summary 상품을 삭제합니다.
  */
-export const useDeleteProduct = <TError = ErrorType<DeleteProduct401 | DeleteProduct404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProduct>>, TError,{productId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteProduct>>,
-        TError,
-        {productId: number},
-        TContext
-      > => {
+export const useDeleteProduct = <
+  TError = ErrorType<DeleteProduct401 | DeleteProduct404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteProduct>>,
+      TError,
+      { productId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteProduct>>,
+  TError,
+  { productId: number },
+  TContext
+> => {
+  const mutationOptions = useDeleteProductMutationOptions(options);
 
-      const mutationOptions = useDeleteProductMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 상품을 수정합니다.
  */
 export const updateProduct = (
-    productId: number,
-    updateProductBody: BodyType<UpdateProductBody>,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseProductDetailResponseDTO>(
-      {url: `/api/products/${productId}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: updateProductBody
+  productId: number,
+  updateProductBody: BodyType<UpdateProductBody>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<SuccessResponseProductDetailResponseDTO>(
+    {
+      url: `/api/products/${productId}`,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateProductBody,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useUpdateProductMutationOptions = <
+  TError = ErrorType<UpdateProduct401 | UpdateProduct404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateProduct>>,
+    TError,
+    { productId: number; data: BodyType<UpdateProductBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateProduct>>,
+  TError,
+  { productId: number; data: BodyType<UpdateProductBody> },
+  TContext
+> => {
+  const mutationKey = ['updateProduct'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useUpdateProductMutationOptions = <TError = ErrorType<UpdateProduct401 | UpdateProduct404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProduct>>, TError,{productId: number;data: BodyType<UpdateProductBody>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateProduct>>, TError,{productId: number;data: BodyType<UpdateProductBody>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateProduct>>,
+    { productId: number; data: BodyType<UpdateProductBody> }
+  > = (props) => {
+    const { productId, data } = props ?? {};
 
-const mutationKey = ['updateProduct'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return updateProduct(productId, data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/products/{productId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProduct>>, {productId: number;data: BodyType<UpdateProductBody>}> = (props) => {
-          const {productId,data} = props ?? {};
+export type UpdateProductMutationResult = NonNullable<Awaited<ReturnType<typeof updateProduct>>>;
+export type UpdateProductMutationBody = BodyType<UpdateProductBody>;
+export type UpdateProductMutationError = ErrorType<UpdateProduct401 | UpdateProduct404>;
 
-          return  updateProduct(productId,data,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/products/{productId}` });
-
-
-  return  customOptions}
-
-    export type UpdateProductMutationResult = NonNullable<Awaited<ReturnType<typeof updateProduct>>>
-    export type UpdateProductMutationBody = BodyType<UpdateProductBody>
-    export type UpdateProductMutationError = ErrorType<UpdateProduct401 | UpdateProduct404>
-
-    /**
+/**
  * @summary 상품을 수정합니다.
  */
-export const useUpdateProduct = <TError = ErrorType<UpdateProduct401 | UpdateProduct404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProduct>>, TError,{productId: number;data: BodyType<UpdateProductBody>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateProduct>>,
-        TError,
-        {productId: number;data: BodyType<UpdateProductBody>},
-        TContext
-      > => {
+export const useUpdateProduct = <
+  TError = ErrorType<UpdateProduct401 | UpdateProduct404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateProduct>>,
+      TError,
+      { productId: number; data: BodyType<UpdateProductBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateProduct>>,
+  TError,
+  { productId: number; data: BodyType<UpdateProductBody> },
+  TContext
+> => {
+  const mutationOptions = useUpdateProductMutationOptions(options);
 
-      const mutationOptions = useUpdateProductMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * @summary 주문의 상세 정보를 조회합니다.
  */
 export const getOrderDetail = (
-    orderId: number,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  orderId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseOrderDetailResponseDTO>(
-      {url: `/api/orders/${orderId}`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseOrderDetailResponseDTO>(
+    { url: `/api/orders/${orderId}`, method: 'GET', signal },
+    options,
+  );
+};
 
-export const getGetOrderDetailQueryKey = (orderId?: number,) => {
-    return [`/api/orders/${orderId}`] as const;
-    }
+export const getGetOrderDetailQueryKey = (orderId?: number) => {
+  return [`/api/orders/${orderId}`] as const;
+};
 
-    
-export const useGetOrderDetailQueryOptions = <TData = Awaited<ReturnType<typeof getOrderDetail>>, TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>>(orderId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetOrderDetailQueryOptions = <
+  TData = Awaited<ReturnType<typeof getOrderDetail>>,
+  TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>,
+>(
+  orderId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetOrderDetailQueryKey(orderId);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetOrderDetailQueryKey(orderId);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrderDetail>>> = ({ signal }) =>
+    getOrderDetail(orderId, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { orderId });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrderDetail>>> = ({ signal }) => getOrderDetail(orderId, requestOptions, signal);
+  return customOptions as UseQueryOptions<
+    Awaited<ReturnType<typeof getOrderDetail>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetOrderDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getOrderDetail>>>;
+export type GetOrderDetailQueryError = ErrorType<GetOrderDetail401 | GetOrderDetail404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { orderId });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetOrderDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getOrderDetail>>>
-export type GetOrderDetailQueryError = ErrorType<GetOrderDetail401 | GetOrderDetail404>
-
-
-export function useGetOrderDetail<TData = Awaited<ReturnType<typeof getOrderDetail>>, TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>>(
- orderId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>> & Pick<
+export function useGetOrderDetail<
+  TData = Awaited<ReturnType<typeof getOrderDetail>>,
+  TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>,
+>(
+  orderId: number,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getOrderDetail>>,
           TError,
           Awaited<ReturnType<typeof getOrderDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOrderDetail<TData = Awaited<ReturnType<typeof getOrderDetail>>, TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>>(
- orderId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOrderDetail<
+  TData = Awaited<ReturnType<typeof getOrderDetail>>,
+  TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>,
+>(
+  orderId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getOrderDetail>>,
           TError,
           Awaited<ReturnType<typeof getOrderDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOrderDetail<TData = Awaited<ReturnType<typeof getOrderDetail>>, TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>>(
- orderId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOrderDetail<
+  TData = Awaited<ReturnType<typeof getOrderDetail>>,
+  TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>,
+>(
+  orderId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary 주문의 상세 정보를 조회합니다.
  */
 
-export function useGetOrderDetail<TData = Awaited<ReturnType<typeof getOrderDetail>>, TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>>(
- orderId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetOrderDetail<
+  TData = Awaited<ReturnType<typeof getOrderDetail>>,
+  TError = ErrorType<GetOrderDetail401 | GetOrderDetail404>,
+>(
+  orderId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrderDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetOrderDetailQueryOptions(orderId, options);
 
-  const queryOptions = useGetOrderDetailQueryOptions(orderId,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * @summary 주문 상태를 변경합니다.
  */
 export const updateOrderStatus = (
-    orderId: number,
-    params: UpdateOrderStatusParams,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/api/orders/${orderId}`, method: 'PATCH',
-        params
-    },
-      options);
-    }
-  
+  orderId: number,
+  params: UpdateOrderStatusParams,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<SuccessResponseBoolean>(
+    { url: `/api/orders/${orderId}`, method: 'PATCH', params },
+    options,
+  );
+};
 
+export const useUpdateOrderStatusMutationOptions = <
+  TError = ErrorType<UpdateOrderStatus401 | UpdateOrderStatus404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateOrderStatus>>,
+    TError,
+    { orderId: number; params: UpdateOrderStatusParams },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateOrderStatus>>,
+  TError,
+  { orderId: number; params: UpdateOrderStatusParams },
+  TContext
+> => {
+  const mutationKey = ['updateOrderStatus'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useUpdateOrderStatusMutationOptions = <TError = ErrorType<UpdateOrderStatus401 | UpdateOrderStatus404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderStatus>>, TError,{orderId: number;params: UpdateOrderStatusParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateOrderStatus>>, TError,{orderId: number;params: UpdateOrderStatusParams}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateOrderStatus>>,
+    { orderId: number; params: UpdateOrderStatusParams }
+  > = (props) => {
+    const { orderId, params } = props ?? {};
 
-const mutationKey = ['updateOrderStatus'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return updateOrderStatus(orderId, params, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/orders/{orderId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateOrderStatus>>, {orderId: number;params: UpdateOrderStatusParams}> = (props) => {
-          const {orderId,params} = props ?? {};
+export type UpdateOrderStatusMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateOrderStatus>>
+>;
 
-          return  updateOrderStatus(orderId,params,requestOptions)
-        }
+export type UpdateOrderStatusMutationError = ErrorType<UpdateOrderStatus401 | UpdateOrderStatus404>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/orders/{orderId}` });
-
-
-  return  customOptions}
-
-    export type UpdateOrderStatusMutationResult = NonNullable<Awaited<ReturnType<typeof updateOrderStatus>>>
-    
-    export type UpdateOrderStatusMutationError = ErrorType<UpdateOrderStatus401 | UpdateOrderStatus404>
-
-    /**
+/**
  * @summary 주문 상태를 변경합니다.
  */
-export const useUpdateOrderStatus = <TError = ErrorType<UpdateOrderStatus401 | UpdateOrderStatus404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOrderStatus>>, TError,{orderId: number;params: UpdateOrderStatusParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateOrderStatus>>,
-        TError,
-        {orderId: number;params: UpdateOrderStatusParams},
-        TContext
-      > => {
+export const useUpdateOrderStatus = <
+  TError = ErrorType<UpdateOrderStatus401 | UpdateOrderStatus404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateOrderStatus>>,
+      TError,
+      { orderId: number; params: UpdateOrderStatusParams },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateOrderStatus>>,
+  TError,
+  { orderId: number; params: UpdateOrderStatusParams },
+  TContext
+> => {
+  const mutationOptions = useUpdateOrderStatusMutationOptions(options);
 
-      const mutationOptions = useUpdateOrderStatusMutationOptions(options);
+  return useMutation(mutationOptions, queryClient);
+};
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 공지사항 게시글을 삭제합니다.
  */
-export const deleteNotice = (
-    noticeId: number,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseBoolean>(
-      {url: `/api/notices/${noticeId}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+export const deleteNotice = (noticeId: number, options?: SecondParameter<typeof axiosInstance>) => {
+  return axiosInstance<SuccessResponseBoolean>(
+    { url: `/api/notices/${noticeId}`, method: 'DELETE' },
+    options,
+  );
+};
 
+export const useDeleteNoticeMutationOptions = <
+  TError = ErrorType<DeleteNotice401 | DeleteNotice404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteNotice>>,
+    TError,
+    { noticeId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteNotice>>,
+  TError,
+  { noticeId: number },
+  TContext
+> => {
+  const mutationKey = ['deleteNotice'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useDeleteNoticeMutationOptions = <TError = ErrorType<DeleteNotice401 | DeleteNotice404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteNotice>>, TError,{noticeId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteNotice>>, TError,{noticeId: number}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteNotice>>,
+    { noticeId: number }
+  > = (props) => {
+    const { noticeId } = props ?? {};
 
-const mutationKey = ['deleteNotice'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return deleteNotice(noticeId, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/notices/{noticeId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteNotice>>, {noticeId: number}> = (props) => {
-          const {noticeId} = props ?? {};
+export type DeleteNoticeMutationResult = NonNullable<Awaited<ReturnType<typeof deleteNotice>>>;
 
-          return  deleteNotice(noticeId,requestOptions)
-        }
+export type DeleteNoticeMutationError = ErrorType<DeleteNotice401 | DeleteNotice404>;
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/notices/{noticeId}` });
+export const useDeleteNotice = <
+  TError = ErrorType<DeleteNotice401 | DeleteNotice404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteNotice>>,
+      TError,
+      { noticeId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteNotice>>,
+  TError,
+  { noticeId: number },
+  TContext
+> => {
+  const mutationOptions = useDeleteNoticeMutationOptions(options);
 
+  return useMutation(mutationOptions, queryClient);
+};
 
-  return  customOptions}
-
-    export type DeleteNoticeMutationResult = NonNullable<Awaited<ReturnType<typeof deleteNotice>>>
-    
-    export type DeleteNoticeMutationError = ErrorType<DeleteNotice401 | DeleteNotice404>
-
-    export const useDeleteNotice = <TError = ErrorType<DeleteNotice401 | DeleteNotice404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteNotice>>, TError,{noticeId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteNotice>>,
-        TError,
-        {noticeId: number},
-        TContext
-      > => {
-
-      const mutationOptions = useDeleteNoticeMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 공지사항 게시글을 수정합니다.
  */
 export const updateNotice = (
-    noticeId: number,
-    notice: BodyType<Notice>,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseNoticeDetailDTO>(
-      {url: `/api/notices/${noticeId}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: notice
+  noticeId: number,
+  notice: BodyType<Notice>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<SuccessResponseNoticeDetailDTO>(
+    {
+      url: `/api/notices/${noticeId}`,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      data: notice,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const useUpdateNoticeMutationOptions = <
+  TError = ErrorType<UpdateNotice401 | UpdateNotice404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNotice>>,
+    TError,
+    { noticeId: number; data: BodyType<Notice> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateNotice>>,
+  TError,
+  { noticeId: number; data: BodyType<Notice> },
+  TContext
+> => {
+  const mutationKey = ['updateNotice'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const useUpdateNoticeMutationOptions = <TError = ErrorType<UpdateNotice401 | UpdateNotice404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateNotice>>, TError,{noticeId: number;data: BodyType<Notice>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateNotice>>, TError,{noticeId: number;data: BodyType<Notice>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateNotice>>,
+    { noticeId: number; data: BodyType<Notice> }
+  > = (props) => {
+    const { noticeId, data } = props ?? {};
 
-const mutationKey = ['updateNotice'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return updateNotice(noticeId, data, requestOptions);
+  };
 
-      
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/notices/{noticeId}` },
+  );
 
+  return customOptions;
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateNotice>>, {noticeId: number;data: BodyType<Notice>}> = (props) => {
-          const {noticeId,data} = props ?? {};
+export type UpdateNoticeMutationResult = NonNullable<Awaited<ReturnType<typeof updateNotice>>>;
+export type UpdateNoticeMutationBody = BodyType<Notice>;
+export type UpdateNoticeMutationError = ErrorType<UpdateNotice401 | UpdateNotice404>;
 
-          return  updateNotice(noticeId,data,requestOptions)
-        }
+export const useUpdateNotice = <
+  TError = ErrorType<UpdateNotice401 | UpdateNotice404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateNotice>>,
+      TError,
+      { noticeId: number; data: BodyType<Notice> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateNotice>>,
+  TError,
+  { noticeId: number; data: BodyType<Notice> },
+  TContext
+> => {
+  const mutationOptions = useUpdateNoticeMutationOptions(options);
 
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/notices/{noticeId}` });
+  return useMutation(mutationOptions, queryClient);
+};
 
-
-  return  customOptions}
-
-    export type UpdateNoticeMutationResult = NonNullable<Awaited<ReturnType<typeof updateNotice>>>
-    export type UpdateNoticeMutationBody = BodyType<Notice>
-    export type UpdateNoticeMutationError = ErrorType<UpdateNotice401 | UpdateNotice404>
-
-    export const useUpdateNotice = <TError = ErrorType<UpdateNotice401 | UpdateNotice404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateNotice>>, TError,{noticeId: number;data: BodyType<Notice>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateNotice>>,
-        TError,
-        {noticeId: number;data: BodyType<Notice>},
-        TContext
-      > => {
-
-      const mutationOptions = useUpdateNoticeMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
 /**
  * 상품 목록을 조회합니다.
  */
 export const getProducts = (
-    params: GetProductsParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params: GetProductsParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseProductListDTO>(
-      {url: `/products`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseProductListDTO>(
+    { url: `/products`, method: 'GET', params, signal },
+    options,
+  );
+};
 
-export const getGetProductsQueryKey = (params?: GetProductsParams,) => {
-    return [`/products`, ...(params ? [params]: [])] as const;
-    }
+export const getGetProductsQueryKey = (params?: GetProductsParams) => {
+  return [`/products`, ...(params ? [params] : [])] as const;
+};
 
-    
-export const useGetProductsQueryOptions = <TData = Awaited<ReturnType<typeof getProducts>>, TError = ErrorType<GetProducts401 | GetProducts404>>(params: GetProductsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetProductsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getProducts>>,
+  TError = ErrorType<GetProducts401 | GetProducts404>,
+>(
+  params: GetProductsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetProductsQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetProductsQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getProducts>>> = ({ signal }) =>
+    getProducts(params, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { params });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProducts>>> = ({ signal }) => getProducts(params, requestOptions, signal);
+  return customOptions as UseQueryOptions<
+    Awaited<ReturnType<typeof getProducts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetProductsQueryResult = NonNullable<Awaited<ReturnType<typeof getProducts>>>;
+export type GetProductsQueryError = ErrorType<GetProducts401 | GetProducts404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { params });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetProductsQueryResult = NonNullable<Awaited<ReturnType<typeof getProducts>>>
-export type GetProductsQueryError = ErrorType<GetProducts401 | GetProducts404>
-
-
-export function useGetProducts<TData = Awaited<ReturnType<typeof getProducts>>, TError = ErrorType<GetProducts401 | GetProducts404>>(
- params: GetProductsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>> & Pick<
+export function useGetProducts<
+  TData = Awaited<ReturnType<typeof getProducts>>,
+  TError = ErrorType<GetProducts401 | GetProducts404>,
+>(
+  params: GetProductsParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getProducts>>,
           TError,
           Awaited<ReturnType<typeof getProducts>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProducts<TData = Awaited<ReturnType<typeof getProducts>>, TError = ErrorType<GetProducts401 | GetProducts404>>(
- params: GetProductsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetProducts<
+  TData = Awaited<ReturnType<typeof getProducts>>,
+  TError = ErrorType<GetProducts401 | GetProducts404>,
+>(
+  params: GetProductsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getProducts>>,
           TError,
           Awaited<ReturnType<typeof getProducts>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProducts<TData = Awaited<ReturnType<typeof getProducts>>, TError = ErrorType<GetProducts401 | GetProducts404>>(
- params: GetProductsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetProducts<
+  TData = Awaited<ReturnType<typeof getProducts>>,
+  TError = ErrorType<GetProducts401 | GetProducts404>,
+>(
+  params: GetProductsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export function useGetProducts<TData = Awaited<ReturnType<typeof getProducts>>, TError = ErrorType<GetProducts401 | GetProducts404>>(
- params: GetProductsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetProducts<
+  TData = Awaited<ReturnType<typeof getProducts>>,
+  TError = ErrorType<GetProducts401 | GetProducts404>,
+>(
+  params: GetProductsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProducts>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetProductsQueryOptions(params, options);
 
-  const queryOptions = useGetProductsQueryOptions(params,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * 상품을 상세 조회합니다.
  */
 export const getProductDetail = (
-    productId: number,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  productId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseProductDetailResponseDTO>(
-      {url: `/products/${productId}`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseProductDetailResponseDTO>(
+    { url: `/products/${productId}`, method: 'GET', signal },
+    options,
+  );
+};
 
-export const getGetProductDetailQueryKey = (productId?: number,) => {
-    return [`/products/${productId}`] as const;
-    }
+export const getGetProductDetailQueryKey = (productId?: number) => {
+  return [`/products/${productId}`] as const;
+};
 
-    
-export const useGetProductDetailQueryOptions = <TData = Awaited<ReturnType<typeof getProductDetail>>, TError = ErrorType<GetProductDetail401 | GetProductDetail404>>(productId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetProductDetailQueryOptions = <
+  TData = Awaited<ReturnType<typeof getProductDetail>>,
+  TError = ErrorType<GetProductDetail401 | GetProductDetail404>,
+>(
+  productId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetProductDetailQueryKey(productId);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetProductDetailQueryKey(productId);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getProductDetail>>> = ({ signal }) =>
+    getProductDetail(productId, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { productId });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProductDetail>>> = ({ signal }) => getProductDetail(productId, requestOptions, signal);
+  return customOptions as UseQueryOptions<
+    Awaited<ReturnType<typeof getProductDetail>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetProductDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getProductDetail>>>;
+export type GetProductDetailQueryError = ErrorType<GetProductDetail401 | GetProductDetail404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { productId });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetProductDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getProductDetail>>>
-export type GetProductDetailQueryError = ErrorType<GetProductDetail401 | GetProductDetail404>
-
-
-export function useGetProductDetail<TData = Awaited<ReturnType<typeof getProductDetail>>, TError = ErrorType<GetProductDetail401 | GetProductDetail404>>(
- productId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>> & Pick<
+export function useGetProductDetail<
+  TData = Awaited<ReturnType<typeof getProductDetail>>,
+  TError = ErrorType<GetProductDetail401 | GetProductDetail404>,
+>(
+  productId: number,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getProductDetail>>,
           TError,
           Awaited<ReturnType<typeof getProductDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProductDetail<TData = Awaited<ReturnType<typeof getProductDetail>>, TError = ErrorType<GetProductDetail401 | GetProductDetail404>>(
- productId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetProductDetail<
+  TData = Awaited<ReturnType<typeof getProductDetail>>,
+  TError = ErrorType<GetProductDetail401 | GetProductDetail404>,
+>(
+  productId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getProductDetail>>,
           TError,
           Awaited<ReturnType<typeof getProductDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProductDetail<TData = Awaited<ReturnType<typeof getProductDetail>>, TError = ErrorType<GetProductDetail401 | GetProductDetail404>>(
- productId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetProductDetail<
+  TData = Awaited<ReturnType<typeof getProductDetail>>,
+  TError = ErrorType<GetProductDetail401 | GetProductDetail404>,
+>(
+  productId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export function useGetProductDetail<TData = Awaited<ReturnType<typeof getProductDetail>>, TError = ErrorType<GetProductDetail401 | GetProductDetail404>>(
- productId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetProductDetail<
+  TData = Awaited<ReturnType<typeof getProductDetail>>,
+  TError = ErrorType<GetProductDetail401 | GetProductDetail404>,
+>(
+  productId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getProductDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetProductDetailQueryOptions(productId, options);
 
-  const queryOptions = useGetProductDetailQueryOptions(productId,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * 공지사항 게시글의 목록을 조회합니다.
  */
 export const getNotices = (
-    params: GetNoticesParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params: GetNoticesParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseNoticeListDTO>(
-      {url: `/notices`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseNoticeListDTO>(
+    { url: `/notices`, method: 'GET', params, signal },
+    options,
+  );
+};
 
-export const getGetNoticesQueryKey = (params?: GetNoticesParams,) => {
-    return [`/notices`, ...(params ? [params]: [])] as const;
-    }
+export const getGetNoticesQueryKey = (params?: GetNoticesParams) => {
+  return [`/notices`, ...(params ? [params] : [])] as const;
+};
 
-    
-export const useGetNoticesQueryOptions = <TData = Awaited<ReturnType<typeof getNotices>>, TError = ErrorType<GetNotices401 | GetNotices404>>(params: GetNoticesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetNoticesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNotices>>,
+  TError = ErrorType<GetNotices401 | GetNotices404>,
+>(
+  params: GetNoticesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetNoticesQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetNoticesQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotices>>> = ({ signal }) =>
+    getNotices(params, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { params });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotices>>> = ({ signal }) => getNotices(params, requestOptions, signal);
+  return customOptions as UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
 
-      
+export type GetNoticesQueryResult = NonNullable<Awaited<ReturnType<typeof getNotices>>>;
+export type GetNoticesQueryError = ErrorType<GetNotices401 | GetNotices404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { params });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetNoticesQueryResult = NonNullable<Awaited<ReturnType<typeof getNotices>>>
-export type GetNoticesQueryError = ErrorType<GetNotices401 | GetNotices404>
-
-
-export function useGetNotices<TData = Awaited<ReturnType<typeof getNotices>>, TError = ErrorType<GetNotices401 | GetNotices404>>(
- params: GetNoticesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>> & Pick<
+export function useGetNotices<
+  TData = Awaited<ReturnType<typeof getNotices>>,
+  TError = ErrorType<GetNotices401 | GetNotices404>,
+>(
+  params: GetNoticesParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getNotices>>,
           TError,
           Awaited<ReturnType<typeof getNotices>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetNotices<TData = Awaited<ReturnType<typeof getNotices>>, TError = ErrorType<GetNotices401 | GetNotices404>>(
- params: GetNoticesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotices<
+  TData = Awaited<ReturnType<typeof getNotices>>,
+  TError = ErrorType<GetNotices401 | GetNotices404>,
+>(
+  params: GetNoticesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getNotices>>,
           TError,
           Awaited<ReturnType<typeof getNotices>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetNotices<TData = Awaited<ReturnType<typeof getNotices>>, TError = ErrorType<GetNotices401 | GetNotices404>>(
- params: GetNoticesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotices<
+  TData = Awaited<ReturnType<typeof getNotices>>,
+  TError = ErrorType<GetNotices401 | GetNotices404>,
+>(
+  params: GetNoticesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export function useGetNotices<TData = Awaited<ReturnType<typeof getNotices>>, TError = ErrorType<GetNotices401 | GetNotices404>>(
- params: GetNoticesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetNotices<
+  TData = Awaited<ReturnType<typeof getNotices>>,
+  TError = ErrorType<GetNotices401 | GetNotices404>,
+>(
+  params: GetNoticesParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotices>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetNoticesQueryOptions(params, options);
 
-  const queryOptions = useGetNoticesQueryOptions(params,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * 공지사항 게시글을 상세 조회합니다.
  */
 export const getNoticeDetail = (
-    noticeId: number,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  noticeId: number,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseNoticeDetailDTO>(
-      {url: `/notices/${noticeId}`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseNoticeDetailDTO>(
+    { url: `/notices/${noticeId}`, method: 'GET', signal },
+    options,
+  );
+};
 
-export const getGetNoticeDetailQueryKey = (noticeId?: number,) => {
-    return [`/notices/${noticeId}`] as const;
-    }
+export const getGetNoticeDetailQueryKey = (noticeId?: number) => {
+  return [`/notices/${noticeId}`] as const;
+};
 
-    
-export const useGetNoticeDetailQueryOptions = <TData = Awaited<ReturnType<typeof getNoticeDetail>>, TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>>(noticeId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetNoticeDetailQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNoticeDetail>>,
+  TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>,
+>(
+  noticeId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetNoticeDetailQueryKey(noticeId);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetNoticeDetailQueryKey(noticeId);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNoticeDetail>>> = ({ signal }) =>
+    getNoticeDetail(noticeId, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { noticeId });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getNoticeDetail>>> = ({ signal }) => getNoticeDetail(noticeId, requestOptions, signal);
+  return customOptions as UseQueryOptions<
+    Awaited<ReturnType<typeof getNoticeDetail>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetNoticeDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getNoticeDetail>>>;
+export type GetNoticeDetailQueryError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { noticeId });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetNoticeDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getNoticeDetail>>>
-export type GetNoticeDetailQueryError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>
-
-
-export function useGetNoticeDetail<TData = Awaited<ReturnType<typeof getNoticeDetail>>, TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>>(
- noticeId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>> & Pick<
+export function useGetNoticeDetail<
+  TData = Awaited<ReturnType<typeof getNoticeDetail>>,
+  TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>,
+>(
+  noticeId: number,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getNoticeDetail>>,
           TError,
           Awaited<ReturnType<typeof getNoticeDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetNoticeDetail<TData = Awaited<ReturnType<typeof getNoticeDetail>>, TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>>(
- noticeId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNoticeDetail<
+  TData = Awaited<ReturnType<typeof getNoticeDetail>>,
+  TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>,
+>(
+  noticeId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getNoticeDetail>>,
           TError,
           Awaited<ReturnType<typeof getNoticeDetail>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetNoticeDetail<TData = Awaited<ReturnType<typeof getNoticeDetail>>, TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>>(
- noticeId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNoticeDetail<
+  TData = Awaited<ReturnType<typeof getNoticeDetail>>,
+  TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>,
+>(
+  noticeId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export function useGetNoticeDetail<TData = Awaited<ReturnType<typeof getNoticeDetail>>, TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>>(
- noticeId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetNoticeDetail<
+  TData = Awaited<ReturnType<typeof getNoticeDetail>>,
+  TError = ErrorType<GetNoticeDetail401 | GetNoticeDetail404>,
+>(
+  noticeId: number,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNoticeDetail>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetNoticeDetailQueryOptions(noticeId, options);
 
-  const queryOptions = useGetNoticeDetailQueryOptions(noticeId,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * 공지사항 팝업 게시글을 상세 조회합니다.
  */
 export const getPopNotice = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseNoticeDetailDTO>(
-      {url: `/notices/popup`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseNoticeDetailDTO>(
+    { url: `/notices/popup`, method: 'GET', signal },
+    options,
+  );
+};
 
 export const getGetPopNoticeQueryKey = () => {
-    return [`/notices/popup`] as const;
-    }
+  return [`/notices/popup`] as const;
+};
 
-    
-export const useGetPopNoticeQueryOptions = <TData = Awaited<ReturnType<typeof getPopNotice>>, TError = ErrorType<GetPopNotice401 | GetPopNotice404>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
-) => {
+export const useGetPopNoticeQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPopNotice>>,
+  TError = ErrorType<GetPopNotice401 | GetPopNotice404>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>>;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetPopNoticeQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetPopNoticeQueryKey();
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPopNotice>>> = ({ signal }) =>
+    getPopNotice(requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, {});
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPopNotice>>> = ({ signal }) => getPopNotice(requestOptions, signal);
+  return customOptions as UseQueryOptions<
+    Awaited<ReturnType<typeof getPopNotice>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetPopNoticeQueryResult = NonNullable<Awaited<ReturnType<typeof getPopNotice>>>;
+export type GetPopNoticeQueryError = ErrorType<GetPopNotice401 | GetPopNotice404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, {  });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetPopNoticeQueryResult = NonNullable<Awaited<ReturnType<typeof getPopNotice>>>
-export type GetPopNoticeQueryError = ErrorType<GetPopNotice401 | GetPopNotice404>
-
-
-export function useGetPopNotice<TData = Awaited<ReturnType<typeof getPopNotice>>, TError = ErrorType<GetPopNotice401 | GetPopNotice404>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>> & Pick<
+export function useGetPopNotice<
+  TData = Awaited<ReturnType<typeof getPopNotice>>,
+  TError = ErrorType<GetPopNotice401 | GetPopNotice404>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getPopNotice>>,
           TError,
           Awaited<ReturnType<typeof getPopNotice>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetPopNotice<TData = Awaited<ReturnType<typeof getPopNotice>>, TError = ErrorType<GetPopNotice401 | GetPopNotice404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPopNotice<
+  TData = Awaited<ReturnType<typeof getPopNotice>>,
+  TError = ErrorType<GetPopNotice401 | GetPopNotice404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getPopNotice>>,
           TError,
           Awaited<ReturnType<typeof getPopNotice>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetPopNotice<TData = Awaited<ReturnType<typeof getPopNotice>>, TError = ErrorType<GetPopNotice401 | GetPopNotice404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetPopNotice<
+  TData = Awaited<ReturnType<typeof getPopNotice>>,
+  TError = ErrorType<GetPopNotice401 | GetPopNotice404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export function useGetPopNotice<TData = Awaited<ReturnType<typeof getPopNotice>>, TError = ErrorType<GetPopNotice401 | GetPopNotice404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetPopNotice<
+  TData = Awaited<ReturnType<typeof getPopNotice>>,
+  TError = ErrorType<GetPopNotice401 | GetPopNotice404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPopNotice>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetPopNoticeQueryOptions(options);
 
-  const queryOptions = useGetPopNoticeQueryOptions(options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * @summary 회원 목록을 조회합니다.
  */
 export const getUsers = (
-    params: GetUsersParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params: GetUsersParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseUserListDTO>(
-      {url: `/api/users`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseUserListDTO>(
+    { url: `/api/users`, method: 'GET', params, signal },
+    options,
+  );
+};
 
-export const getGetUsersQueryKey = (params?: GetUsersParams,) => {
-    return [`/api/users`, ...(params ? [params]: [])] as const;
-    }
+export const getGetUsersQueryKey = (params?: GetUsersParams) => {
+  return [`/api/users`, ...(params ? [params] : [])] as const;
+};
 
-    
-export const useGetUsersQueryOptions = <TData = Awaited<ReturnType<typeof getUsers>>, TError = ErrorType<GetUsers401 | GetUsers404>>(params: GetUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetUsersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUsers>>,
+  TError = ErrorType<GetUsers401 | GetUsers404>,
+>(
+  params: GetUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetUsersQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUsersQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsers>>> = ({ signal }) =>
+    getUsers(params, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { params });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsers>>> = ({ signal }) => getUsers(params, requestOptions, signal);
+  return customOptions as UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
 
-      
+export type GetUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getUsers>>>;
+export type GetUsersQueryError = ErrorType<GetUsers401 | GetUsers404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { params });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getUsers>>>
-export type GetUsersQueryError = ErrorType<GetUsers401 | GetUsers404>
-
-
-export function useGetUsers<TData = Awaited<ReturnType<typeof getUsers>>, TError = ErrorType<GetUsers401 | GetUsers404>>(
- params: GetUsersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>> & Pick<
+export function useGetUsers<
+  TData = Awaited<ReturnType<typeof getUsers>>,
+  TError = ErrorType<GetUsers401 | GetUsers404>,
+>(
+  params: GetUsersParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUsers>>,
           TError,
           Awaited<ReturnType<typeof getUsers>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUsers<TData = Awaited<ReturnType<typeof getUsers>>, TError = ErrorType<GetUsers401 | GetUsers404>>(
- params: GetUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUsers<
+  TData = Awaited<ReturnType<typeof getUsers>>,
+  TError = ErrorType<GetUsers401 | GetUsers404>,
+>(
+  params: GetUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUsers>>,
           TError,
           Awaited<ReturnType<typeof getUsers>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUsers<TData = Awaited<ReturnType<typeof getUsers>>, TError = ErrorType<GetUsers401 | GetUsers404>>(
- params: GetUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUsers<
+  TData = Awaited<ReturnType<typeof getUsers>>,
+  TError = ErrorType<GetUsers401 | GetUsers404>,
+>(
+  params: GetUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary 회원 목록을 조회합니다.
  */
 
-export function useGetUsers<TData = Awaited<ReturnType<typeof getUsers>>, TError = ErrorType<GetUsers401 | GetUsers404>>(
- params: GetUsersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUsers<
+  TData = Awaited<ReturnType<typeof getUsers>>,
+  TError = ErrorType<GetUsers401 | GetUsers404>,
+>(
+  params: GetUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetUsersQueryOptions(params, options);
 
-  const queryOptions = useGetUsersQueryOptions(params,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * @summary 마이페이지를 조회합니다.
  */
 export const getMyPage = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseUserInfoDTO>(
-      {url: `/api/users/my`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseUserInfoDTO>(
+    { url: `/api/users/my`, method: 'GET', signal },
+    options,
+  );
+};
 
 export const getGetMyPageQueryKey = () => {
-    return [`/api/users/my`] as const;
-    }
+  return [`/api/users/my`] as const;
+};
 
-    
-export const useGetMyPageQueryOptions = <TData = Awaited<ReturnType<typeof getMyPage>>, TError = ErrorType<GetMyPage401 | GetMyPage404>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
-) => {
+export const useGetMyPageQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ErrorType<GetMyPage401 | GetMyPage404>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>>;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetMyPageQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMyPageQueryKey();
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyPage>>> = ({ signal }) =>
+    getMyPage(requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, {});
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyPage>>> = ({ signal }) => getMyPage(requestOptions, signal);
+  return customOptions as UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
 
-      
+export type GetMyPageQueryResult = NonNullable<Awaited<ReturnType<typeof getMyPage>>>;
+export type GetMyPageQueryError = ErrorType<GetMyPage401 | GetMyPage404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, {  });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetMyPageQueryResult = NonNullable<Awaited<ReturnType<typeof getMyPage>>>
-export type GetMyPageQueryError = ErrorType<GetMyPage401 | GetMyPage404>
-
-
-export function useGetMyPage<TData = Awaited<ReturnType<typeof getMyPage>>, TError = ErrorType<GetMyPage401 | GetMyPage404>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>> & Pick<
+export function useGetMyPage<
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ErrorType<GetMyPage401 | GetMyPage404>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyPage>>,
           TError,
           Awaited<ReturnType<typeof getMyPage>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyPage<TData = Awaited<ReturnType<typeof getMyPage>>, TError = ErrorType<GetMyPage401 | GetMyPage404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyPage<
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ErrorType<GetMyPage401 | GetMyPage404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyPage>>,
           TError,
           Awaited<ReturnType<typeof getMyPage>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetMyPage<TData = Awaited<ReturnType<typeof getMyPage>>, TError = ErrorType<GetMyPage401 | GetMyPage404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyPage<
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ErrorType<GetMyPage401 | GetMyPage404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary 마이페이지를 조회합니다.
  */
 
-export function useGetMyPage<TData = Awaited<ReturnType<typeof getMyPage>>, TError = ErrorType<GetMyPage401 | GetMyPage404>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetMyPage<
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ErrorType<GetMyPage401 | GetMyPage404>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetMyPageQueryOptions(options);
 
-  const queryOptions = useGetMyPageQueryOptions(options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * @summary 검색 조건에 따른 주문 목록을 조회합니다.
  */
 export const getOrders = (
-    params?: GetOrdersParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params?: GetOrdersParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseOrderListDTO>(
-      {url: `/api/orders`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseOrderListDTO>(
+    { url: `/api/orders`, method: 'GET', params, signal },
+    options,
+  );
+};
 
-export const getGetOrdersQueryKey = (params?: GetOrdersParams,) => {
-    return [`/api/orders`, ...(params ? [params]: [])] as const;
-    }
+export const getGetOrdersQueryKey = (params?: GetOrdersParams) => {
+  return [`/api/orders`, ...(params ? [params] : [])] as const;
+};
 
-    
-export const useGetOrdersQueryOptions = <TData = Awaited<ReturnType<typeof getOrders>>, TError = ErrorType<GetOrders401 | GetOrders404>>(params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetOrdersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getOrders>>,
+  TError = ErrorType<GetOrders401 | GetOrders404>,
+>(
+  params?: GetOrdersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetOrdersQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetOrdersQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrders>>> = ({ signal }) =>
+    getOrders(params, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { params });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrders>>> = ({ signal }) => getOrders(params, requestOptions, signal);
+  return customOptions as UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
 
-      
+export type GetOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof getOrders>>>;
+export type GetOrdersQueryError = ErrorType<GetOrders401 | GetOrders404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { params });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof getOrders>>>
-export type GetOrdersQueryError = ErrorType<GetOrders401 | GetOrders404>
-
-
-export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = ErrorType<GetOrders401 | GetOrders404>>(
- params: undefined |  GetOrdersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> & Pick<
+export function useGetOrders<
+  TData = Awaited<ReturnType<typeof getOrders>>,
+  TError = ErrorType<GetOrders401 | GetOrders404>,
+>(
+  params: undefined | GetOrdersParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getOrders>>,
           TError,
           Awaited<ReturnType<typeof getOrders>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = ErrorType<GetOrders401 | GetOrders404>>(
- params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOrders<
+  TData = Awaited<ReturnType<typeof getOrders>>,
+  TError = ErrorType<GetOrders401 | GetOrders404>,
+>(
+  params?: GetOrdersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getOrders>>,
           TError,
           Awaited<ReturnType<typeof getOrders>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = ErrorType<GetOrders401 | GetOrders404>>(
- params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetOrders<
+  TData = Awaited<ReturnType<typeof getOrders>>,
+  TError = ErrorType<GetOrders401 | GetOrders404>,
+>(
+  params?: GetOrdersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary 검색 조건에 따른 주문 목록을 조회합니다.
  */
 
-export function useGetOrders<TData = Awaited<ReturnType<typeof getOrders>>, TError = ErrorType<GetOrders401 | GetOrders404>>(
- params?: GetOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetOrders<
+  TData = Awaited<ReturnType<typeof getOrders>>,
+  TError = ErrorType<GetOrders401 | GetOrders404>,
+>(
+  params?: GetOrdersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getOrders>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetOrdersQueryOptions(params, options);
 
-  const queryOptions = useGetOrdersQueryOptions(params,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * @summary 상점 접속 목록을 조회합니다.
  */
 export const getHits = (
-    params?: GetHitsParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params?: GetHitsParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseHitListDTO>(
-      {url: `/api/hits`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseHitListDTO>(
+    { url: `/api/hits`, method: 'GET', params, signal },
+    options,
+  );
+};
 
-export const getGetHitsQueryKey = (params?: GetHitsParams,) => {
-    return [`/api/hits`, ...(params ? [params]: [])] as const;
-    }
+export const getGetHitsQueryKey = (params?: GetHitsParams) => {
+  return [`/api/hits`, ...(params ? [params] : [])] as const;
+};
 
-    
-export const useGetHitsQueryOptions = <TData = Awaited<ReturnType<typeof getHits>>, TError = ErrorType<GetHits401 | GetHits404>>(params?: GetHitsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetHitsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getHits>>,
+  TError = ErrorType<GetHits401 | GetHits404>,
+>(
+  params?: GetHitsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetHitsQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetHitsQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getHits>>> = ({ signal }) =>
+    getHits(params, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { params });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHits>>> = ({ signal }) => getHits(params, requestOptions, signal);
+  return customOptions as UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+};
 
-      
+export type GetHitsQueryResult = NonNullable<Awaited<ReturnType<typeof getHits>>>;
+export type GetHitsQueryError = ErrorType<GetHits401 | GetHits404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { params });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetHitsQueryResult = NonNullable<Awaited<ReturnType<typeof getHits>>>
-export type GetHitsQueryError = ErrorType<GetHits401 | GetHits404>
-
-
-export function useGetHits<TData = Awaited<ReturnType<typeof getHits>>, TError = ErrorType<GetHits401 | GetHits404>>(
- params: undefined |  GetHitsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>> & Pick<
+export function useGetHits<
+  TData = Awaited<ReturnType<typeof getHits>>,
+  TError = ErrorType<GetHits401 | GetHits404>,
+>(
+  params: undefined | GetHitsParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getHits>>,
           TError,
           Awaited<ReturnType<typeof getHits>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetHits<TData = Awaited<ReturnType<typeof getHits>>, TError = ErrorType<GetHits401 | GetHits404>>(
- params?: GetHitsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetHits<
+  TData = Awaited<ReturnType<typeof getHits>>,
+  TError = ErrorType<GetHits401 | GetHits404>,
+>(
+  params?: GetHitsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getHits>>,
           TError,
           Awaited<ReturnType<typeof getHits>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetHits<TData = Awaited<ReturnType<typeof getHits>>, TError = ErrorType<GetHits401 | GetHits404>>(
- params?: GetHitsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetHits<
+  TData = Awaited<ReturnType<typeof getHits>>,
+  TError = ErrorType<GetHits401 | GetHits404>,
+>(
+  params?: GetHitsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary 상점 접속 목록을 조회합니다.
  */
 
-export function useGetHits<TData = Awaited<ReturnType<typeof getHits>>, TError = ErrorType<GetHits401 | GetHits404>>(
- params?: GetHitsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetHits<
+  TData = Awaited<ReturnType<typeof getHits>>,
+  TError = ErrorType<GetHits401 | GetHits404>,
+>(
+  params?: GetHitsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getHits>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetHitsQueryOptions(params, options);
 
-  const queryOptions = useGetHitsQueryOptions(params,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
-
 
 /**
  * 장바구니에 상품을 조회합니다.
  */
 export const getCartItems = (
-    params: GetCartItemsParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params: GetCartItemsParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<SuccessResponseCartListDTO>(
-      {url: `/api/carts`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<SuccessResponseCartListDTO>(
+    { url: `/api/carts`, method: 'GET', params, signal },
+    options,
+  );
+};
 
-export const getGetCartItemsQueryKey = (params?: GetCartItemsParams,) => {
-    return [`/api/carts`, ...(params ? [params]: [])] as const;
-    }
+export const getGetCartItemsQueryKey = (params?: GetCartItemsParams) => {
+  return [`/api/carts`, ...(params ? [params] : [])] as const;
+};
 
-    
-export const useGetCartItemsQueryOptions = <TData = Awaited<ReturnType<typeof getCartItems>>, TError = ErrorType<GetCartItems401 | GetCartItems404>>(params: GetCartItemsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const useGetCartItemsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCartItems>>,
+  TError = ErrorType<GetCartItems401 | GetCartItems404>,
+>(
+  params: GetCartItemsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetCartItemsQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetCartItemsQueryKey(params);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCartItems>>> = ({ signal }) =>
+    getCartItems(params, requestOptions, signal);
 
-  
+  const customOptions = customQueryOptions({ ...queryOptions, queryKey, queryFn }, { params });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCartItems>>> = ({ signal }) => getCartItems(params, requestOptions, signal);
+  return customOptions as UseQueryOptions<
+    Awaited<ReturnType<typeof getCartItems>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type GetCartItemsQueryResult = NonNullable<Awaited<ReturnType<typeof getCartItems>>>;
+export type GetCartItemsQueryError = ErrorType<GetCartItems401 | GetCartItems404>;
 
-      const customOptions = customQueryOptions({...queryOptions, queryKey, queryFn}, { params });
-
-   return  customOptions as UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetCartItemsQueryResult = NonNullable<Awaited<ReturnType<typeof getCartItems>>>
-export type GetCartItemsQueryError = ErrorType<GetCartItems401 | GetCartItems404>
-
-
-export function useGetCartItems<TData = Awaited<ReturnType<typeof getCartItems>>, TError = ErrorType<GetCartItems401 | GetCartItems404>>(
- params: GetCartItemsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>> & Pick<
+export function useGetCartItems<
+  TData = Awaited<ReturnType<typeof getCartItems>>,
+  TError = ErrorType<GetCartItems401 | GetCartItems404>,
+>(
+  params: GetCartItemsParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCartItems>>,
           TError,
           Awaited<ReturnType<typeof getCartItems>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCartItems<TData = Awaited<ReturnType<typeof getCartItems>>, TError = ErrorType<GetCartItems401 | GetCartItems404>>(
- params: GetCartItemsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>> & Pick<
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetCartItems<
+  TData = Awaited<ReturnType<typeof getCartItems>>,
+  TError = ErrorType<GetCartItems401 | GetCartItems404>,
+>(
+  params: GetCartItemsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCartItems>>,
           TError,
           Awaited<ReturnType<typeof getCartItems>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCartItems<TData = Awaited<ReturnType<typeof getCartItems>>, TError = ErrorType<GetCartItems401 | GetCartItems404>>(
- params: GetCartItemsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetCartItems<
+  TData = Awaited<ReturnType<typeof getCartItems>>,
+  TError = ErrorType<GetCartItems401 | GetCartItems404>,
+>(
+  params: GetCartItemsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export function useGetCartItems<TData = Awaited<ReturnType<typeof getCartItems>>, TError = ErrorType<GetCartItems401 | GetCartItems404>>(
- params: GetCartItemsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetCartItems<
+  TData = Awaited<ReturnType<typeof getCartItems>>,
+  TError = ErrorType<GetCartItems401 | GetCartItems404>,
+>(
+  params: GetCartItemsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCartItems>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = useGetCartItemsQueryOptions(params, options);
 
-  const queryOptions = useGetCartItemsQueryOptions(params,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
 
+/**
+ * @summary 공급 업체를 삭제합니다.
+ */
+export const deleteCompany = (userId: number, options?: SecondParameter<typeof axiosInstance>) => {
+  return axiosInstance<SuccessResponseObject>(
+    { url: `/api/companies/${userId}`, method: 'DELETE' },
+    options,
+  );
+};
 
+export const useDeleteCompanyMutationOptions = <
+  TError = ErrorType<DeleteCompany401 | DeleteCompany404>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteCompany>>,
+    TError,
+    { userId: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteCompany>>,
+  TError,
+  { userId: number },
+  TContext
+> => {
+  const mutationKey = ['deleteCompany'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteCompany>>,
+    { userId: number }
+  > = (props) => {
+    const { userId } = props ?? {};
+
+    return deleteCompany(userId, requestOptions);
+  };
+
+  const customOptions = customMutationOptions(
+    { ...mutationOptions, mutationFn },
+    { url: `/api/companies/{userId}` },
+  );
+
+  return customOptions;
+};
+
+export type DeleteCompanyMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCompany>>>;
+
+export type DeleteCompanyMutationError = ErrorType<DeleteCompany401 | DeleteCompany404>;
 
 /**
  * @summary 공급 업체를 삭제합니다.
  */
-export const deleteCompany = (
-    userId: number,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<SuccessResponseObject>(
-      {url: `/api/companies/${userId}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+export const useDeleteCompany = <
+  TError = ErrorType<DeleteCompany401 | DeleteCompany404>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteCompany>>,
+      TError,
+      { userId: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteCompany>>,
+  TError,
+  { userId: number },
+  TContext
+> => {
+  const mutationOptions = useDeleteCompanyMutationOptions(options);
 
-
-export const useDeleteCompanyMutationOptions = <TError = ErrorType<DeleteCompany401 | DeleteCompany404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCompany>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteCompany>>, TError,{userId: number}, TContext> => {
-
-const mutationKey = ['deleteCompany'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteCompany>>, {userId: number}> = (props) => {
-          const {userId} = props ?? {};
-
-          return  deleteCompany(userId,requestOptions)
-        }
-
-        const customOptions = customMutationOptions({...mutationOptions, mutationFn}, { url: `/api/companies/{userId}` });
-
-
-  return  customOptions}
-
-    export type DeleteCompanyMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCompany>>>
-    
-    export type DeleteCompanyMutationError = ErrorType<DeleteCompany401 | DeleteCompany404>
-
-    /**
- * @summary 공급 업체를 삭제합니다.
- */
-export const useDeleteCompany = <TError = ErrorType<DeleteCompany401 | DeleteCompany404>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCompany>>, TError,{userId: number}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteCompany>>,
-        TError,
-        {userId: number},
-        TContext
-      > => {
-
-      const mutationOptions = useDeleteCompanyMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
+  return useMutation(mutationOptions, queryClient);
+};

@@ -57,11 +57,9 @@ export const telegroQueryOptions = {
   userDetail: (userId: number) => useGetUserDetailQueryOptions(userId),
   orderDetail: (orderId: number) => useGetOrderDetailQueryOptions(orderId),
   products: (params: GetProductsParams) => useGetProductsQueryOptions(params),
-  productDetail: (productId: number) =>
-    useGetProductDetailQueryOptions(productId),
+  productDetail: (productId: number) => useGetProductDetailQueryOptions(productId),
   notices: (params: GetNoticesParams) => useGetNoticesQueryOptions(params),
-  noticeDetail: (noticeId: number) =>
-    useGetNoticeDetailQueryOptions(noticeId),
+  noticeDetail: (noticeId: number) => useGetNoticeDetailQueryOptions(noticeId),
   popNotice: () => useGetPopNoticeQueryOptions(),
   users: (params: GetUsersParams) => useGetUsersQueryOptions(params),
   myPage: () => useGetMyPageQueryOptions(),
@@ -89,8 +87,7 @@ export const telegroPrefetch = {
     queryClient.prefetchQuery(telegroQueryOptions.popNotice()),
   users: (queryClient: QueryClient, params: GetUsersParams) =>
     queryClient.prefetchQuery(telegroQueryOptions.users(params)),
-  myPage: (queryClient: QueryClient) =>
-    queryClient.prefetchQuery(telegroQueryOptions.myPage()),
+  myPage: (queryClient: QueryClient) => queryClient.prefetchQuery(telegroQueryOptions.myPage()),
   orders: (queryClient: QueryClient, params?: GetOrdersParams) =>
     queryClient.prefetchQuery(telegroQueryOptions.orders(params)),
   hits: (queryClient: QueryClient, params?: GetHitsParams) =>

@@ -9,8 +9,8 @@
 /**
  * 상품 카테고리
  */
-export type ProductRequestDTOCategory = typeof ProductRequestDTOCategory[keyof typeof ProductRequestDTOCategory];
-
+export type ProductRequestDTOCategory =
+  (typeof ProductRequestDTOCategory)[keyof typeof ProductRequestDTOCategory];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ProductRequestDTOCategory = {

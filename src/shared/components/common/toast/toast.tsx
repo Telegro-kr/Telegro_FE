@@ -23,8 +23,6 @@ export const showToast = ({ variant, message, duration }: ShowToastParams) => {
   );
 };
 
-export const toastSuccess = (message: string) =>
-  showToast({ variant: 'success', message });
+export const toastSuccess = (message: string) => showToast({ variant: 'success', message });
 
-export const toastError = (message: string) =>
-  showToast({ variant: 'error', message });
+export const toastError = (message: string) => showToast({ variant: 'error', message });

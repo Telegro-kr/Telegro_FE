@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type CartCartStatus = typeof CartCartStatus[keyof typeof CartCartStatus];
-
+export type CartCartStatus = (typeof CartCartStatus)[keyof typeof CartCartStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CartCartStatus = {

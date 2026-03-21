@@ -6,4 +6,4 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UpdateProductBody = {[key: string]: { [key: string]: unknown }};
+export type UpdateProductBody = { [key: string]: { [key: string]: unknown } };

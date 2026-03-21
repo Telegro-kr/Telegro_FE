@@ -6,8 +6,5 @@
     "target": "ES2022",
     "types": ["node"]
   },
-  "include": [
-    "vite.config.js",
-    "src/shared/scripts/**/*.ts"
-  ]
+  "include": ["vite.config.js", "src/shared/scripts/**/*.ts"]
 }

@@ -1,6 +1,6 @@
 import { Outlet, Link } from 'react-router-dom';
 
-export default function AdminLayout() {
+const AdminLayout = () => {
   return (
     <div>
       <header style={{ padding: 12, borderBottom: '1px solid #eee' }}>
@@ -15,9 +15,9 @@ export default function AdminLayout() {
       <main style={{ padding: 16 }}>
         <Outlet />
       </main>
-      <footer style={{ padding: 12, borderTop: '1px solid #eee' }}>
-        © Admin
-      </footer>
+      <footer style={{ padding: 12, borderTop: '1px solid #eee' }}>© Admin</footer>
     </div>
   );
-}
+};
+
+export default AdminLayout;

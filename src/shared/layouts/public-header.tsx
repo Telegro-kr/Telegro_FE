@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
   },
 ];
 
-export default function PublicHeader() {
+const PublicHeader = () => {
   const [isExploreOpen, setIsExploreOpen] = useState(false);
   const location = useLocation();
 
@@ -142,12 +142,7 @@ export default function PublicHeader() {
             className="place-items-center rounded-full px-2 py-1 transition-colors hover:bg-black/5"
           >
             <span className="relative inline-flex">
-              <Icon
-                name="alarm"
-                size={3}
-                ariaHidden={false}
-                ariaLabel="Notification"
-              />
+              <Icon name="alarm" size={3} ariaHidden={false} ariaLabel="Notification" />
               <span
                 className={`absolute top-1 right-1 h-2.5 w-2.5 rounded-full ${
                   isNoticeActive ? 'bg-transparent' : 'bg-[#FF4B4E]'
@@ -159,4 +154,6 @@ export default function PublicHeader() {
       </div>
     </header>
   );
-}
+};
+
+export default PublicHeader;

@@ -9,8 +9,7 @@
 /**
  * 단가 적용
  */
-export type CompanyDetailDTORole = typeof CompanyDetailDTORole[keyof typeof CompanyDetailDTORole];
-
+export type CompanyDetailDTORole = (typeof CompanyDetailDTORole)[keyof typeof CompanyDetailDTORole];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CompanyDetailDTORole = {

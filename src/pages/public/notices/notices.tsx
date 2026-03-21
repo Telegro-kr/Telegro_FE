@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export default function Notices() {
+const Notices = () => {
   return (
     <section>
       <h1>Notices (List)</h1>
@@ -14,4 +14,6 @@ export default function Notices() {
       </ul>
     </section>
   );
-}
+};
+
+export default Notices;

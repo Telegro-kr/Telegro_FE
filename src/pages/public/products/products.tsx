@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export default function PublicProducts() {
+const PublicProducts = () => {
   // 탭/필터는 추후 구현
   return (
     <section>
@@ -15,4 +15,6 @@ export default function PublicProducts() {
       </ul>
     </section>
   );
-}
+};
+
+export default PublicProducts;

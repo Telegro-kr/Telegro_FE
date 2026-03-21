@@ -7,10 +7,10 @@
  */
 
 export type GetHitsParams = {
-/**
- * 필터
- */
-filteredBy?: string;
-year?: number;
-month?: number;
+  /**
+   * 필터
+   */
+  filteredBy?: string;
+  year?: number;
+  month?: number;
 };

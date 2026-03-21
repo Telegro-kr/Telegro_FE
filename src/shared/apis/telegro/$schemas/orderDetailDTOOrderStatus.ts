@@ -9,8 +9,8 @@
 /**
  * 주문 상태를 나타내는 열거형
  */
-export type OrderDetailDTOOrderStatus = typeof OrderDetailDTOOrderStatus[keyof typeof OrderDetailDTOOrderStatus];
-
+export type OrderDetailDTOOrderStatus =
+  (typeof OrderDetailDTOOrderStatus)[keyof typeof OrderDetailDTOOrderStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const OrderDetailDTOOrderStatus = {

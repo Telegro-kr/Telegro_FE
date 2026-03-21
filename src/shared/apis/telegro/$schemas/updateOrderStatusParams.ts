@@ -8,8 +8,8 @@
 import type { UpdateOrderStatusStatus } from './updateOrderStatusStatus';
 
 export type UpdateOrderStatusParams = {
-/**
- * 주문 상태를 나타내는 열거형
- */
-status: UpdateOrderStatusStatus;
+  /**
+   * 주문 상태를 나타내는 열거형
+   */
+  status: UpdateOrderStatusStatus;
 };

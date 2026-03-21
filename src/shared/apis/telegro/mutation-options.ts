@@ -1,7 +1,4 @@
-import type {
-  MutationFunction,
-  UseMutationOptions,
-} from '@tanstack/react-query';
+import type { MutationFunction, UseMutationOptions } from '@tanstack/react-query';
 
 /**
  * orval가 넘겨주는 mutationOptions + mutationFn을 받아
@@ -17,9 +14,7 @@ export function customMutationOptions<TData, TError, TVariables, TContext>(
   const { meta: prevMeta, ...rest } = options;
 
   // (선택) 기본값 넣고 싶으면 여기서
-  const defaults: Partial<
-    UseMutationOptions<TData, TError, TVariables, TContext>
-  > = {
+  const defaults: Partial<UseMutationOptions<TData, TError, TVariables, TContext>> = {
     // retry: 0,
   };
 

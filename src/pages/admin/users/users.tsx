@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export default function AdminUsers() {
+const AdminUsers = () => {
   return (
     <section>
       <h1>Admin Users (List)</h1>
@@ -15,4 +15,6 @@ export default function AdminUsers() {
       </ul>
     </section>
   );
-}
+};
+
+export default AdminUsers;

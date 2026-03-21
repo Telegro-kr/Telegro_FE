@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ProductCategory = typeof ProductCategory[keyof typeof ProductCategory];
-
+export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCategory];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ProductCategory = {

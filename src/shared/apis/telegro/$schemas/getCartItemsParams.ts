@@ -7,6 +7,6 @@
  */
 
 export type GetCartItemsParams = {
-page: number;
-size: number;
+  page: number;
+  size: number;
 };

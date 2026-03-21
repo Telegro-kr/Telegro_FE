@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetUsersFilteredBy = typeof GetUsersFilteredBy[keyof typeof GetUsersFilteredBy];
-
+export type GetUsersFilteredBy = (typeof GetUsersFilteredBy)[keyof typeof GetUsersFilteredBy];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GetUsersFilteredBy = {

@@ -9,8 +9,8 @@
 /**
  * 결제 상태
  */
-export type OrderDetailDTOPaymentStatus = typeof OrderDetailDTOPaymentStatus[keyof typeof OrderDetailDTOPaymentStatus];
-
+export type OrderDetailDTOPaymentStatus =
+  (typeof OrderDetailDTOPaymentStatus)[keyof typeof OrderDetailDTOPaymentStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const OrderDetailDTOPaymentStatus = {
