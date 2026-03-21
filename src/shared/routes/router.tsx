@@ -1,4 +1,4 @@
-import AdminGuard from '@routes/admin-guard';
+﻿import AdminGuard from '@routes/admin-guard';
 import AuthGuard from '@routes/auth-guard';
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
@@ -13,6 +13,7 @@ const PublicProdDet = lazy(() => import('@pages/public/products/product-detail')
 const Notices = lazy(() => import('@pages/public/notices/notices'));
 const NoticeDetail = lazy(() => import('@pages/public/notices/notice-detail'));
 const Login = lazy(() => import('@pages/auth/login'));
+const ErrorPage = lazy(() => import('@pages/errors/error'));
 const Forbidden = lazy(() => import('@pages/errors/forbidden'));
 const NotFound = lazy(() => import('@pages/errors/not-found'));
 
@@ -33,7 +34,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <PublicLayout />,
-    errorElement: <NotFound />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <PublicHome /> },
       { path: 'products', element: <PublicProducts /> },
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
   {
     path: '/app',
     element: <AuthGuard />,
+    errorElement: <ErrorPage />,
     children: [
       {
         element: <MemberLayout />,
@@ -64,6 +66,7 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminGuard />,
+    errorElement: <ErrorPage />,
     children: [
       {
         element: <AdminLayout />,

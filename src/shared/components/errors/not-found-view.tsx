@@ -38,13 +38,6 @@ const NotFoundView = ({ onGoHome }: NotFoundViewProps) => {
           </button>
         </div>
       </div>
-
-      <img
-        src="/panda-cry.svg"
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-0 h-[20.2rem] w-[25rem] object-contain"
-      />
     </section>
   );
 };
