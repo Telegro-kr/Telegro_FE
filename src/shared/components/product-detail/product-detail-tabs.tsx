@@ -23,14 +23,16 @@ const ProductDetailTabs = ({ activeTab, onChange }: ProductDetailTabsProps) => {
             type="button"
             onClick={() => onChange(tab.key)}
             className={cn(
-              'flex h-[5.2rem] items-center justify-center gap-1 border-b-[3px] text-[1.35rem] font-medium transition-colors',
+              'flex-row-center h-[5.2rem] cursor-pointer gap-1 border-b-[3px] text-[1.35rem] font-medium transition-colors',
               activeTab === tab.key
                 ? 'border-[#1F3138] bg-[#1F3138] text-white'
                 : 'border-transparent text-[#263238] hover:bg-[#FAFBFB]',
             )}
           >
             <span>{tab.label}</span>
-            {tab.suffix ? <span className="text-[#9AA4AF]">{tab.suffix}</span> : null}
+            {tab.suffix ? (
+              <span className="text-gray-500">{tab.suffix}</span>
+            ) : null}
           </button>
         ))}
       </div>

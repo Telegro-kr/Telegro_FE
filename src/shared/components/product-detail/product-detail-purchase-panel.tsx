@@ -36,10 +36,12 @@ const ProductDetailPurchasePanel = ({
     <aside className="flex flex-col gap-6 pt-1">
       <div className="flex items-start justify-between gap-5">
         <div className="flex flex-col gap-4">
-          <h1 className="text-[2.6rem] font-semibold leading-[1.2] tracking-[-0.03em] text-[#263238]">
+          <h1 className="text-[2.6rem] leading-[1.2] font-semibold tracking-[-0.03em] text-[#263238]">
             {productName}
           </h1>
-          <strong className="text-[2.3rem] font-medium leading-none text-[#263238]">{price}</strong>
+          <strong className="text-[2.3rem] leading-none font-medium text-[#263238]">
+            {price}
+          </strong>
         </div>
 
         <button
@@ -48,10 +50,10 @@ const ProductDetailPurchasePanel = ({
           title={isShareCopied ? '복사되었습니다.' : '공유하기'}
           onClick={onShare}
           className={cn(
-            'mt-2 inline-flex h-10 w-10 items-center justify-center rounded-full transition-all',
+            'flex-row-center mt-2 h-12 w-12 cursor-pointer rounded-full bg-gray-200 transition-all',
             isShareCopied
-              ? 'bg-[#EEF4F5] text-[#1F3138]'
-              : 'text-[#7B8794] hover:bg-[#F6F8F9] hover:text-[#263238]',
+              ? 'text-gray-900'
+              : 'text-gray-700 hover:bg-gray-300 hover:text-gray-900',
           )}
         >
           <FiShare2 className="h-6 w-6" />
@@ -86,20 +88,31 @@ const ProductDetailPurchasePanel = ({
             </QuantityButton>
           </div>
 
-          <strong className="text-[1.8rem] font-medium text-[#263238]">{totalPriceLabel}</strong>
+          <strong className="text-[1.8rem] font-medium text-[#263238]">
+            {totalPriceLabel}
+          </strong>
         </div>
       </div>
 
       <div className="flex items-end justify-between pt-5">
-        <span className="text-[1.6rem] text-[#637381]">총 상품금액({quantity}개)</span>
-        <strong className="text-[2.3rem] font-medium leading-none text-[#263238]">{totalPriceLabel}</strong>
+        <span className="text-[1.6rem] text-[#637381]">
+          총 상품금액({quantity}개)
+        </span>
+        <strong className="text-[2.3rem] leading-none font-medium text-[#263238]">
+          {totalPriceLabel}
+        </strong>
       </div>
 
       <div className="grid grid-cols-[1.15fr_1fr_0.8fr] gap-3 pt-3">
         <ActionButton variant="primary">구매하기</ActionButton>
         <ActionButton variant="secondary">장바구니</ActionButton>
-        <ActionButton variant="ghost" onClick={onToggleLike} active={isLiked} ariaPressed={isLiked}>
-          <span className="inline-flex items-center gap-2">
+        <ActionButton
+          variant="ghost"
+          onClick={onToggleLike}
+          active={isLiked}
+          ariaPressed={isLiked}
+        >
+          <span className="flex cursor-pointer items-center gap-2">
             {isLiked ? (
               <IoHeart className="h-5 w-5 text-[#E53935]" />
             ) : (
@@ -126,7 +139,7 @@ const QuantityButton = ({
     type="button"
     aria-label={label}
     onClick={onClick}
-    className="flex h-[3.2rem] w-[3rem] items-center justify-center text-[1.4rem] text-[#5B6770] transition-colors hover:bg-[#F7F9FB]"
+    className="flex-row-center h-[3.2rem] w-[3rem] cursor-pointer text-[1.4rem] text-[#5B6770] transition-colors hover:bg-[#F7F9FB]"
   >
     {children}
   </button>
@@ -159,7 +172,7 @@ const ActionButton = ({
       onClick={onClick}
       aria-pressed={ariaPressed}
       className={cn(
-        'flex h-[4.8rem] items-center justify-center border text-[1.35rem] font-semibold transition-colors',
+        'flex-row-center h-[4.8rem] cursor-pointer border text-[1.35rem] font-semibold transition-colors',
         classes[variant],
       )}
     >

@@ -19,8 +19,8 @@ const AdminProductDetail = () => {
           priceBest: '21,000',
           priceDealer: '20,000',
           priceCustomer: '24,000',
-          coverImage: '/cocktail-kit-main.png',
-          pictures: ['/cocktail-kit-main.png', '/cocktail-kit-sub-1.png', '/cocktail-kit-sub-2.png'],
+          coverImage: '/product1.png',
+          pictures: ['/product1.png', '/product1.png', '/product1.png'],
         }}
       />
     </div>

@@ -28,12 +28,8 @@ const DEFAULT_PRODUCT: ProductDetailResponseDTO = {
   priceBest: '21,000',
   priceDealer: '20,000',
   priceCustomer: '24,000',
-  coverImage: '/cocktail-kit-main.png',
-  pictures: [
-    '/cocktail-kit-main.png',
-    '/cocktail-kit-sub-1.png',
-    '/cocktail-kit-sub-2.png',
-  ],
+  coverImage: '/product1.png',
+  pictures: ['/product1.png', '/product1.png', '/product1.png'],
 };
 
 const DEFAULT_RECOMMENDATIONS: RecommendationItem[] = [
@@ -41,12 +37,32 @@ const DEFAULT_RECOMMENDATIONS: RecommendationItem[] = [
     id: 1,
     title: 'Hands & Body Cotton Dry Towel',
     price: '18,000',
-    image: '/recommend-1.png',
+    image: '/product1.png',
   },
-  { id: 2, title: 'Travel Care Pouch', price: '19,000', image: '/recommend-2.png' },
-  { id: 3, title: 'Premium Bath Set', price: '28,000', image: '/recommend-3.png' },
-  { id: 4, title: 'Body Care Gift Box', price: '31,000', image: '/recommend-4.png' },
-  { id: 5, title: 'Soft Cream Towel', price: '16,000', image: '/recommend-5.png' },
+  {
+    id: 2,
+    title: 'Travel Care Pouch',
+    price: '19,000',
+    image: '/product1.png',
+  },
+  {
+    id: 3,
+    title: 'Premium Bath Set',
+    price: '28,000',
+    image: '/product1.png',
+  },
+  {
+    id: 4,
+    title: 'Body Care Gift Box',
+    price: '31,000',
+    image: '/product1.png',
+  },
+  {
+    id: 5,
+    title: 'Soft Cream Towel',
+    price: '16,000',
+    image: '/product1.png',
+  },
 ];
 
 export const useProductDetail = ({
@@ -61,7 +77,9 @@ export const useProductDetail = ({
   const [isShareCopied, setIsShareCopied] = useState(false);
 
   const galleryImages = useMemo(() => {
-    const images = [product.coverImage, ...(product.pictures ?? [])].filter(Boolean) as string[];
+    const images = [product.coverImage, ...(product.pictures ?? [])].filter(
+      Boolean,
+    ) as string[];
     return Array.from(new Set(images));
   }, [product]);
 
@@ -72,7 +90,10 @@ export const useProductDetail = ({
     return Number(numeric) || 24000;
   }, [product.price]);
 
-  const totalPriceLabel = useMemo(() => (basePrice * quantity).toLocaleString(), [basePrice, quantity]);
+  const totalPriceLabel = useMemo(
+    () => (basePrice * quantity).toLocaleString(),
+    [basePrice, quantity],
+  );
   const rewardPointLabel = useMemo(
     () => `${(1000 * quantity).toLocaleString()} 포인트 적립예정`,
     [quantity],
@@ -86,16 +107,17 @@ export const useProductDetail = ({
   }, [isShareCopied]);
 
   const handleToggleLike = () => {
-    setIsLiked((prev) => {
-      const next = !prev;
-      setLikeCount((count) => (next ? count + 1 : Math.max(0, count - 1)));
-      return next;
-    });
+    const next = !isLiked;
+
+    setIsLiked(next);
+    setLikeCount((count) => (next ? count + 1 : Math.max(0, count - 1)));
   };
 
   const handleShare = async () => {
     const shareTarget =
-      typeof window !== 'undefined' ? window.location.href : product.productName ?? '';
+      typeof window !== 'undefined'
+        ? window.location.href
+        : (product.productName ?? '');
 
     try {
       if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {

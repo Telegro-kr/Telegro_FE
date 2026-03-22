@@ -52,12 +52,12 @@ const ProductDetailView = ({
   onShare,
 }: ProductDetailViewProps) => {
   return (
-    <div className="min-h-screen bg-[#FBFBF8] text-[#263238]">
-      <main className="mx-auto flex w-full max-w-[1240px] flex-col px-6 pb-24 pt-10">
+    <div className="min-h-screen bg-[#FBFBF8] text-gray-900">
+      <main className="mx-auto flex w-full max-w-[124rem] flex-col px-6 pt-10 pb-24">
         <div className="mb-8 flex items-center gap-3 text-[1.05rem] text-[#9CA3AF]">
           <span>Product</span>
           <span>/</span>
-          <span className="text-[#9CA3AF]">{product.productName}</span>
+          <span className="text-gray-500">{product.productName}</span>
         </div>
 
         <section className="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,28rem)] lg:gap-16">
@@ -85,32 +85,40 @@ const ProductDetailView = ({
 
         <ProductDetailTabs activeTab={activeTab} onChange={onChangeTab} />
 
-        <section className="mx-auto mt-12 flex w-full max-w-[960px] flex-col gap-16">
+        <section className="mx-auto mt-12 flex w-full flex-col gap-16">
           {activeTab === 'detail' && (
             <>
               <div className="overflow-hidden bg-white">
-                <img src="/detail-content-image.png" alt="상세 이미지" className="w-full object-cover" />
+                <img
+                  src="/product1.png"
+                  alt="상세 이미지"
+                  className="w-full object-cover"
+                />
               </div>
 
               <button
                 type="button"
                 onClick={onToggleDetail}
-                className="flex h-[4.8rem] w-full items-center justify-center gap-2 border-[2px] border-[#7F7F7F] bg-white text-[1.5rem] font-semibold text-[#263238] shadow-[0_8px_16px_rgba(38,50,56,0.08)] transition-colors hover:bg-[#FCFCFC]"
+                className="flex-row-center h-[4.8rem] w-full cursor-pointer gap-2 border-[2px] border-gray-600 bg-white text-[1.5rem] font-semibold text-[#263238] shadow-[0_8px_16px_rgba(38,50,56,0.08)] transition-colors hover:bg-gray-100"
               >
-                <span>{isDetailOpen ? '상세정보 접기' : '상세정보 펼치기'}</span>
+                <span>
+                  {isDetailOpen ? '상세정보 접기' : '상세정보 펼치기'}
+                </span>
                 <span className={isDetailOpen ? 'rotate-0' : 'rotate-180'}>
                   <ChevronUpIcon />
                 </span>
               </button>
 
               {isDetailOpen ? (
-                <div className="whitespace-pre-line text-[1.18rem] leading-[2] text-[#4B5563]">
+                <div className="text-[1.18rem] leading-[2] whitespace-pre-line text-gray-700">
                   {product.content}
                 </div>
               ) : null}
             </>
           )}
-          {activeTab === 'review' ? <EmptyPanel title="아직 등록된 구매평이 없습니다." /> : null}
+          {activeTab === 'review' ? (
+            <EmptyPanel title="아직 등록된 구매평이 없습니다." />
+          ) : null}
           {activeTab === 'return' ? (
             <InfoPanel
               title="반품 / 교환 안내"
@@ -121,7 +129,9 @@ const ProductDetailView = ({
               ]}
             />
           ) : null}
-          {activeTab === 'qna' ? <EmptyPanel title="등록된 문의가 없습니다." /> : null}
+          {activeTab === 'qna' ? (
+            <EmptyPanel title="등록된 문의가 없습니다." />
+          ) : null}
         </section>
 
         <ProductDetailRecommendationSection recommendations={recommendations} />
@@ -138,7 +148,9 @@ const EmptyPanel = ({ title }: { title: string }) => (
 
 const InfoPanel = ({ title, lines }: { title: string; lines: string[] }) => (
   <div className="border border-[#E5E7EB] bg-white px-8 py-8">
-    <h3 className="mb-5 text-[1.55rem] font-semibold text-[#263238]">{title}</h3>
+    <h3 className="mb-5 text-[1.55rem] font-semibold text-[#263238]">
+      {title}
+    </h3>
     <div className="flex flex-col gap-3">
       {lines.map((line) => (
         <p key={line} className="text-[1.15rem] leading-[1.8] text-[#4B5563]">
