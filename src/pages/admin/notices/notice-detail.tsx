@@ -1,10 +1,17 @@
-const AdminNoticeDetail = () => {
+import AdminNoticeDetailContainer from '@components/admin/notice-detail/admin-notice-detail-container';
+import { useNavigate, useParams } from 'react-router-dom';
+
+const AdminNoticeDetailPage = () => {
+  const navigate = useNavigate();
+  const { noticeId } = useParams();
+
   return (
-    <section>
-      <h1>Create Product (Admin)</h1>
-      {/* form later */}
-    </section>
+    <AdminNoticeDetailContainer
+      noticeId={Number(noticeId) || undefined}
+      onGoList={() => navigate('/admin/notices')}
+      onOpenNotice={(id) => navigate(`/admin/notices/${id}`)}
+    />
   );
 };
 
-export default AdminNoticeDetail;
+export default AdminNoticeDetailPage;
