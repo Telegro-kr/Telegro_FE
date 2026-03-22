@@ -18,7 +18,7 @@ const navItems: NavItem[] = [
     match: (pathname) => pathname.startsWith('/products'),
   },
   {
-    name: 'Linecode',
+    name: 'Linecord',
     path: productPath,
     match: (pathname) => pathname.startsWith('/products'),
   },
