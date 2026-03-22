@@ -102,7 +102,7 @@ const PublicHeader = () => {
         </div>
 
         <Link to="/" className="absolute top-1 left-1/2 -translate-x-1/2">
-          <h1 className="font-['Readex_Pro',sans-serif] text-[1.7rem] font-medium tracking-[-0.03em] text-[#474747] md:text-[3rem] lg:text-[4rem]">
+          <h1 className="font-['Readex_Pro',sans-serif] text-[1.4rem] font-medium tracking-[-0.03em] text-[#474747] md:text-[3rem] lg:text-[4rem]">
             - telegro -
           </h1>
         </Link>

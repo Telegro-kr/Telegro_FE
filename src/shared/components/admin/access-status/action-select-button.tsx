@@ -16,7 +16,7 @@ const ActionSelectButton = ({
       type="button"
       onClick={onClick}
       className={cn(
-        'flex-row-center h-11 gap-2 rounded-xl px-4 text-[1.5rem] font-semibold tracking-[-0.02em] text-gray-800 transition-colors duration-200',
+        'flex-row-center caption1 h-12 cursor-pointer gap-2 rounded-xl px-5 text-gray-800 transition-colors duration-200',
         isOpen ? 'bg-[#F8F9FA]' : 'bg-transparent hover:bg-[#F8F9FA]',
       )}
     >

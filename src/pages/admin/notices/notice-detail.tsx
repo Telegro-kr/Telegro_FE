@@ -1,4 +1,4 @@
-import AdminNoticeDetailContainer from '@components/admin/notice-detail/admin-notice-detail-container';
+import NoticeDetailContainer from '@components/notice-detail/notice-detail-container';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const AdminNoticeDetailPage = () => {
@@ -6,7 +6,7 @@ const AdminNoticeDetailPage = () => {
   const { noticeId } = useParams();
 
   return (
-    <AdminNoticeDetailContainer
+    <NoticeDetailContainer
       noticeId={Number(noticeId) || undefined}
       onGoList={() => navigate('/admin/notices')}
       onOpenNotice={(id) => navigate(`/admin/notices/${id}`)}

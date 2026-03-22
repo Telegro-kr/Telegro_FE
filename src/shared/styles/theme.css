@@ -1,13 +1,7 @@
 @theme {
   --font-sans:
-    'Pretendard',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+    'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
 
   /* Brand (primary) */
   --color-primary: #ffc633;
@@ -35,6 +29,7 @@
   --color-gray-100: #f8fafc;
   --color-white: #ffffff;
   --color-black: #000000;
+  --color-bg: #fafafa;
 
   /* Surface / Background */
   --color-surface: #ffffff;

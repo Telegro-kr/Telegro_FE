@@ -1,4 +1,5 @@
 export const ICONS = [
+  "admin-arrow",
   "alarm",
   "alert-error",
   "delete",

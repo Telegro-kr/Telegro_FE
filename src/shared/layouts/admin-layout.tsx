@@ -1,21 +1,33 @@
 import { Outlet, Link } from 'react-router-dom';
 
+const linkClass =
+  'title6 text-gray-900 no-underline transition-underline hover:underline';
+
 const AdminLayout = () => {
   return (
-    <div>
-      <header style={{ padding: 12, borderBottom: '1px solid #eee' }}>
-        <nav style={{ display: 'flex', gap: 12 }}>
-          <Link to="/admin">Dashboard</Link>
-          <Link to="/admin/users">Users</Link>
-          <Link to="/admin/users/create">Create User</Link>
-          <Link to="/admin/products/create">Create Product</Link>
-          <Link to="/">Public</Link>
+    <div className="min-h-screen bg-white">
+      <header className="fixed top-0 z-10 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem]">
+        <nav className="flex gap-[3rem] px-[3rem]">
+          <Link to="/admin" className={linkClass}>
+            Dashboard
+          </Link>
+          <Link to="/admin/users" className={linkClass}>
+            Users
+          </Link>
+          <Link to="/admin/products" className={linkClass}>
+            Product
+          </Link>
+          <Link to="/admin/orders" className={linkClass}>
+            Order
+          </Link>
         </nav>
       </header>
-      <main style={{ padding: 16 }}>
+
+      <main className="bg-bg px-4 pt-[5rem]">
         <Outlet />
       </main>
-      <footer style={{ padding: 12, borderTop: '1px solid #eee' }}>© Admin</footer>
+
+      <footer className="border-t border-[#eee] px-3 py-3">© Admin</footer>
     </div>
   );
 };
