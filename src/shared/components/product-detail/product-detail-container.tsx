@@ -5,19 +5,12 @@ import ProductDetailView from '@components/product-detail/product-detail-view';
 type ProductDetailContainerProps = {
   product?: ProductDetailResponseDTO;
   recommendations?: RecommendationItem[];
-  onClickBack?: () => void;
-  onClickInquiry?: () => void;
 };
 
 const ProductDetailContainer = ({
   product,
   recommendations,
-  onClickBack,
-  onClickInquiry,
 }: ProductDetailContainerProps) => {
-  void onClickBack;
-  void onClickInquiry;
-
   const {
     product: resolvedProduct,
     activeTab,
