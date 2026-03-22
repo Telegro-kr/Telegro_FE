@@ -192,6 +192,7 @@ export function useAccessStatusChart() {
   const [isReady, setIsReady] = useState(false);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
+  const [isYearPickerOpen, setIsYearPickerOpen] = useState(false);
   const [hovered, setHovered] = useState<HoverState>(null);
   const [pageByFilter, setPageByFilter] = useState<Record<ChartFilter, number>>(
     {
@@ -209,8 +210,11 @@ export function useAccessStatusChart() {
 
   useEffect(() => {
     setHovered(null);
-    if (filter !== 'monthly') {
+    if (filter !== 'daily') {
       setIsMonthPickerOpen(false);
+    }
+    if (filter !== 'monthly') {
+      setIsYearPickerOpen(false);
     }
   }, [filter, selectedYear, selectedMonth, pageByFilter]);
 
@@ -272,6 +276,8 @@ export function useAccessStatusChart() {
     setIsFilterMenuOpen,
     isMonthPickerOpen,
     setIsMonthPickerOpen,
+    isYearPickerOpen,
+    setIsYearPickerOpen,
     activeFilterLabel,
     activeMonthLabel: `${selectedMonth}월`,
     activeYearLabel: `${selectedYear}년`,
