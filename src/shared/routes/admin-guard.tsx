@@ -8,7 +8,7 @@ const AdminGuard = () => {
   const storedRole = getStoredUserRole();
 
   if (!isAdmin && storedRole !== 'ADMIN') {
-    return <Navigate to="/forbidden" replace state={{ from: loc }} />;
+    return <Navigate to="/error" replace state={{ from: loc }} />;
   }
 
   return <Outlet />;

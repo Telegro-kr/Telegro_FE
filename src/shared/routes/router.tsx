@@ -16,7 +16,6 @@ const Notices = lazy(() => import('@pages/public/notices/notices'));
 const NoticeDetail = lazy(() => import('@pages/public/notices/notice-detail'));
 const Login = lazy(() => import('@pages/auth/login'));
 const ErrorPage = lazy(() => import('@pages/errors/error'));
-const Forbidden = lazy(() => import('@pages/errors/forbidden'));
 const NotFound = lazy(() => import('@pages/errors/not-found'));
 
 const Cart = lazy(() => import('@pages/app/cart/cart'));
@@ -51,7 +50,7 @@ export const router = createBrowserRouter([
       { path: 'notices', element: <Notices /> },
       { path: 'notices/:noticeId', element: <NoticeDetail /> },
       { path: 'login', element: <Login /> },
-      { path: 'forbidden', element: <Forbidden /> },
+      { path: 'error', element: <ErrorPage /> },
     ],
   },
   {
