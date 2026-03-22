@@ -1,4 +1,5 @@
 import type { NoticeItem } from '@hooks/use-notice-section';
+import Icon from '@components/common/icon';
 
 type NoticeCardProps = {
   notice: NoticeItem;
@@ -13,7 +14,7 @@ const NoticeCard = ({ notice }: NoticeCardProps) => {
         </div>
 
         <div className="flex items-center gap-1 text-gray-500">
-          <EyeIcon />
+          <Icon name="eye" size={1.8} />
           <span className="caption3 text-gray-500">{notice.views}</span>
         </div>
       </div>
@@ -45,21 +46,3 @@ const NoticeCard = ({ notice }: NoticeCardProps) => {
 };
 
 export default NoticeCard;
-
-function EyeIcon() {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      aria-hidden="true"
-      className="h-[18px] w-[18px] shrink-0"
-      fill="none"
-    >
-      <path
-        d="M10 4.25C5.833 4.25 2.742 7.02 1.5 10C2.742 12.98 5.833 15.75 10 15.75C14.167 15.75 17.258 12.98 18.5 10C17.258 7.02 14.167 4.25 10 4.25Z"
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
-      <circle cx="10" cy="10" r="2.6" stroke="currentColor" strokeWidth="1.6" />
-    </svg>
-  );
-}

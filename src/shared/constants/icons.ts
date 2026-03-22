@@ -3,6 +3,7 @@ export const ICONS = [
   "alert-error",
   "delete",
   "explore",
+  "eye",
   "notice",
   "react",
   "search",
