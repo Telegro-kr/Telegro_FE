@@ -6,11 +6,13 @@ import NoticeSectionView from './notice-section-view';
 type NoticeSectionContainerProps = {
   notices?: NoticeItem[];
   onClickAll?: () => void;
+  onClickNotice?: (noticeId: number) => void;
 };
 
 export default function NoticeSectionContainer({
   notices,
   onClickAll,
+  onClickNotice,
 }: NoticeSectionContainerProps) {
   const {
     title,
@@ -28,6 +30,7 @@ export default function NoticeSectionContainer({
       actionLabel={actionLabel}
       notices={resolvedNotices}
       onClickAll={handleClickAll}
+      onClickNotice={onClickNotice}
     />
   );
 }

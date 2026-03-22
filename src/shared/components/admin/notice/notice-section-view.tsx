@@ -6,6 +6,7 @@ type NoticeSectionViewProps = {
   actionLabel: string;
   notices: NoticeItem[];
   onClickAll: () => void;
+  onClickNotice?: (noticeId: number) => void;
 };
 
 const NoticeSectionView = ({
@@ -13,6 +14,7 @@ const NoticeSectionView = ({
   actionLabel,
   notices,
   onClickAll,
+  onClickNotice,
 }: NoticeSectionViewProps) => {
   return (
     <section className="w-full flex-col gap-4">
@@ -30,7 +32,11 @@ const NoticeSectionView = ({
 
       <div className="flex-col gap-4">
         {notices.map((notice) => (
-          <NoticeCard key={notice.id} notice={notice} />
+          <NoticeCard
+            key={notice.id}
+            notice={notice}
+            onClick={onClickNotice}
+          />
         ))}
       </div>
     </section>
