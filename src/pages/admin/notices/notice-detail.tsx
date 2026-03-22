@@ -1,17 +1,17 @@
 import NoticeDetailContainer from '@components/notice-detail/notice-detail-container';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const NoticeDetail = () => {
+const AdminNoticeDetailPage = () => {
   const navigate = useNavigate();
-  const { noticeId } = useParams<{ noticeId: string }>();
+  const { noticeId } = useParams();
 
   return (
     <NoticeDetailContainer
       noticeId={Number(noticeId) || undefined}
-      onGoList={() => navigate('/notices')}
-      onOpenNotice={(id) => navigate(`/notices/${id}`)}
+      onGoList={() => navigate('/admin/notices')}
+      onOpenNotice={(id) => navigate(`/admin/notices/${id}`)}
     />
   );
 };
 
-export default NoticeDetail;
+export default AdminNoticeDetailPage;

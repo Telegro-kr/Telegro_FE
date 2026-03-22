@@ -46,7 +46,7 @@ const floatingLinks = [
     rotate: '-10.15deg',
   },
   {
-    label: 'Linecode',
+    label: 'Linecord',
     path: productPath,
     className: 'border-2 border-black bg-white text-[#474747]',
     delay: '360ms',
@@ -86,7 +86,7 @@ const mobileLinks = [
     rotate: '-8deg',
   },
   {
-    label: 'Linecode',
+    label: 'Linecord',
     path: productPath,
     dark: false,
     delay: '360ms',
@@ -98,7 +98,7 @@ const productCards = [
   { title: 'headset', image: productImage1, path: productPath },
   { title: 'recording', image: productImage2, path: productPath },
   { title: 'accessory', image: productImage3, path: productPath },
-  { title: 'linecode', image: productImage4, path: productPath },
+  { title: 'linecord', image: productImage4, path: productPath },
 ];
 
 const marqueeCards = [...productCards, ...productCards];
