@@ -78,12 +78,12 @@ const AccessStatusChartSectionView = ({
   return (
     <section
       className={cn(
-        'relative w-full overflow-visible rounded-[22px] border border-[#F2F2F7] bg-white px-6 py-6 md:px-10 md:py-9',
+        'relative w-full overflow-visible rounded-[22px] border border-[#F2F2F7] bg-white px-6 py-4 md:px-10 md:py-6',
         'transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]',
         isReady ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
       )}
     >
-      <div className="mb-5 flex gap-4 md:mb-10 md:flex-row md:items-center md:justify-between">
+      <div className="mb-4 flex gap-4 md:mb-6 md:flex-row md:items-center md:justify-between">
         <h2 className="text-[1.75rem] leading-none font-semibold tracking-[-0.02em] text-[#1A1E22] md:text-[2rem]">
           접속 현황
         </h2>

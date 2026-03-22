@@ -28,10 +28,10 @@ const AccessStatusGraph = ({
   onNext: () => void;
 }) => {
   const width = 1040;
-  const height = 300;
+  const height = 270;
   const paddingX = 72;
-  const headerSpace = 78;
-  const bottomPadding = 36;
+  const headerSpace = 60;
+  const bottomPadding = 22;
   const graphHeight = height - headerSpace - bottomPadding;
   const stepX =
     data.length > 1 ? (width - paddingX * 2) / (data.length - 1) : 0;
@@ -43,7 +43,7 @@ const AccessStatusGraph = ({
     const x = paddingX + stepX * index;
     const normalized = (item.value - minValue) / valueRange;
     const y =
-      headerSpace + graphHeight - normalized * (graphHeight * 0.62) - 14;
+      headerSpace + graphHeight - normalized * (graphHeight * 0.62) - 12;
     return { ...item, x, y };
   });
 
@@ -53,14 +53,14 @@ const AccessStatusGraph = ({
 
   return (
     <div className="relative w-full overflow-hidden">
-      <div className="pointer-events-none absolute inset-y-[7.4rem] left-0 z-10 hidden items-center md:flex">
+      <div className="pointer-events-none absolute inset-y-[6.8rem] left-0 z-10 hidden items-center md:flex">
         <GraphArrowButton
           direction="left"
           disabled={!canGoPrev}
           onClick={onPrev}
         />
       </div>
-      <div className="pointer-events-none absolute inset-y-[7.4rem] right-0 z-10 hidden items-center md:flex">
+      <div className="pointer-events-none absolute inset-y-[6.8rem] right-0 z-10 hidden items-center md:flex">
         <GraphArrowButton
           direction="right"
           disabled={!canGoNext}
