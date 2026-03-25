@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-export type UserRole = 'MEMBER' | 'DEALER' | 'BEST' | 'BUSINESS';
+export type UserRole = 'MEMBER' | 'DEALER' | 'BEST' | 'BUSINESS' | 'ADMIN';
 
 export type UserRow = {
   id: number;
@@ -16,8 +16,11 @@ export type UserRow = {
 
 type UserListTableProps = {
   users: UserRow[];
-  itemsPerPage?: number;
+  currentPage: number;
+  totalPages: number;
+  isLoading?: boolean;
   onRowMenuClick?: (user: UserRow) => void;
+  onPageChange?: (page: number) => void;
 };
 
 const ROLE_COLOR_MAP: Record<UserRole, string> = {
@@ -25,6 +28,7 @@ const ROLE_COLOR_MAP: Record<UserRole, string> = {
   DEALER: '#FCBB60',
   BEST: '#DDA9FF',
   BUSINESS: '#91B6FF',
+  ADMIN: '#B8B8B8',
 };
 
 function KebabButton({ onClick }: { onClick?: () => void }) {
@@ -118,29 +122,19 @@ function getPaginationRange(
 
 const UserListTable = ({
   users,
-  itemsPerPage = 9,
+  currentPage,
+  totalPages,
+  isLoading = false,
   onRowMenuClick,
+  onPageChange,
 }: UserListTableProps) => {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.max(1, Math.ceil(users.length / itemsPerPage));
-
-  useEffect(() => {
-    setCurrentPage((page) => Math.min(page, totalPages));
-  }, [totalPages]);
-
-  const paginatedUsers = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return users.slice(start, start + itemsPerPage);
-  }, [currentPage, itemsPerPage, users]);
-
   const paginationRange = useMemo(
     () => getPaginationRange(currentPage, totalPages),
     [currentPage, totalPages],
   );
 
   const goToPage = (page: number) => {
-    setCurrentPage(Math.min(Math.max(page, 1), totalPages));
+    onPageChange?.(Math.min(Math.max(page, 1), totalPages));
   };
 
   return (
@@ -160,7 +154,7 @@ const UserListTable = ({
             </div>
 
             <div className="flex flex-col gap-[14px]">
-              {paginatedUsers.map((user) => (
+              {users.map((user) => (
                 <div
                   key={user.id}
                   className="relative grid h-[58px] grid-cols-[92px_160px_210px_minmax(240px,1fr)_98px_108px_88px_44px] items-center overflow-hidden rounded-[8px] bg-white px-[18px]"
@@ -197,6 +191,12 @@ const UserListTable = ({
                   </div>
                 </div>
               ))}
+
+              {!isLoading && users.length === 0 ? (
+                <div className="flex h-[160px] items-center justify-center rounded-[8px] bg-white text-[16px] text-[#8A8A8A]">
+                  표시할 유저가 없습니다.
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
