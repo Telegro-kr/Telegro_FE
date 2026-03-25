@@ -21,6 +21,7 @@ type UseProductSectionParams = {
   onClickArrow?: () => void;
   onClickProduct?: (product: ProductItem) => void;
   pageSize?: number;
+  searchKeyword?: string;
 };
 
 const DEFAULT_PAGE_SIZE = 4;
@@ -77,6 +78,7 @@ export function useProductSection({
   onClickArrow,
   onClickProduct,
   pageSize = DEFAULT_PAGE_SIZE,
+  searchKeyword = '',
 }: UseProductSectionParams = {}) {
   const queryClient = useQueryClient();
   const hasInjectedProducts = Boolean(products?.length);
@@ -122,6 +124,17 @@ export function useProductSection({
     );
   }, [activeCategory, productQuery.data?.data?.products, products]);
 
+  const normalizedKeyword = searchKeyword.trim().toLowerCase();
+  const filteredProducts = useMemo(() => {
+    if (!normalizedKeyword) {
+      return resolvedProducts;
+    }
+
+    return resolvedProducts.filter((product) =>
+      product.title.toLowerCase().includes(normalizedKeyword),
+    );
+  }, [normalizedKeyword, resolvedProducts]);
+
   const handleChangeCategory = (category: ProductCategory) => {
     setActiveCategory(category);
   };
@@ -149,11 +162,11 @@ export function useProductSection({
     categories: CATEGORY_OPTIONS,
     categoryLabels: CATEGORY_LABELS,
     activeCategory,
-    products: resolvedProducts,
+    products: filteredProducts,
     isLoading: hasInjectedProducts ? false : productQuery.isLoading,
     isError: hasInjectedProducts ? false : productQuery.isError,
     isArrowDisabled: hasInjectedProducts
-      ? resolvedProducts.length <= pageSize
+      ? filteredProducts.length <= pageSize
       : Boolean(productQuery.data?.data?.isLast),
     setActiveCategory: handleChangeCategory,
     handleClickAll: () => onClickAll?.(),

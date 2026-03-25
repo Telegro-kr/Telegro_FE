@@ -15,6 +15,7 @@ type ProductSectionContainerProps = {
   onClickProduct?: (product: ProductItem) => void;
   variant?: 'dashboard' | 'list';
   pageSize?: number;
+  searchKeyword?: string;
 };
 
 export default function ProductSectionContainer({
@@ -25,6 +26,7 @@ export default function ProductSectionContainer({
   onClickProduct,
   variant = 'dashboard',
   pageSize,
+  searchKeyword,
 }: ProductSectionContainerProps) {
   const {
     title,
@@ -47,6 +49,7 @@ export default function ProductSectionContainer({
     onClickArrow,
     onClickProduct,
     pageSize: pageSize ?? (variant === 'list' ? 100 : 4),
+    searchKeyword,
   });
 
   return (
