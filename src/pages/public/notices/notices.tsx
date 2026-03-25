@@ -1,11 +1,13 @@
+import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import SearchBar from '@components/common/search-bar';
 import NoticeCard from '@components/notice/notice-card';
 import { useNoticeSection } from '@hooks/use-notice-section';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Notices = () => {
   const navigate = useNavigate();
+  const pageRef = useRef<HTMLDivElement>(null);
   const [keyword, setKeyword] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
 
@@ -24,12 +26,12 @@ const Notices = () => {
   };
 
   return (
-    <section className="flex-col bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5erm] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]">
-      <div className="mb-[3rem] flex items-center">
-        <h1 className="title3 tracking-[-0.03em] text-gray-900">공지사항</h1>
-      </div>
-
-      <div className="mb-[5rem]">
+    <div
+      ref={pageRef}
+      className="flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
+    >
+      <div className="flex-col gap-[3.5rem]">
+        <h1 className="title3 text-gray-900">공지사항</h1>
         <SearchBar
           value={keyword}
           onChange={setKeyword}
@@ -66,7 +68,8 @@ const Notices = () => {
           표시할 공지사항이 없습니다.
         </div>
       )}
-    </section>
+      <ExploreScrollToTop targetRef={pageRef} />
+    </div>
   );
 };
 

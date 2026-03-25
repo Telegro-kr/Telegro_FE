@@ -60,12 +60,7 @@ const sizeClasses: Record<
 
 function SearchIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
       <path
         d="M11 4.75C14.4518 4.75 17.25 7.54822 17.25 11C17.25 12.5163 16.71 13.9065 15.811 14.9883L19.5303 18.7197C19.8232 19.0126 19.8232 19.4874 19.5303 19.7803C19.2641 20.0466 18.8474 20.0708 18.5537 19.8535L18.4697 19.7803L14.7383 16.061C13.6565 16.96 12.2663 17.5 10.75 17.5C7.29822 17.5 4.5 14.7018 4.5 11.25C4.5 7.79822 7.29822 5 10.75 5L11 4.75Z"
         stroke="currentColor"
@@ -80,7 +75,7 @@ function SearchIcon({ className }: { className?: string }) {
 export default function SearchBar({
   value,
   defaultValue = '',
-  placeholder = '찾으시는 상품의 이름을 입력해 주세요.',
+  placeholder = '찾으시는 항목의 이름을 입력해 주세요.',
   buttonText = '검색하기',
   disabled = false,
   loading = false,
