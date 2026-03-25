@@ -1,6 +1,6 @@
 import { useUpdateOrderStatus } from '@apis/telegro';
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 
 export type OrderStatusValue =
@@ -39,6 +39,30 @@ const STATUS_OPTIONS: Array<{ label: string; value: OrderStatusValue }> = [
   { label: '주문 취소', value: 'ORDER_CANCELLED' },
 ];
 
+const useOutsideClose = (
+  isOpen: boolean,
+  ref: React.RefObject<HTMLElement | null>,
+  onClose: () => void,
+) => {
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [isOpen, onClose, ref]);
+};
+
 const OrderStatusControl = ({ row }: { row: OrderRow }) => {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
@@ -52,29 +76,13 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
     },
   });
 
+  useOutsideClose(isOpen, containerRef, () => setIsOpen(false));
+
   const isCancelled = row.statusValue === 'ORDER_CANCELLED';
   const availableOptions =
     row.statusValue === 'ORDER_CREATED'
       ? STATUS_OPTIONS.filter((option) => option.value === 'ORDER_CANCELLED')
       : STATUS_OPTIONS.filter((option) => option.value !== 'ORDER_CANCELLED');
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const handlePointerDown = (event: MouseEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handlePointerDown);
-
-    return () => {
-      document.removeEventListener('mousedown', handlePointerDown);
-    };
-  }, [isOpen]);
 
   if (isCancelled) {
     return (
@@ -128,6 +136,30 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
 };
 
 const OrderListTable = ({ data }: Props) => {
+  const [isHeaderFilterOpen, setIsHeaderFilterOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<OrderStatusValue | 'ALL'>(
+    'ALL',
+  );
+  const headerFilterRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClose(isHeaderFilterOpen, headerFilterRef, () =>
+    setIsHeaderFilterOpen(false),
+  );
+
+  const filteredData = useMemo(() => {
+    if (selectedStatus === 'ALL') {
+      return data;
+    }
+
+    return data.filter((row) => row.statusValue === selectedStatus);
+  }, [data, selectedStatus]);
+
+  const selectedStatusLabel =
+    selectedStatus === 'ALL'
+      ? '주문 상태'
+      : STATUS_OPTIONS.find((option) => option.value === selectedStatus)?.label ??
+        '주문 상태';
+
   return (
     <div className="w-full rounded-[1.6rem] border border-slate-200 bg-white">
       <table className="w-full table-fixed border-collapse">
@@ -158,16 +190,63 @@ const OrderListTable = ({ data }: Props) => {
               주문자 정보
             </th>
             <th className="w-[13%] px-2 py-6 align-middle md:px-4">
-              <div className="flex items-center justify-center gap-2 text-[1.4rem] font-semibold text-slate-500 md:text-[1.6rem]">
-                <span>주문 상태</span>
-                <FiChevronDown className="shrink-0" />
+              <div
+                ref={headerFilterRef}
+                className="relative flex items-center justify-center"
+              >
+                <button
+                  type="button"
+                  onClick={() => setIsHeaderFilterOpen((prev) => !prev)}
+                  className="flex items-center justify-center gap-2 text-[1.4rem] font-semibold text-slate-500 md:text-[1.6rem]"
+                >
+                  <span>{selectedStatusLabel}</span>
+                  <FiChevronDown className="shrink-0" />
+                </button>
+
+                {isHeaderFilterOpen ? (
+                  <div className="absolute top-[calc(100%+0.8rem)] z-20 min-w-[14rem] rounded-[1.2rem] border border-[#E6E6E6] bg-white p-2 shadow-[0_12px_30px_rgba(17,17,17,0.08)]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedStatus('ALL');
+                        setIsHeaderFilterOpen(false);
+                      }}
+                      className={[
+                        'flex w-full items-center rounded-[0.8rem] px-4 py-3 text-left text-[1.5rem] transition-colors',
+                        selectedStatus === 'ALL'
+                          ? 'bg-[#FFF7E0] font-semibold text-[#2B2B2B]'
+                          : 'text-[#555555] hover:bg-[#F5F5F5]',
+                      ].join(' ')}
+                    >
+                      전체
+                    </button>
+                    {STATUS_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => {
+                          setSelectedStatus(option.value);
+                          setIsHeaderFilterOpen(false);
+                        }}
+                        className={[
+                          'flex w-full items-center rounded-[0.8rem] px-4 py-3 text-left text-[1.5rem] transition-colors',
+                          option.value === selectedStatus
+                            ? 'bg-[#FFF7E0] font-semibold text-[#2B2B2B]'
+                            : 'text-[#555555] hover:bg-[#F5F5F5]',
+                        ].join(' ')}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             </th>
           </tr>
         </thead>
 
         <tbody>
-          {data.map((row) => (
+          {filteredData.map((row) => (
             <tr
               key={row.id}
               className="h-[9.2rem] border-b border-slate-200 last:border-b-0"
