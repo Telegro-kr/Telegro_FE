@@ -18,8 +18,9 @@ const PublicProducts = () => {
   };
 
   return (
-    <section className="mx-auto w-full max-w-[160rem] px-[2rem] py-[5rem] md:px-[3rem] lg:px-[10rem]">
-      <div className="mb-[5rem]">
+    <div className="flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5erm] md:py-[3rem] lg:px-[10rem] lg:py-[7rem]">
+      <div className="flex-col gap-[3.5rem]">
+        <h1 className="title3">상품 목록</h1>
         <SearchBar
           value={keyword}
           onChange={setKeyword}
@@ -37,7 +38,7 @@ const PublicProducts = () => {
           navigate(`/products/${product.id}`);
         }}
       />
-    </section>
+    </div>
   );
 };
 
