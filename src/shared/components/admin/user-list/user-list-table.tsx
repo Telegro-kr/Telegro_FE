@@ -181,7 +181,7 @@ const UserListTable = ({
   };
 
   return (
-    <section className="w-full rounded-[20px] bg-[#F8F8F8] px-3 py-4 md:px-4 md:py-5">
+    <section className="w-full rounded-[20px] bg-[#FAFAFA] px-3 py-4 md:px-4 md:py-5">
       <div className="w-full">
         <div className="overflow-x-auto">
           <div className="min-w-[1040px]">
@@ -189,10 +189,10 @@ const UserListTable = ({
               <div className="text-left">이름</div>
               <div className="text-left">전화번호</div>
               <div className="text-left">이메일</div>
-              <div className="text-center">아이디</div>
-              <div className="text-center">가입일</div>
-              <div className="text-center">총 주문액</div>
-              <div className="text-center">적립금</div>
+              <div className="pl-[1rem] text-left">아이디</div>
+              <div className="text-left">가입일</div>
+              <div className="text-left">총 주문액</div>
+              <div className="text-left">적립금</div>
               <div />
             </div>
 
@@ -217,16 +217,16 @@ const UserListTable = ({
                   <div className="truncate text-[16px] font-normal text-[#626262]">
                     {user.email}
                   </div>
-                  <div className="truncate px-4 text-center text-[16px] font-normal text-[#626262]">
+                  <div className="truncate px-4 text-left text-[16px] font-normal text-[#626262]">
                     {user.userId}
                   </div>
-                  <div className="text-center text-[16px] font-normal text-[#828282]">
+                  <div className="text-left text-[16px] font-normal text-[#828282]">
                     {user.joinedAt}
                   </div>
-                  <div className="text-center text-[16px] font-normal text-[#828282]">
+                  <div className="text-left text-[16px] font-normal text-[#828282]">
                     {user.totalOrderAmount}
                   </div>
-                  <div className="text-center text-[16px] font-normal text-[#828282]">
+                  <div className="text-left text-[16px] font-normal text-[#828282]">
                     {user.rewardPoint}
                   </div>
                   <div

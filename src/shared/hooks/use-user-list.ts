@@ -12,9 +12,11 @@ type UseUserListParams = {
   page: number;
   size?: number;
   filteredBy?: GetUsersFilteredBy;
+  searchKeyword?: string;
 };
 
 const DEFAULT_PAGE_SIZE = 9;
+const FETCH_ALL_SIZE = 10000;
 
 const formatPrice = (value?: number | null) => {
   if (value === undefined || value === null) {
@@ -71,11 +73,12 @@ export const useUserList = ({
   page,
   size = DEFAULT_PAGE_SIZE,
   filteredBy,
+  searchKeyword = '',
 }: UseUserListParams) => {
   const userQuery = useGetUsers(
     {
-      page,
-      size,
+      page: 0,
+      size: FETCH_ALL_SIZE,
       filteredBy,
     },
     {
@@ -85,16 +88,39 @@ export const useUserList = ({
     },
   );
 
-  const users = useMemo<UserRow[]>(() => {
+  const allUsers = useMemo<UserRow[]>(() => {
     return (userQuery.data?.data?.users ?? []).map((user, index) =>
-      toUserRow(user, page * size + index + 1),
+      toUserRow(user, index + 1),
     );
-  }, [page, size, userQuery.data?.data?.users]);
+  }, [userQuery.data?.data?.users]);
+
+  const filteredUsers = useMemo(() => {
+    const normalizedKeyword = searchKeyword.trim().toLowerCase();
+
+    if (!normalizedKeyword) {
+      return allUsers;
+    }
+
+    return allUsers.filter((user) =>
+      [user.name, user.phone, user.email, user.userId].some((value) =>
+        value.toLowerCase().includes(normalizedKeyword),
+      ),
+    );
+  }, [allUsers, searchKeyword]);
+
+  const users = useMemo<UserRow[]>(() => {
+    const startIndex = page * size;
+
+    return filteredUsers.slice(startIndex, startIndex + size);
+  }, [filteredUsers, page, size]);
+
+  const totalCount = filteredUsers.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / size));
 
   return {
     users,
-    totalPages: Math.max(1, userQuery.data?.data?.totalPage ?? 1),
-    totalCount: userQuery.data?.data?.totalElement ?? users.length,
+    totalPages,
+    totalCount,
     isLoading: userQuery.isLoading,
     isFetching: userQuery.isFetching,
     isError: userQuery.isError,
