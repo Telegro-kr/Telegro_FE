@@ -42,7 +42,7 @@ const NotificationCard = ({ item, onRemove }: NotificationCardProps) => {
       className={cn(
         'cursor-pointer rounded-2xl border px-6 py-5 transition-all duration-200',
         item.isRead
-          ? 'border-[#F2F2F7] bg-[#E3E3E3]/70'
+          ? 'border-[#F2F2F7] bg-[#E3E3E3]/70 opacity-50'
           : 'border-[#F2F2F7] bg-white hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)]',
       )}
     >
