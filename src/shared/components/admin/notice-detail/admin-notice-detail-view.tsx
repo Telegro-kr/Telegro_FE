@@ -11,6 +11,8 @@ const AdminNoticeDetailView = ({
   notice,
   prevNotice,
   nextNotice,
+  isLoading,
+  isError,
   handleGoList,
   handleOpenNotice,
 }: AdminNoticeDetailViewProps) => {
@@ -26,7 +28,7 @@ const AdminNoticeDetailView = ({
             <span>No. {notice.id}</span>
             <span className="h-4 w-px bg-[#D9D9D9]" />
             <Icon name="eye" size={1.6} />
-            <span>101</span>
+            <span>{notice.views}</span>
             <span className="h-4 w-px bg-[#D9D9D9]" />
             <CalendarIcon />
             <span>{notice.createdAt}</span>
@@ -40,14 +42,26 @@ const AdminNoticeDetailView = ({
 
           <article className="flex flex-col gap-8 text-[#202124]">
             <p className="text-[1.28rem] leading-[1.9] tracking-[-0.02em] text-[#202124] md:text-[1.45rem]">
-              안녕하세요, 텔레그로 운영팀입니다.
+              안녕하세요. 텔레그로 운영팀입니다.
             </p>
 
-            <p className="text-[1.2rem] leading-[1.95] font-medium tracking-[-0.02em] text-[#5B74F7] md:text-[1.35rem]">
-              {notice.summary}
-            </p>
+            {notice.summary ? (
+              <p className="text-[1.2rem] leading-[1.95] font-medium tracking-[-0.02em] text-[#5B74F7] md:text-[1.35rem]">
+                {notice.summary}
+              </p>
+            ) : null}
 
-            <NoticeContentCard paragraphs={notice.content} />
+            {isLoading ? (
+              <p className="text-[1.14rem] leading-[2] tracking-[-0.02em] text-[#202124] md:text-[1.28rem]">
+                공지사항을 불러오는 중입니다.
+              </p>
+            ) : isError ? (
+              <p className="text-[1.14rem] leading-[2] tracking-[-0.02em] text-[#202124] md:text-[1.28rem]">
+                공지사항을 불러오지 못했습니다.
+              </p>
+            ) : (
+              <NoticeContentCard content={notice.content} />
+            )}
           </article>
 
           <div className="border-t border-[#E9E9E9]">

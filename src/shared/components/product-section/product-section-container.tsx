@@ -13,6 +13,9 @@ type ProductSectionContainerProps = {
   onClickAll?: () => void;
   onClickArrow?: () => void;
   onClickProduct?: (product: ProductItem) => void;
+  variant?: 'dashboard' | 'list';
+  pageSize?: number;
+  searchKeyword?: string;
 };
 
 export default function ProductSectionContainer({
@@ -21,6 +24,9 @@ export default function ProductSectionContainer({
   onClickAll,
   onClickArrow,
   onClickProduct,
+  variant = 'dashboard',
+  pageSize,
+  searchKeyword,
 }: ProductSectionContainerProps) {
   const {
     title,
@@ -42,12 +48,14 @@ export default function ProductSectionContainer({
     onClickAll,
     onClickArrow,
     onClickProduct,
+    pageSize: pageSize ?? (variant === 'list' ? 100 : 4),
+    searchKeyword,
   });
 
   return (
     <ProductSectionView
-      title={title}
-      actionLabel={actionLabel}
+      title={variant === 'dashboard' ? title : undefined}
+      actionLabel={variant === 'dashboard' ? actionLabel : undefined}
       categories={categories}
       categoryLabels={categoryLabels}
       activeCategory={activeCategory}
@@ -55,6 +63,7 @@ export default function ProductSectionContainer({
       isLoading={isLoading}
       isError={isError}
       isArrowDisabled={isArrowDisabled}
+      variant={variant}
       onChangeCategory={setActiveCategory}
       onClickAll={handleClickAll}
       onClickArrow={handleClickArrow}

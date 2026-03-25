@@ -1,16 +1,51 @@
-import { type ProductDetailResponseDTO } from '@apis/telegro';
+import {
+  useGetProducts,
+  type GetProductsCategory,
+  type ProductDetailResponseDTO,
+} from '@apis/telegro';
 import { useProductDetail, type RecommendationItem } from '@hooks/use-product-detail';
 import ProductDetailView from '@components/product-detail/product-detail-view';
+import { formatNumber } from '@utils/format';
 
 type ProductDetailContainerProps = {
+  productId?: number;
   product?: ProductDetailResponseDTO;
   recommendations?: RecommendationItem[];
 };
 
 const ProductDetailContainer = ({
+  productId,
   product,
   recommendations,
 }: ProductDetailContainerProps) => {
+  const category = product?.category as GetProductsCategory | undefined;
+  const recommendationQuery = useGetProducts(
+    {
+      category: category ?? 'HEADSET',
+      page: 0,
+      size: 5,
+    },
+    {
+      query: {
+        enabled: Boolean(category) && !recommendations?.length,
+        staleTime: 60_000,
+      },
+    },
+  );
+
+  const apiRecommendations =
+    recommendationQuery.data?.data?.products
+      ?.filter((item) => item.id !== productId)
+      .slice(0, 4)
+      .map(
+        (item): RecommendationItem => ({
+          id: item.id ?? 0,
+          title: item.productName?.trim() || 'Unknown product',
+          price: `${formatNumber(item.price)}\uC6D0`,
+          image: item.coverImage?.trim() || '/product1.png',
+        }),
+      ) ?? [];
+
   const {
     product: resolvedProduct,
     activeTab,
@@ -30,7 +65,10 @@ const ProductDetailContainer = ({
     recommendations: resolvedRecommendations,
     handleToggleLike,
     handleShare,
-  } = useProductDetail({ product, recommendations });
+  } = useProductDetail({
+    product,
+    recommendations: recommendations ?? apiRecommendations,
+  });
 
   return (
     <ProductDetailView

@@ -1,4 +1,5 @@
 import { type ProductDetailResponseDTO } from '@apis/telegro';
+import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import {
   type ProductTab,
   type RecommendationItem,
@@ -7,6 +8,7 @@ import ProductDetailGallery from '@components/product-detail/product-detail-gall
 import ProductDetailPurchasePanel from '@components/product-detail/product-detail-purchase-panel';
 import ProductDetailTabs from '@components/product-detail/product-detail-tabs';
 import ProductDetailRecommendationSection from '@components/product-detail/product-detail-recommendation-section';
+import { useRef } from 'react';
 
 type ProductDetailViewProps = {
   product: ProductDetailResponseDTO;
@@ -51,8 +53,10 @@ const ProductDetailView = ({
   onToggleLike,
   onShare,
 }: ProductDetailViewProps) => {
+  const pageRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="min-h-screen bg-[#FBFBF8] text-gray-900">
+    <div ref={pageRef} className="min-h-screen bg-[#FBFBF8] text-gray-900">
       <main className="mx-auto flex w-full max-w-[124rem] flex-col px-6 pt-10 pb-24">
         <div className="mb-8 flex items-center gap-3 text-[1.05rem] text-[#9CA3AF]">
           <span>Product</span>
@@ -88,14 +92,6 @@ const ProductDetailView = ({
         <section className="mx-auto mt-12 flex w-full flex-col gap-16">
           {activeTab === 'detail' && (
             <>
-              <div className="overflow-hidden bg-white">
-                <img
-                  src="/product1.png"
-                  alt="상세 이미지"
-                  className="w-full object-cover"
-                />
-              </div>
-
               <button
                 type="button"
                 onClick={onToggleDetail}
@@ -110,9 +106,16 @@ const ProductDetailView = ({
               </button>
 
               {isDetailOpen ? (
-                <div className="text-[1.18rem] leading-[2] whitespace-pre-line text-gray-700">
-                  {product.content}
-                </div>
+                product.content?.trim().startsWith('<') ? (
+                  <div
+                    className="text-[1.18rem] leading-[2] text-gray-700 [&_h4]:text-[1.3rem] [&_h4]:font-semibold [&_h5]:text-[1.18rem] [&_h5]:font-semibold [&_p]:min-h-[1.5rem] [&_strong]:font-semibold"
+                    dangerouslySetInnerHTML={{ __html: product.content }}
+                  />
+                ) : (
+                  <div className="text-[1.18rem] leading-[2] whitespace-pre-line text-gray-700">
+                    {product.content}
+                  </div>
+                )
               ) : null}
             </>
           )}
@@ -136,6 +139,7 @@ const ProductDetailView = ({
 
         <ProductDetailRecommendationSection recommendations={recommendations} />
       </main>
+      <ExploreScrollToTop targetRef={pageRef} />
     </div>
   );
 };

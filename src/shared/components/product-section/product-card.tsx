@@ -4,9 +4,14 @@ import type { ProductItem } from '@hooks/use-product-section';
 type ProductCardProps = {
   product: ProductItem;
   onClick?: (product: ProductItem) => void;
+  showActionButton?: boolean;
 };
 
-export default function ProductCard({ product, onClick }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  onClick,
+  showActionButton = true,
+}: ProductCardProps) {
   return (
     <article className="relative flex w-full max-w-[37.5rem] flex-col gap-[2rem]">
       <button
@@ -27,20 +32,22 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
         </div>
       </button>
 
-      <div className="flex items-center justify-between px-[1rem]">
-        <div className="flex w-[22.3rem] flex-col items-start gap-[1rem]">
+      <div className="flex items-center justify-between gap-[1.6rem] px-[1rem]">
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-[1rem]">
           <p className="title4 w-full text-gray-900">{product.title}</p>
           <p className="title5 w-full text-gray-600">{product.subtitle}</p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => onClick?.(product)}
-          aria-label={`${product.title} 상세 보기`}
-          className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1rem] bg-gray-900"
-        >
-          <Icon name="admin-arrow" className="text-gray-50" size={4.5} />
-        </button>
+        {showActionButton ? (
+          <button
+            type="button"
+            onClick={() => onClick?.(product)}
+            aria-label={`${product.title} 상세 보기`}
+            className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1rem] bg-gray-900"
+          >
+            <Icon name="admin-arrow" className="text-gray-50" size={4.5} />
+          </button>
+        ) : null}
       </div>
     </article>
   );
