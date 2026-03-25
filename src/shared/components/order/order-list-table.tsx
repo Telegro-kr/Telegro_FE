@@ -1,7 +1,19 @@
-import React from 'react';
+import { useUpdateOrderStatus } from '@apis/telegro';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { useEffect, useRef, useState } from 'react';
+import { FiChevronDown } from 'react-icons/fi';
+
+export type OrderStatusValue =
+  | 'ORDER_CREATED'
+  | 'ORDER_COMPLETED'
+  | 'PAYMENT_COMPLETED'
+  | 'ORDER_CANCELLED'
+  | 'SHIPPING'
+  | 'DELIVERY_COMPLETED';
 
 export type OrderRow = {
   id: number;
+  orderId: number;
   productName: string;
   optionLabel: string;
   quantity: number;
@@ -11,10 +23,108 @@ export type OrderRow = {
   orderInfo: string;
   customerInfo: string;
   statusLabel: string;
+  statusValue: OrderStatusValue;
 };
 
 type Props = {
   data: OrderRow[];
+};
+
+const STATUS_OPTIONS: Array<{ label: string; value: OrderStatusValue }> = [
+  { label: '주문 생성', value: 'ORDER_CREATED' },
+  { label: '결제 완료', value: 'PAYMENT_COMPLETED' },
+  { label: '주문 완료', value: 'ORDER_COMPLETED' },
+  { label: '배송 중', value: 'SHIPPING' },
+  { label: '배송 완료', value: 'DELIVERY_COMPLETED' },
+  { label: '주문 취소', value: 'ORDER_CANCELLED' },
+];
+
+const OrderStatusControl = ({ row }: { row: OrderRow }) => {
+  const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const updateOrderStatus = useUpdateOrderStatus({
+    mutation: {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
+        setIsOpen(false);
+      },
+    },
+  });
+
+  const isCancelled = row.statusValue === 'ORDER_CANCELLED';
+  const availableOptions =
+    row.statusValue === 'ORDER_CREATED'
+      ? STATUS_OPTIONS.filter((option) => option.value === 'ORDER_CANCELLED')
+      : STATUS_OPTIONS.filter((option) => option.value !== 'ORDER_CANCELLED');
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [isOpen]);
+
+  if (isCancelled) {
+    return (
+      <div className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center rounded-[12px] bg-[#F5F5F5] px-3 text-[1.3rem] font-medium text-slate-500 md:text-[1.5rem]">
+        {row.statusLabel}
+      </div>
+    );
+  }
+
+  return (
+    <div ref={containerRef} className="relative flex justify-center">
+      <button
+        type="button"
+        disabled={updateOrderStatus.isPending}
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center gap-2 rounded-[12px] bg-[#F5F5F5] px-3 text-[1.3rem] font-medium text-[#2B2B2B] transition hover:bg-[#EBEBEB] disabled:cursor-not-allowed disabled:opacity-60 md:text-[1.5rem]"
+      >
+        <span className="truncate">{row.statusLabel}</span>
+        <FiChevronDown className="shrink-0" />
+      </button>
+
+      {isOpen ? (
+        <div className="absolute top-[calc(100%+0.8rem)] z-20 min-w-[14rem] rounded-[1.2rem] border border-[#E6E6E6] bg-white p-2 shadow-[0_12px_30px_rgba(17,17,17,0.08)]">
+          {availableOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              disabled={
+                option.value === row.statusValue || updateOrderStatus.isPending
+              }
+              onClick={() => {
+                updateOrderStatus.mutate({
+                  orderId: row.orderId,
+                  params: { status: option.value },
+                });
+              }}
+              className={[
+                'flex w-full items-center rounded-[0.8rem] px-4 py-3 text-left text-[1.5rem] transition-colors',
+                option.value === row.statusValue
+                  ? 'cursor-default bg-[#FFF7E0] font-semibold text-[#2B2B2B]'
+                  : 'text-[#555555] hover:bg-[#F5F5F5]',
+              ].join(' ')}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
 const OrderListTable = ({ data }: Props) => {
@@ -50,22 +160,7 @@ const OrderListTable = ({ data }: Props) => {
             <th className="w-[13%] px-2 py-6 align-middle md:px-4">
               <div className="flex items-center justify-center gap-2 text-[1.4rem] font-semibold text-slate-500 md:text-[1.6rem]">
                 <span>주문 상태</span>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="shrink-0"
-                >
-                  <path
-                    d="M4 6L8 10L12 6"
-                    stroke="#4B5563"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <FiChevronDown className="shrink-0" />
               </div>
             </th>
           </tr>
@@ -77,53 +172,43 @@ const OrderListTable = ({ data }: Props) => {
               key={row.id}
               className="h-[9.2rem] border-b border-slate-200 last:border-b-0"
             >
-              <td className="px-2 text-center align-middle text-[1.4rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
+              <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.id}</span>
               </td>
-
-              <td className="px-2 text-center align-middle text-[1.4rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
+              <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.productName}</span>
               </td>
-
               <td className="px-2 text-center align-middle text-[1.4rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.optionLabel}</span>
               </td>
-
-              <td className="px-2 text-center align-middle text-[1.4rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
+              <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.quantity}</span>
               </td>
-
-              <td className="px-2 text-center align-middle text-[1.4rem] font-semibold text-slate-900 md:px-4 md:text-[1.8rem]">
+              <td className="px-2 text-center align-middle text-[1.5rem] font-semibold text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.unitPrice}</span>
               </td>
-
               <td className="px-2 text-center align-middle md:px-4">
                 <div className="flex flex-col items-center justify-center leading-tight">
-                  <span className="block max-w-full truncate text-[1.4rem] font-semibold text-slate-900 md:text-[1.8rem]">
+                  <span className="block max-w-full truncate text-[1.5rem] font-semibold text-slate-900 md:text-[1.8rem]">
                     {row.totalPrice}
                   </span>
                   {row.totalSubLabel ? (
-                    <span className="mt-1 block max-w-full truncate text-base font-semibold text-slate-500">
+                    <span className="mt-1 block max-w-full truncate text-xs font-semibold text-slate-500">
                       {row.totalSubLabel}
                     </span>
                   ) : null}
                 </div>
               </td>
-
-              <td className="px-2 text-center align-middle text-[1.4rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
+              <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block leading-tight whitespace-pre-line">
                   {row.orderInfo.replace(' ', '\n')}
                 </span>
               </td>
-
-              <td className="px-2 text-center align-middle text-[1.4rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
+              <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.customerInfo}</span>
               </td>
-
               <td className="px-2 text-center align-middle md:px-4">
-                <span className="block truncate text-[1.4rem] font-medium text-slate-700 md:text-[1.7rem]">
-                  {row.statusLabel}
-                </span>
+                <OrderStatusControl row={row} />
               </td>
             </tr>
           ))}

@@ -1,6 +1,6 @@
 import { useGetOrders } from '@apis/telegro';
 import type { OrderDetailDTO } from '@apis/telegro';
-import type { OrderRow } from '@components/order/order-list-table';
+import type { OrderRow, OrderStatusValue } from '@components/order/order-list-table';
 import { formatNumber } from '@utils/format';
 import { useMemo } from 'react';
 
@@ -98,6 +98,10 @@ const getStatusLabel = (order: OrderDetailDTO) => {
   return ORDER_STATUS_LABELS[order.orderStatus] ?? order.orderStatus;
 };
 
+const getStatusValue = (order: OrderDetailDTO): OrderStatusValue => {
+  return (order.orderStatus as OrderStatusValue | undefined) ?? 'ORDER_CREATED';
+};
+
 export const useOrderList = ({
   pageSize = DEFAULT_PAGE_SIZE,
   searchKeyword = '',
@@ -122,6 +126,7 @@ export const useOrderList = ({
   const orders = useMemo<OrderRow[]>(() => {
     return (orderQuery.data?.data?.orders ?? []).map((order, index) => ({
       id: order.orderId ?? index + 1,
+      orderId: order.orderId ?? index + 1,
       productName: formatProductName(order),
       optionLabel: formatOptionLabel(order),
       quantity: getQuantity(order),
@@ -136,6 +141,7 @@ export const useOrderList = ({
       orderInfo: getOrderInfo(order),
       customerInfo: getCustomerInfo(order),
       statusLabel: getStatusLabel(order),
+      statusValue: getStatusValue(order),
     }));
   }, [orderQuery.data?.data?.orders]);
 

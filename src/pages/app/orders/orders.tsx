@@ -2,7 +2,7 @@ import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import SearchBar from '@components/common/search-bar';
 import OrderListTable, { type OrderRow } from '@components/order/order-list-table';
 import useOrderList, { type OrderFilterType } from '@hooks/use-order-list';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const FILTER_OPTIONS: Array<{ label: string; value: OrderFilterType }> = [
   { label: '상품명', value: 'product' },
@@ -17,6 +17,7 @@ const Orders = () => {
   const [appliedSearchKeyword, setAppliedSearchKeyword] = useState('');
   const [appliedFilterBy, setAppliedFilterBy] = useState<OrderFilterType>();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
   const { orders, isLoading, isError } = useOrderList({
     pageSize: 10000,
     searchKeyword: appliedSearchKeyword,
@@ -43,6 +44,24 @@ const Orders = () => {
 
   const handlePay = (_row: OrderRow) => {};
 
+  useEffect(() => {
+    if (!isFilterOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!filterRef.current?.contains(event.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [isFilterOpen]);
+
   return (
     <div
       ref={pageRef}
@@ -51,7 +70,7 @@ const Orders = () => {
       <div className="flex flex-col gap-[3.5rem]">
         <h1 className="title3 text-gray-900">주문 목록</h1>
 
-        <div className="relative">
+        <div ref={filterRef} className="relative">
           <SearchBar
             value={keyword}
             onChange={setKeyword}
