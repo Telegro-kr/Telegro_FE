@@ -26,8 +26,12 @@ export default function ProductSectionContainer({
     title,
     actionLabel,
     categories,
+    categoryLabels,
     activeCategory,
     products: filteredProducts,
+    isLoading,
+    isError,
+    isArrowDisabled,
     setActiveCategory,
     handleClickAll,
     handleClickArrow,
@@ -45,8 +49,12 @@ export default function ProductSectionContainer({
       title={title}
       actionLabel={actionLabel}
       categories={categories}
+      categoryLabels={categoryLabels}
       activeCategory={activeCategory}
       products={filteredProducts}
+      isLoading={isLoading}
+      isError={isError}
+      isArrowDisabled={isArrowDisabled}
       onChangeCategory={setActiveCategory}
       onClickAll={handleClickAll}
       onClickArrow={handleClickArrow}

@@ -1,14 +1,14 @@
-import { useEffect, useRef, type RefObject } from 'react';
-import { cn } from '@libs/cn';
+import ActionSelectButton from '@components/admin/access-status/action-select-button';
+import AccessStatusGraph from '@components/admin/access-status/access-status-graph';
+import DropdownMenu from '@components/admin/access-status/dropdown-menu';
+import MonthPickerPopover from '@components/admin/access-status/month-picker-popover';
+import YearPickerPopover from '@components/admin/access-status/year-picker-popover';
 import {
   FILTER_OPTIONS,
   useAccessStatusChart,
 } from '@hooks/use-access-status-chart';
-import ActionSelectButton from '@components/admin/access-status/action-select-button';
-import DropdownMenu from '@components/admin/access-status/dropdown-menu';
-import AccessStatusGraph from '@components/admin/access-status/access-status-graph';
-import MonthPickerPopover from '@components/admin/access-status/month-picker-popover';
-import YearPickerPopover from '@components/admin/access-status/year-picker-popover';
+import { cn } from '@libs/cn';
+import { useEffect, useRef, type RefObject } from 'react';
 
 type AccessStatusChartViewProps = ReturnType<typeof useAccessStatusChart>;
 
@@ -52,6 +52,8 @@ const AccessStatusChartSectionView = ({
   activeFilterLabel,
   activeMonthLabel,
   activeYearLabel,
+  isLoading,
+  isError,
   goToPrevPage,
   goToNextPage,
 }: AccessStatusChartViewProps) => {
@@ -85,11 +87,13 @@ const AccessStatusChartSectionView = ({
     >
       <div className="mb-4 flex gap-4 md:mb-6 md:flex-row md:items-center md:justify-between">
         <h2 className="text-[1.75rem] leading-none font-semibold tracking-[-0.02em] text-[#1A1E22] md:text-[2rem]">
-          접속 현황
+          {'\uC811\uC18D \uD604\uD669'}
         </h2>
 
         <div className="relative flex flex-wrap items-center justify-end gap-2 md:gap-3">
-          {filter === 'daily' && (
+          {(filter === 'daily' ||
+            filter === 'weekday' ||
+            filter === 'company') && (
             <div ref={monthPickerRef} className="relative">
               <ActionSelectButton
                 label={activeMonthLabel}
@@ -164,22 +168,36 @@ const AccessStatusChartSectionView = ({
           </div>
 
           <strong className="text-[1.9rem] leading-none font-semibold tracking-[-0.03em] text-[#FFB800] md:text-[2.15rem]">
-            {dataset.totalCount}회
+            {isLoading ? '...' : `${dataset.totalCount}\uD68C`}
           </strong>
         </div>
       </div>
 
-      <AccessStatusGraph
-        filter={filter}
-        data={dataset.data}
-        hovered={hovered}
-        onHoverChange={setHovered}
-        isReady={isReady}
-        canGoPrev={dataset.canGoPrev}
-        canGoNext={dataset.canGoNext}
-        onPrev={goToPrevPage}
-        onNext={goToNextPage}
-      />
+      {isError ? (
+        <div className="flex min-h-[27rem] items-center justify-center text-[1.6rem] text-red-500">
+          {'\uC811\uC18D \uD1B5\uACC4\uB97C \uBD88\uB7EC\uC624\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.'}
+        </div>
+      ) : isLoading ? (
+        <div className="flex min-h-[27rem] items-center justify-center text-[1.6rem] text-gray-500">
+          {'\uC811\uC18D \uD1B5\uACC4\uB97C \uBD88\uB7EC\uC624\uB294 \uC911\uC785\uB2C8\uB2E4.'}
+        </div>
+      ) : dataset.data.length === 0 ? (
+        <div className="flex min-h-[27rem] items-center justify-center text-[1.6rem] text-gray-500">
+          {'\uD45C\uC2DC\uD560 \uC811\uC18D \uD1B5\uACC4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.'}
+        </div>
+      ) : (
+        <AccessStatusGraph
+          filter={filter}
+          data={dataset.data}
+          hovered={hovered}
+          onHoverChange={setHovered}
+          isReady={isReady}
+          canGoPrev={dataset.canGoPrev}
+          canGoNext={dataset.canGoNext}
+          onPrev={goToPrevPage}
+          onNext={goToNextPage}
+        />
+      )}
     </section>
   );
 };

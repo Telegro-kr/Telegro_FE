@@ -1,3 +1,4 @@
+import { useGetHits, type GetHitsParams, type HitDTO } from '@apis/telegro';
 import { useEffect, useMemo, useState } from 'react';
 
 export type ChartFilter = 'daily' | 'monthly' | 'weekday' | 'company';
@@ -30,178 +31,208 @@ export type DropdownOption<T extends string> = {
 };
 
 export const FILTER_OPTIONS: DropdownOption<ChartFilter>[] = [
-  { value: 'daily', label: '일별' },
-  { value: 'monthly', label: '월별' },
-  { value: 'weekday', label: '요일별' },
-  { value: 'company', label: '업체별' },
+  { value: 'daily', label: '\uC77C\uACC4' },
+  { value: 'monthly', label: '\uC6D4\uACC4' },
+  { value: 'weekday', label: '\uC694\uC77C\uBCC4' },
+  { value: 'company', label: '\uC5C5\uCCB4\uBCC4' },
 ];
 
 const PAGE_SIZE = 9;
-const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
 const MONTH_LABELS = [
-  '1월',
-  '2월',
-  '3월',
-  '4월',
-  '5월',
-  '6월',
-  '7월',
-  '8월',
-  '9월',
-  '10월',
-  '11월',
-  '12월',
-] as const;
-export const MONTHS = MONTH_LABELS;
-
-const DAILY_VALUES = [
-  96, 101, 90, 93, 76, 100, 80, 90, 74, 88, 94, 97, 82, 104, 92, 86, 95, 79,
-  109, 111, 98, 103, 85, 100, 106, 93, 87,
-];
-
-const COMPANY_VALUES = [
-  ['A업체', 160],
-  ['B업체', 132],
-  ['C업체', 98],
-  ['D업체', 174],
-  ['E업체', 146],
-  ['F업체', 120],
-  ['G업체', 154],
-  ['H업체', 111],
-  ['I업체', 139],
-  ['J업체', 126],
-  ['K업체', 118],
-  ['L업체', 143],
+  '1\uC6D4',
+  '2\uC6D4',
+  '3\uC6D4',
+  '4\uC6D4',
+  '5\uC6D4',
+  '6\uC6D4',
+  '7\uC6D4',
+  '8\uC6D4',
+  '9\uC6D4',
+  '10\uC6D4',
+  '11\uC6D4',
+  '12\uC6D4',
 ] as const;
 
-const WEEKDAY_DATA: DataPoint[] = [
-  { id: 'w-mon', label: '월', tooltipLabel: '월요일', value: 124 },
-  { id: 'w-tue', label: '화', tooltipLabel: '화요일', value: 118 },
-  { id: 'w-wed', label: '수', tooltipLabel: '수요일', value: 102 },
-  { id: 'w-thu', label: '목', tooltipLabel: '목요일', value: 110 },
-  { id: 'w-fri', label: '금', tooltipLabel: '금요일', value: 145 },
-  { id: 'w-sat', label: '토', tooltipLabel: '토요일', value: 84 },
-  { id: 'w-sun', label: '일', tooltipLabel: '일요일', value: 72 },
-];
-
-const MONTHLY_VALUES_BY_YEAR: Record<number, number[]> = {
-  2025: [84, 92, 101, 95, 104, 112, 118, 115, 109, 121, 96, 89],
-  2026: [88, 103, 116, 99, 91, 107, 121, 114, 108, 124, 111, 97],
-  2027: [93, 108, 119, 104, 98, 112, 127, 120, 114, 129, 115, 101],
+const WEEKDAY_LABEL_MAP: Record<string, { label: string; sort: number }> = {
+  MONDAY: { label: '\uC6D4', sort: 0 },
+  TUESDAY: { label: '\uD654', sort: 1 },
+  WEDNESDAY: { label: '\uC218', sort: 2 },
+  THURSDAY: { label: '\uBAA9', sort: 3 },
+  FRIDAY: { label: '\uAE08', sort: 4 },
+  SATURDAY: { label: '\uD1A0', sort: 5 },
+  SUNDAY: { label: '\uC77C', sort: 6 },
 };
 
-function sumValues(data: DataPoint[]) {
-  return data.reduce((total, item) => total + item.value, 0);
-}
+const HIT_FILTER_MAP: Record<ChartFilter, string> = {
+  daily: 'daily',
+  monthly: 'monthly',
+  weekday: 'weekly',
+  company: 'company',
+};
+
+export const MONTHS = MONTH_LABELS;
 
 function clampPage(page: number, maxPage: number) {
   return Math.min(Math.max(page, 0), maxPage);
 }
 
-function formatDate(date: Date) {
-  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+function sumValues(data: DataPoint[]) {
+  return data.reduce((total, item) => total + item.value, 0);
 }
 
-function buildDailyData(page: number): DatasetPayload {
-  const allData = DAILY_VALUES.map((value, index) => {
-    const date = new Date(2026, 2, 3 + index);
-    const dayName = DAY_NAMES[date.getDay()];
+function getHitsParams(
+  filter: ChartFilter,
+  selectedYear: number,
+  selectedMonth: number,
+): GetHitsParams {
+  switch (filter) {
+    case 'daily':
+      return {
+        filteredBy: HIT_FILTER_MAP[filter],
+        year: selectedYear,
+        month: selectedMonth,
+      };
+    case 'monthly':
+      return {
+        filteredBy: HIT_FILTER_MAP[filter],
+        year: selectedYear,
+      };
+    case 'weekday':
+      return {
+        filteredBy: HIT_FILTER_MAP[filter],
+        year: selectedYear,
+        month: selectedMonth,
+      };
+    case 'company':
+      return {
+        filteredBy: HIT_FILTER_MAP[filter],
+        year: selectedYear,
+        month: selectedMonth,
+      };
+  }
+}
 
-    return {
-      id: `d-${index}`,
-      label: dayName,
-      subLabel: String(date.getDate()),
-      tooltipLabel: formatDate(date),
-      value,
-    };
-  });
-
-  const maxPage = Math.max(Math.ceil(allData.length / PAGE_SIZE) - 1, 0);
-  const currentPage = clampPage(page, maxPage);
-  const start = currentPage * PAGE_SIZE;
-  const data = allData.slice(start, start + PAGE_SIZE);
+function parseDailyPoint(hit: HitDTO, selectedYear: number, selectedMonth: number) {
+  const rawName = hit.name?.trim() || '';
+  const day = Number(rawName.replace(/\D/g, ''));
+  const safeDay = Number.isFinite(day) && day > 0 ? day : undefined;
 
   return {
-    totalCount: sumValues(data),
-    data,
-    canGoPrev: currentPage > 0,
-    canGoNext: currentPage < maxPage,
-    pageLabel: `${data[0]?.tooltipLabel ?? ''} - ${data[data.length - 1]?.tooltipLabel ?? ''}`,
+    id: `daily-${rawName || safeDay || 'unknown'}`,
+    label: safeDay ? String(safeDay) : rawName || '-',
+    subLabel: MONTH_LABELS[selectedMonth - 1],
+    tooltipLabel: safeDay
+      ? `${selectedYear}.${String(selectedMonth).padStart(2, '0')}.${String(safeDay).padStart(2, '0')}`
+      : rawName || '-',
+    value: hit.hit ?? 0,
+    sort: safeDay ?? Number.MAX_SAFE_INTEGER,
   };
 }
 
-function buildMonthlyData(year: number, page: number): DatasetPayload {
-  const values = MONTHLY_VALUES_BY_YEAR[year] ?? MONTHLY_VALUES_BY_YEAR[2026];
-  const allData = values.map((value, index) => ({
-    id: `m-${year}-${index + 1}`,
-    label: MONTH_LABELS[index],
-    tooltipLabel: `${year}년 ${index + 1}월`,
-    value,
-  }));
-
-  const maxPage = Math.max(Math.ceil(allData.length / PAGE_SIZE) - 1, 0);
-  const currentPage = clampPage(page, maxPage);
-  const start = currentPage * PAGE_SIZE;
-  const data = allData.slice(start, start + PAGE_SIZE);
+function parseMonthlyPoint(hit: HitDTO, selectedYear: number) {
+  const rawName = hit.name?.trim() || '';
+  const month = Number(rawName.replace(/\D/g, ''));
+  const safeMonth = Number.isFinite(month) && month > 0 ? month : undefined;
 
   return {
-    totalCount: sumValues(data),
-    data,
-    canGoPrev: currentPage > 0,
-    canGoNext: currentPage < maxPage,
-    pageLabel: `${year}년 ${data[0]?.label ?? ''} - ${data[data.length - 1]?.label ?? ''}`,
+    id: `monthly-${rawName || safeMonth || 'unknown'}`,
+    label: safeMonth ? MONTH_LABELS[safeMonth - 1] ?? rawName : rawName || '-',
+    tooltipLabel: safeMonth
+      ? `${selectedYear}.${String(safeMonth).padStart(2, '0')}`
+      : rawName || '-',
+    value: hit.hit ?? 0,
+    sort: safeMonth ?? Number.MAX_SAFE_INTEGER,
   };
 }
 
-function buildWeekdayData(): DatasetPayload {
+function parseWeekdayPoint(hit: HitDTO) {
+  const rawName = hit.name?.trim().toUpperCase() || '';
+  const mapped = WEEKDAY_LABEL_MAP[rawName];
+
   return {
-    totalCount: sumValues(WEEKDAY_DATA),
-    data: WEEKDAY_DATA,
-    canGoPrev: false,
-    canGoNext: false,
-    pageLabel: '요일별 평균',
+    id: `weekday-${rawName || 'unknown'}`,
+    label: mapped?.label ?? (hit.name?.trim() || '-'),
+    tooltipLabel: hit.name?.trim() || '-',
+    value: hit.hit ?? 0,
+    sort: mapped?.sort ?? Number.MAX_SAFE_INTEGER,
   };
 }
 
-function buildCompanyData(page: number): DatasetPayload {
-  const allData = COMPANY_VALUES.map(([name, value], index) => ({
-    id: `c-${index + 1}`,
+function parseCompanyPoint(hit: HitDTO, index: number) {
+  const name = hit.name?.trim() || `Company ${index + 1}`;
+
+  return {
+    id: `company-${index}-${name}`,
     label: name,
     tooltipLabel: name,
-    value,
-  }));
+    value: hit.hit ?? 0,
+    sort: index,
+  };
+}
 
+function mapHitsToData(
+  filter: ChartFilter,
+  hits: HitDTO[],
+  selectedYear: number,
+  selectedMonth: number,
+): DataPoint[] {
+  switch (filter) {
+    case 'daily':
+      return hits
+        .map((hit) => parseDailyPoint(hit, selectedYear, selectedMonth))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ sort, ...rest }) => rest);
+    case 'monthly':
+      return hits
+        .map((hit) => parseMonthlyPoint(hit, selectedYear))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ sort, ...rest }) => rest);
+    case 'weekday':
+      return hits
+        .map(parseWeekdayPoint)
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ sort, ...rest }) => rest);
+    case 'company':
+      return hits.map(parseCompanyPoint).map(({ sort, ...rest }) => rest);
+  }
+}
+
+function buildDataset(allData: DataPoint[], page: number, totalCount?: number): DatasetPayload {
   const maxPage = Math.max(Math.ceil(allData.length / PAGE_SIZE) - 1, 0);
   const currentPage = clampPage(page, maxPage);
   const start = currentPage * PAGE_SIZE;
   const data = allData.slice(start, start + PAGE_SIZE);
 
   return {
-    totalCount: sumValues(data),
+    totalCount: totalCount ?? sumValues(allData),
     data,
     canGoPrev: currentPage > 0,
     canGoNext: currentPage < maxPage,
-    pageLabel: `${start + 1} - ${start + data.length}위 업체`,
+    pageLabel: `${start + 1}-${start + data.length}`,
   };
 }
 
 export function useAccessStatusChart() {
   const [filter, setFilter] = useState<ChartFilter>('daily');
-  const [selectedYear, setSelectedYear] = useState(2026);
-  const [selectedMonth, setSelectedMonth] = useState(3);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [isReady, setIsReady] = useState(false);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
   const [isYearPickerOpen, setIsYearPickerOpen] = useState(false);
   const [hovered, setHovered] = useState<HoverState>(null);
-  const [pageByFilter, setPageByFilter] = useState<Record<ChartFilter, number>>(
-    {
-      daily: 0,
-      monthly: 0,
-      weekday: 0,
-      company: 0,
+  const [pageByFilter, setPageByFilter] = useState<Record<ChartFilter, number>>({
+    daily: 0,
+    monthly: 0,
+    weekday: 0,
+    company: 0,
+  });
+
+  const hitsQuery = useGetHits(getHitsParams(filter, selectedYear, selectedMonth), {
+    query: {
+      staleTime: 60_000,
     },
-  );
+  });
 
   useEffect(() => {
     const raf = window.requestAnimationFrame(() => setIsReady(true));
@@ -213,50 +244,58 @@ export function useAccessStatusChart() {
     if (filter !== 'daily') {
       setIsMonthPickerOpen(false);
     }
-    if (filter !== 'monthly') {
+    if (filter !== 'monthly' && filter !== 'daily') {
       setIsYearPickerOpen(false);
     }
   }, [filter, selectedYear, selectedMonth, pageByFilter]);
 
   useEffect(() => {
-    setPageByFilter((prev) => ({ ...prev, monthly: 0 }));
-  }, [selectedYear]);
-
-  useEffect(() => {
     setPageByFilter((prev) => ({
       ...prev,
-      monthly: selectedMonth >= 10 ? 1 : 0,
+      [filter]: 0,
     }));
-  }, [selectedMonth]);
+  }, [filter, selectedYear, selectedMonth]);
 
-  const dataset = useMemo(() => {
-    switch (filter) {
-      case 'daily':
-        return buildDailyData(pageByFilter.daily);
-      case 'monthly':
-        return buildMonthlyData(selectedYear, pageByFilter.monthly);
-      case 'weekday':
-        return buildWeekdayData();
-      case 'company':
-        return buildCompanyData(pageByFilter.company);
-    }
-  }, [filter, pageByFilter, selectedYear]);
+  const chartData = useMemo(
+    () =>
+      mapHitsToData(
+        filter,
+        hitsQuery.data?.data?.hits ?? [],
+        selectedYear,
+        selectedMonth,
+      ),
+    [filter, hitsQuery.data?.data?.hits, selectedMonth, selectedYear],
+  );
+
+  const dataset = useMemo(
+    () =>
+      buildDataset(
+        chartData,
+        pageByFilter[filter],
+        hitsQuery.data?.data?.totalHit ??
+          hitsQuery.data?.data?.overAllTotalHit ??
+          hitsQuery.data?.data?.averageHit,
+      ),
+    [
+      chartData,
+      filter,
+      hitsQuery.data?.data?.averageHit,
+      hitsQuery.data?.data?.overAllTotalHit,
+      hitsQuery.data?.data?.totalHit,
+      pageByFilter,
+    ],
+  );
 
   const activeFilterLabel =
-    FILTER_OPTIONS.find((option) => option.value === filter)?.label ?? '일별';
+    FILTER_OPTIONS.find((option) => option.value === filter)?.label ??
+    '\uC77C\uACC4';
 
   function movePage(direction: 'prev' | 'next') {
     setPageByFilter((prev) => {
       const delta = direction === 'prev' ? -1 : 1;
-      const nextPage = Math.max(prev[filter] + delta, 0);
-
-      if (filter === 'monthly') {
-        setSelectedMonth(nextPage === 0 ? 1 : 10);
-      }
-
       return {
         ...prev,
-        [filter]: nextPage,
+        [filter]: Math.max(prev[filter] + delta, 0),
       };
     });
   }
@@ -279,8 +318,10 @@ export function useAccessStatusChart() {
     isYearPickerOpen,
     setIsYearPickerOpen,
     activeFilterLabel,
-    activeMonthLabel: `${selectedMonth}월`,
-    activeYearLabel: `${selectedYear}년`,
+    activeMonthLabel: `${selectedMonth}\uC6D4`,
+    activeYearLabel: `${selectedYear}\uB144`,
+    isLoading: hitsQuery.isLoading,
+    isError: hitsQuery.isError,
     goToPrevPage: () => movePage('prev'),
     goToNextPage: () => movePage('next'),
   };

@@ -1,6 +1,9 @@
-import { useMemo, useState } from 'react';
+import { telegroPrefetch, useGetProducts, type GetProductsCategory } from '@apis/telegro';
+import { formatNumber } from '@utils/format';
+import { useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
-export type ProductCategory = '헤드셋' | '라인코드' | '녹음기기' | '악세사리';
+export type ProductCategory = GetProductsCategory;
 
 export type ProductItem = {
   id: number;
@@ -19,105 +22,136 @@ type UseProductSectionParams = {
   onClickProduct?: (product: ProductItem) => void;
 };
 
-const DEFAULT_PRODUCTS: ProductItem[] = [
-  {
-    id: 1,
-    category: '헤드셋',
-    title: '커널형 이어셋',
-    subtitle: '명품 이어셋',
-    priceLabel: '10,000원',
-    imageSrc: '/product1.png',
-  },
-  {
-    id: 2,
-    category: '헤드셋',
-    title: '커널형 이어셋',
-    subtitle: '명품 이어셋',
-    priceLabel: '10,000원',
-    imageSrc: '/product1.png',
-  },
-  {
-    id: 3,
-    category: '헤드셋',
-    title: '커널형 이어셋',
-    subtitle: '명품 이어셋',
-    priceLabel: '10,000원',
-    imageSrc: '/product1.png',
-  },
-  {
-    id: 4,
-    category: '라인코드',
-    title: '프리미엄 라인코드',
-    subtitle: '고음질 케이블',
-    priceLabel: '18,000원',
-    imageSrc: '/product1.png',
-  },
-  {
-    id: 5,
-    category: '녹음기기',
-    title: '보이스 레코더',
-    subtitle: '휴대용 녹음기',
-    priceLabel: '39,000원',
-    imageSrc: '/product1.png',
-  },
-  {
-    id: 6,
-    category: '악세사리',
-    title: '이어패드 세트',
-    subtitle: '교체용 악세사리',
-    priceLabel: '12,000원',
-    imageSrc: '/product1.png',
-  },
-  {
-    id: 7,
-    category: '악세사리',
-    title: '이어패드 세트',
-    subtitle: '교체용 악세사리',
-    priceLabel: '12,000원',
-    imageSrc: '/product1.png',
-  },
-  {
-    id: 8,
-    category: '악세사리',
-    title: '이어패드 세트',
-    subtitle: '교체용 악세사리',
-    priceLabel: '12,000원',
-    imageSrc: '/product1.png',
-  },
+const PAGE_SIZE = 4;
+const CATEGORY_OPTIONS: ProductCategory[] = [
+  'HEADSET',
+  'LINE_CORD',
+  'RECORDER',
+  'ACCESSORY',
 ];
 
-const CATEGORY_OPTIONS: ProductCategory[] = [
-  '헤드셋',
-  '라인코드',
-  '녹음기기',
-  '악세사리',
-];
+const CATEGORY_LABELS: Record<ProductCategory, string> = {
+  HEADSET: '\uD5E4\uB4DC\uC14B',
+  PHONE_AMP: '\uD3F0\uC570\uD504',
+  LINE_CORD: '\uB77C\uC778\uCF54\uB4DC',
+  RECORDER: '\uB179\uC74C\uAE30\uAE30',
+  ACCESSORY: '\uC545\uC138\uC11C\uB9AC',
+};
+
+const getProductPageParams = (category: ProductCategory, page: number) => ({
+  category,
+  page,
+  size: PAGE_SIZE,
+});
+
+const toProductItem = (
+  category: ProductCategory,
+  product: {
+    id?: number;
+    productModel?: string;
+    productName?: string;
+    price?: string;
+    coverImage?: string;
+  },
+): ProductItem => ({
+  id: product.id ?? 0,
+  category,
+  title:
+    product.productName?.trim() || '\uC774\uB984 \uC5C6\uB294 \uC0C1\uD488',
+  subtitle:
+    product.productModel?.trim() ||
+    '\uBAA8\uB378 \uC815\uBCF4 \uC5C6\uC74C',
+  priceLabel: `${formatNumber(product.price)}\uC6D0`,
+  imageSrc: product.coverImage?.trim() || '/product1.png',
+});
 
 export function useProductSection({
-  initialCategory = '헤드셋',
-  products = DEFAULT_PRODUCTS,
+  initialCategory = 'HEADSET',
+  products,
   onClickAll,
   onClickArrow,
   onClickProduct,
 }: UseProductSectionParams = {}) {
+  const queryClient = useQueryClient();
+  const hasInjectedProducts = Boolean(products?.length);
   const [activeCategory, setActiveCategory] =
     useState<ProductCategory>(initialCategory);
+  const [pageByCategory, setPageByCategory] = useState<Record<ProductCategory, number>>({
+    HEADSET: 0,
+    PHONE_AMP: 0,
+    LINE_CORD: 0,
+    RECORDER: 0,
+    ACCESSORY: 0,
+  });
 
-  const filteredProducts = useMemo(() => {
-    return products
-      .filter((product) => product.category === activeCategory)
-      .slice(0, 3);
-  }, [activeCategory, products]);
+  const currentPage = pageByCategory[activeCategory];
+  const productQuery = useGetProducts(getProductPageParams(activeCategory, currentPage), {
+    query: {
+      staleTime: 60_000,
+    },
+  });
+
+  useEffect(() => {
+    CATEGORY_OPTIONS.forEach((category) => {
+      void telegroPrefetch.products(queryClient, getProductPageParams(category, 0));
+    });
+  }, [queryClient]);
+
+  useEffect(() => {
+    if (!productQuery.data?.data?.isLast) {
+      void telegroPrefetch.products(
+        queryClient,
+        getProductPageParams(activeCategory, currentPage + 1),
+      );
+    }
+  }, [activeCategory, currentPage, productQuery.data?.data?.isLast, queryClient]);
+
+  const resolvedProducts = useMemo(() => {
+    if (products?.length) {
+      return products.filter((product) => product.category === activeCategory);
+    }
+
+    return (productQuery.data?.data?.products ?? []).map((product) =>
+      toProductItem(activeCategory, product),
+    );
+  }, [activeCategory, productQuery.data?.data?.products, products]);
+
+  const handleChangeCategory = (category: ProductCategory) => {
+    setActiveCategory(category);
+  };
+
+  const handleClickArrow = () => {
+    if (products?.length) {
+      onClickArrow?.();
+      return;
+    }
+
+    if (productQuery.data?.data?.isLast) {
+      return;
+    }
+
+    setPageByCategory((prev) => ({
+      ...prev,
+      [activeCategory]: prev[activeCategory] + 1,
+    }));
+    onClickArrow?.();
+  };
 
   return {
-    title: '상품 목록 확인하기',
-    actionLabel: '전체 상품 확인하기',
+    title: '\uC0C1\uD488 \uBAA9\uB85D \uD655\uC778\uD558\uAE30',
+    actionLabel: '\uC804\uCCB4 \uC0C1\uD488 \uD655\uC778\uD558\uAE30',
     categories: CATEGORY_OPTIONS,
+    categoryLabels: CATEGORY_LABELS,
     activeCategory,
-    products: filteredProducts,
-    setActiveCategory,
+    products: resolvedProducts,
+    isLoading: hasInjectedProducts ? false : productQuery.isLoading,
+    isError: hasInjectedProducts ? false : productQuery.isError,
+    isArrowDisabled: hasInjectedProducts
+      ? resolvedProducts.length <= PAGE_SIZE
+      : Boolean(productQuery.data?.data?.isLast),
+    setActiveCategory: handleChangeCategory,
     handleClickAll: () => onClickAll?.(),
-    handleClickArrow: () => onClickArrow?.(),
+    handleClickArrow,
     handleClickProduct: (product: ProductItem) => onClickProduct?.(product),
   };
 }

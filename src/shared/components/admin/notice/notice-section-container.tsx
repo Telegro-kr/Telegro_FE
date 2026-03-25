@@ -18,6 +18,8 @@ export default function NoticeSectionContainer({
     title,
     actionLabel,
     notices: resolvedNotices,
+    isLoading,
+    isError,
     handleClickAll,
   } = useNoticeSection({
     notices,
@@ -29,6 +31,8 @@ export default function NoticeSectionContainer({
       title={title}
       actionLabel={actionLabel}
       notices={resolvedNotices}
+      isLoading={isLoading}
+      isError={isError}
       onClickAll={handleClickAll}
       onClickNotice={onClickNotice}
     />

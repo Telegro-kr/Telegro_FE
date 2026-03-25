@@ -6,8 +6,12 @@ type ProductSectionViewProps = {
   title: string;
   actionLabel: string;
   categories: ProductCategory[];
+  categoryLabels: Record<ProductCategory, string>;
   activeCategory: ProductCategory;
   products: ProductItem[];
+  isLoading: boolean;
+  isError: boolean;
+  isArrowDisabled: boolean;
   onChangeCategory: (category: ProductCategory) => void;
   onClickAll: () => void;
   onClickArrow: () => void;
@@ -18,8 +22,12 @@ export default function ProductSectionView({
   title,
   actionLabel,
   categories,
+  categoryLabels,
   activeCategory,
   products,
+  isLoading,
+  isError,
+  isArrowDisabled,
   onChangeCategory,
   onClickAll,
   onClickArrow,
@@ -50,7 +58,7 @@ export default function ProductSectionView({
                       : 'border-transparent text-[#B5B5B5] hover:text-[#888888]',
                   )}
                 >
-                  {category}
+                  {categoryLabels[category]}
                 </button>
               );
             })}
@@ -70,22 +78,40 @@ export default function ProductSectionView({
       </div>
 
       <div className="inline-flex items-start gap-[1.4rem]">
-        <div className="flex items-center gap-[3.4rem]">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onClick={onClickProduct}
-            />
-          ))}
+        <div className="flex min-h-[35.8rem] items-center gap-[3.4rem]">
+          {isLoading ? (
+            <div className="text-[1.6rem] text-gray-500">
+              {'\uC0C1\uD488\uC744 \uBD88\uB7EC\uC624\uB294 \uC911\uC785\uB2C8\uB2E4.'}
+            </div>
+          ) : isError ? (
+            <div className="text-[1.6rem] text-red-500">
+              {'\uC0C1\uD488\uC744 \uBD88\uB7EC\uC624\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.'}
+            </div>
+          ) : products.length ? (
+            products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onClick={onClickProduct}
+              />
+            ))
+          ) : (
+            <div className="text-[1.6rem] text-gray-500">
+              {'\uD45C\uC2DC\uD560 \uC0C1\uD488\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.'}
+            </div>
+          )}
         </div>
 
         <button
           type="button"
           onClick={onClickArrow}
-          aria-label="다음 상품 보기"
+          aria-label={'\uB2E4\uC74C \uC0C1\uD488 \uBCF4\uAE30'}
+          disabled={isArrowDisabled || isLoading}
           className={cn(
             'flex h-[35.8rem] w-[4.1rem] items-center justify-center rounded-[0.383rem]',
+            isArrowDisabled || isLoading
+              ? 'cursor-not-allowed opacity-40'
+              : 'cursor-pointer',
           )}
         >
           <svg
