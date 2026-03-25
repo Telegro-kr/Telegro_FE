@@ -12,7 +12,7 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
       <button
         type="button"
         onClick={() => onClick?.(product)}
-        className="group relative block overflow-hidden rounded-[1.913rem] text-left"
+        className="group relative block cursor-pointer overflow-hidden rounded-[1.913rem] text-left"
       >
         <img
           src={product.imageSrc}
@@ -29,21 +29,17 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
 
       <div className="flex items-center justify-between px-[1rem]">
         <div className="flex w-[22.3rem] flex-col items-start gap-[1rem]">
-          <p className="w-full text-[2.5rem] leading-[1.3] font-semibold text-black">
-            {product.title}
-          </p>
-          <p className="w-full text-[2rem] leading-[1.3] font-semibold text-[#555555]">
-            {product.subtitle}
-          </p>
+          <p className="title4 w-full text-gray-900">{product.title}</p>
+          <p className="title5 w-full text-gray-600">{product.subtitle}</p>
         </div>
 
         <button
           type="button"
           onClick={() => onClick?.(product)}
           aria-label={`${product.title} 상세 보기`}
-          className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1rem] bg-[#333333]"
+          className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1rem] bg-gray-900"
         >
-          <Icon name="admin-arrow" size={4.5} />
+          <Icon name="admin-arrow" className="text-gray-50" size={4.5} />
         </button>
       </div>
     </article>

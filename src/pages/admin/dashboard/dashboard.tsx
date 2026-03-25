@@ -1,8 +1,8 @@
 import AccessStatusChartSection from '@components/admin/access-status/access-status-chart-section';
 import NoticeSectionContainer from '@components/admin/notice/notice-section-container';
-import { useNavigate } from 'react-router-dom';
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import ProductSectionContainer from '@components/product-section/product-section-container';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const AdminDashboard = () => {
       <AccessStatusChartSection />
       <NoticeSectionContainer
         onClickAll={() => {
-          navigate(`/admin/notices`);
+          navigate('/admin/notices');
         }}
         onClickNotice={(noticeId) => {
           navigate(`/admin/notices/${noticeId}`);
@@ -21,13 +21,10 @@ const AdminDashboard = () => {
       />
       <ProductSectionContainer
         onClickAll={() => {
-          console.log('전체 상품 보기');
-        }}
-        onClickArrow={() => {
-          console.log('다음 상품 보기');
+          navigate('/admin/products');
         }}
         onClickProduct={(product) => {
-          console.log('상품 클릭', product);
+          navigate(`/admin/products/${product.id}`);
         }}
       />
     </div>
