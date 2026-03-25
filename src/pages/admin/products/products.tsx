@@ -1,3 +1,4 @@
+import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import SearchBar from '@components/common/search-bar';
 import ProductSectionContainer from '@components/product-section/product-section-container';
@@ -24,6 +25,7 @@ const AdminProducts = () => {
       ref={pageRef}
       className="flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
     >
+      <AdminProfileCard onMove={() => navigate('/')} />
       <div className="flex-col gap-[3.5rem]">
         <h1 className="title3 text-gray-900">상품 목록</h1>
         <SearchBar
@@ -31,7 +33,7 @@ const AdminProducts = () => {
           onChange={setKeyword}
           onSearch={handleSearch}
           onRefresh={handleRefresh}
-          placeholder="찾으시는 상품의 이름을 입력해 주세요."
+          placeholder="찾으시는 상품의 이름을 입력해 주세요"
           buttonText="검색하기"
           size="lg"
         />

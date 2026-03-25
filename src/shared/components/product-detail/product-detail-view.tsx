@@ -1,4 +1,5 @@
 import { type ProductDetailResponseDTO } from '@apis/telegro';
+import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import {
   type ProductTab,
   type RecommendationItem,
@@ -7,6 +8,7 @@ import ProductDetailGallery from '@components/product-detail/product-detail-gall
 import ProductDetailPurchasePanel from '@components/product-detail/product-detail-purchase-panel';
 import ProductDetailTabs from '@components/product-detail/product-detail-tabs';
 import ProductDetailRecommendationSection from '@components/product-detail/product-detail-recommendation-section';
+import { useRef } from 'react';
 
 type ProductDetailViewProps = {
   product: ProductDetailResponseDTO;
@@ -51,8 +53,10 @@ const ProductDetailView = ({
   onToggleLike,
   onShare,
 }: ProductDetailViewProps) => {
+  const pageRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="min-h-screen bg-[#FBFBF8] text-gray-900">
+    <div ref={pageRef} className="min-h-screen bg-[#FBFBF8] text-gray-900">
       <main className="mx-auto flex w-full max-w-[124rem] flex-col px-6 pt-10 pb-24">
         <div className="mb-8 flex items-center gap-3 text-[1.05rem] text-[#9CA3AF]">
           <span>Product</span>
@@ -135,6 +139,7 @@ const ProductDetailView = ({
 
         <ProductDetailRecommendationSection recommendations={recommendations} />
       </main>
+      <ExploreScrollToTop targetRef={pageRef} />
     </div>
   );
 };

@@ -20,6 +20,9 @@ const AdminLayout = () => {
           <Link to="/admin/orders" className={linkClass}>
             Order
           </Link>
+          <Link to="/admin/notices" className={linkClass}>
+            Notice
+          </Link>
         </nav>
       </header>
 
