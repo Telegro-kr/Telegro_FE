@@ -32,42 +32,9 @@ const DEFAULT_PRODUCT: ProductDetailResponseDTO = {
   pictures: ['/product1.png', '/product1.png', '/product1.png'],
 };
 
-const DEFAULT_RECOMMENDATIONS: RecommendationItem[] = [
-  {
-    id: 1,
-    title: 'Hands & Body Cotton Dry Towel',
-    price: '18,000',
-    image: '/product1.png',
-  },
-  {
-    id: 2,
-    title: 'Travel Care Pouch',
-    price: '19,000',
-    image: '/product1.png',
-  },
-  {
-    id: 3,
-    title: 'Premium Bath Set',
-    price: '28,000',
-    image: '/product1.png',
-  },
-  {
-    id: 4,
-    title: 'Body Care Gift Box',
-    price: '31,000',
-    image: '/product1.png',
-  },
-  {
-    id: 5,
-    title: 'Soft Cream Towel',
-    price: '16,000',
-    image: '/product1.png',
-  },
-];
-
 export const useProductDetail = ({
   product = DEFAULT_PRODUCT,
-  recommendations = DEFAULT_RECOMMENDATIONS,
+  recommendations = [],
 }: UseProductDetailParams = {}) => {
   const [activeTab, setActiveTab] = useState<ProductTab>('detail');
   const [quantity, setQuantity] = useState(1);

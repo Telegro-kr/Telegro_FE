@@ -88,14 +88,6 @@ const ProductDetailView = ({
         <section className="mx-auto mt-12 flex w-full flex-col gap-16">
           {activeTab === 'detail' && (
             <>
-              <div className="overflow-hidden bg-white">
-                <img
-                  src="/product1.png"
-                  alt="상세 이미지"
-                  className="w-full object-cover"
-                />
-              </div>
-
               <button
                 type="button"
                 onClick={onToggleDetail}
@@ -110,9 +102,16 @@ const ProductDetailView = ({
               </button>
 
               {isDetailOpen ? (
-                <div className="text-[1.18rem] leading-[2] whitespace-pre-line text-gray-700">
-                  {product.content}
-                </div>
+                product.content?.trim().startsWith('<') ? (
+                  <div
+                    className="text-[1.18rem] leading-[2] text-gray-700 [&_h4]:text-[1.3rem] [&_h4]:font-semibold [&_h5]:text-[1.18rem] [&_h5]:font-semibold [&_p]:min-h-[1.5rem] [&_strong]:font-semibold"
+                    dangerouslySetInnerHTML={{ __html: product.content }}
+                  />
+                ) : (
+                  <div className="text-[1.18rem] leading-[2] whitespace-pre-line text-gray-700">
+                    {product.content}
+                  </div>
+                )
               ) : null}
             </>
           )}
