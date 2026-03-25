@@ -116,9 +116,20 @@ export const useUserList = ({
 
   const totalCount = filteredUsers.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / size));
+  const roleCounts = useMemo(
+    () => ({
+      MEMBER: allUsers.filter((user) => user.role === 'MEMBER').length,
+      DEALER: allUsers.filter((user) => user.role === 'DEALER').length,
+      BEST: allUsers.filter((user) => user.role === 'BEST').length,
+      BUSINESS: allUsers.filter((user) => user.role === 'BUSINESS').length,
+    }),
+    [allUsers],
+  );
 
   return {
     users,
+    allUsers,
+    roleCounts,
     totalPages,
     totalCount,
     isLoading: userQuery.isLoading,

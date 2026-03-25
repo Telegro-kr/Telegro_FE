@@ -6,21 +6,21 @@ type AdminProfileCardProps = {
 
 const AdminProfileCard = ({ onMove }: AdminProfileCardProps) => {
   return (
-    <div className="flex w-full items-center gap-[1.3rem]">
+    <div className="flex w-full min-w-[35rem] items-center gap-[1.3rem]">
       <img
         src="/admin-profile.svg"
         alt="관리자 프로필"
-        className="h-[10rem] w-[10rem] shrink-0 object-cover"
+        className="size-[6rem] shrink-0 object-cover lg:size-[10rem]"
       />
 
-      <div className="w-[35rem] flex-col items-start gap-[0.3rem]">
-        <span className="text-[3rem] font-semibold text-gray-900">
+      <div className="min-w-0 flex-1 flex-col items-start gap-[0.3rem]">
+        <span className="text-[2rem] font-semibold text-gray-900 lg:text-[3rem]">
           관리자 페이지
         </span>
 
         <div className="flex-row-between gap-[2rem]">
           <p className="flex flex-col justify-center">
-            <span className="text-[2.2rem] font-semibold text-gray-700">
+            <span className="text-[1.8rem] font-semibold text-gray-700 lg:text-[2.2rem]">
               일반 페이지로 이동하기
             </span>
           </p>

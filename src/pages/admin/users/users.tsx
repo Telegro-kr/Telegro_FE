@@ -1,6 +1,7 @@
 import type { GetUsersFilteredBy } from '@apis/telegro';
 import { useDeleteUser } from '@apis/telegro';
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
+import RoleDonutCard from '@components/admin/user-list/role-donut-card';
 import UserListTable, {
   type UserRow,
 } from '@components/admin/user-list/user-list-table';
@@ -36,20 +37,28 @@ const AdminUsers = () => {
   const [selectedRoleFilter, setSelectedRoleFilter] = useState<
     GetUsersFilteredBy | 'ALL'
   >('ALL');
-  const [appliedRoleFilter, setAppliedRoleFilter] = useState<GetUsersFilteredBy>();
+  const [appliedRoleFilter, setAppliedRoleFilter] =
+    useState<GetUsersFilteredBy>();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [deleteTargetUser, setDeleteTargetUser] = useState<UserRow | null>(null);
-  const { users, totalPages, totalCount, isLoading, isError, refetch } = useUserList({
-    page: currentPage - 1,
+  const [deleteTargetUser, setDeleteTargetUser] = useState<UserRow | null>(
+    null,
+  );
+  const { roleCounts } = useUserList({
+    page: 0,
     size: PAGE_SIZE,
-    filteredBy: appliedRoleFilter,
-    searchKeyword: appliedSearchKeyword,
   });
+  const { users, totalPages, totalCount, isLoading, isError, refetch } =
+    useUserList({
+      page: currentPage - 1,
+      size: PAGE_SIZE,
+      filteredBy: appliedRoleFilter,
+      searchKeyword: appliedSearchKeyword,
+    });
   const deleteUserMutation = useDeleteUser();
 
   const selectedRoleLabel =
-    ROLE_FILTER_OPTIONS.find((option) => option.value === selectedRoleFilter)?.label ??
-    '전체';
+    ROLE_FILTER_OPTIONS.find((option) => option.value === selectedRoleFilter)
+      ?.label ?? '전체';
 
   const handleSearch = (value: string) => {
     setAppliedSearchKeyword(value);
@@ -125,11 +134,17 @@ const AdminUsers = () => {
       ref={pageRef}
       className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
     >
-      <AdminProfileCard onMove={() => navigate('/')} />
+      <div className="flex gap-8 sm:flex-col md:flex-row md:items-start md:justify-between">
+        <AdminProfileCard onMove={() => navigate('/')} />
+        <RoleDonutCard
+          className="w-full max-w-[30rem] shrink-0"
+          roleCounts={roleCounts}
+        />
+      </div>
 
       <div className="flex flex-col gap-[3.5rem]">
-        <div className="flex items-end justify-between gap-6">
-          <h1 className="title3 text-gray-900">유저 목록</h1>
+        <div className="flex items-end justify-between gap-4">
+          <h1 className="title3 text-gray-900">사용자 관리</h1>
           <span className="text-[1.6rem] text-[#7A7A7A]">
             총 {totalCount.toLocaleString()}명
           </span>
