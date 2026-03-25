@@ -32,6 +32,7 @@ const AdminUserNew = lazy(() => import('@pages/admin/users/create'));
 const AdminProductNew = lazy(() => import('@pages/admin/products/create'));
 const AdminProducts = lazy(() => import('@pages/admin/products/products'));
 const AdminProductDetail = lazy(() => import('@pages/admin/products/detail'));
+const AdminOrders = lazy(() => import('@pages/admin/orders/orders'));
 const AdminNoticesNew = lazy(() => import('@pages/admin/notices/create'));
 const AdminNotices = lazy(() => import('@pages/admin/notices/notices'));
 const AdminNoticeDetail = lazy(
@@ -86,6 +87,7 @@ export const router = createBrowserRouter([
           { path: 'products/create', element: <AdminProductNew /> },
           { path: 'products', element: <AdminProducts /> },
           { path: 'products/:productId', element: <AdminProductDetail /> },
+          { path: 'orders', element: <AdminOrders /> },
           { path: 'notices/create', element: <AdminNoticesNew /> },
           { path: 'notices', element: <AdminNotices /> },
           { path: 'notices/:noticeId', element: <AdminNoticeDetail /> },
