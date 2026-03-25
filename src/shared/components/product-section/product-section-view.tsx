@@ -1,3 +1,4 @@
+import LoadingPanel from '@components/common/loading-panel';
 import type { ProductCategory, ProductItem } from '@hooks/use-product-section';
 import { cn } from '@utils/cn';
 import ProductCard from './product-card';
@@ -95,7 +96,10 @@ export default function ProductSectionView({
           )}
         >
           {isLoading ? (
-            <div className="text-[1.6rem] text-gray-500">상품을 불러오는 중입니다.</div>
+            <LoadingPanel
+              className="col-span-full min-h-[35.8rem] rounded-[1.6rem] bg-[#FBFBF8]"
+              size={96}
+            />
           ) : isError ? (
             <div className="text-[1.6rem] text-red-500">상품을 불러오지 못했습니다.</div>
           ) : products.length ? (

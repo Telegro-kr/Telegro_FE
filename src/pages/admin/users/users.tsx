@@ -6,6 +6,7 @@ import UserListTable, {
 } from '@components/admin/user-list/user-list-table';
 import ConfirmModal from '@components/common/confirm-modal';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
+import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
 import useUserList from '@hooks/use-user-list';
@@ -175,7 +176,9 @@ const AdminUsers = () => {
           ) : null}
         </div>
 
-        {isError ? (
+        {isLoading ? (
+          <LoadingPanel />
+        ) : isError ? (
           <div className="rounded-[1.6rem] bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-red-500">
             유저 목록을 불러오지 못했습니다.
           </div>

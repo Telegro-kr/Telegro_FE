@@ -1,5 +1,6 @@
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
+import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
 import OrderListTable, { type OrderRow } from '@components/order/order-list-table';
 import useOrderList, { type OrderFilterType } from '@hooks/use-order-list';
@@ -82,7 +83,7 @@ const AdminOrders = () => {
             onSearch={handleSearch}
             onRefresh={handleRefresh}
             onFilterClick={() => setIsFilterOpen((prev) => !prev)}
-            placeholder="찾으시는 주문 정보를 입력해 주세요."
+            placeholder="찾으시는 주문 정보를 입력해 주세요"
             buttonText="검색하기"
             filterText={selectedFilterLabel}
             size="lg"
@@ -114,9 +115,7 @@ const AdminOrders = () => {
       </div>
 
       {isLoading ? (
-        <div className="rounded-[1.6rem] bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-gray-500">
-          주문 목록을 불러오는 중입니다.
-        </div>
+        <LoadingPanel />
       ) : isError ? (
         <div className="rounded-[1.6rem] bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-red-500">
           주문 목록을 불러오지 못했습니다.
