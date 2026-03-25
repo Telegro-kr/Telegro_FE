@@ -5,6 +5,7 @@ export const ICONS = [
   "delete",
   "explore",
   "eye",
+  "global-toast",
   "notice",
   "react",
   "search",
