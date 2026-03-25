@@ -1,5 +1,6 @@
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
+import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
 import NoticeCard from '@components/notice/notice-card';
 import { useNoticeSection } from '@hooks/use-notice-section';
@@ -46,9 +47,7 @@ const AdminNotices = () => {
       </div>
 
       {isLoading ? (
-        <div className="rounded-2xl bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-gray-500">
-          공지사항을 불러오는 중입니다.
-        </div>
+        <LoadingPanel className="rounded-2xl" />
       ) : isError ? (
         <div className="rounded-2xl bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-red-500">
           공지사항을 불러오지 못했습니다.

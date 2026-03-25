@@ -1,4 +1,5 @@
 import { useGetProductDetail } from '@apis/telegro';
+import LoadingPanel from '@components/common/loading-panel';
 import ProductDetailContainer from '@components/product-detail/product-detail-container';
 import { useParams } from 'react-router-dom';
 
@@ -18,7 +19,7 @@ const AdminProductDetail = () => {
   }
 
   if (productDetailQuery.isLoading) {
-    return <AdminMessagePanel message="상품 정보를 불러오는 중입니다." />;
+    return <LoadingPanel fullScreen size={140} />;
   }
 
   if (productDetailQuery.isError || !productDetailQuery.data?.data) {

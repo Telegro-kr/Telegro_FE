@@ -1,9 +1,10 @@
-import Icon from '@components/common/icon';
-import { useAdminNoticeDetail } from '@hooks/use-admin-notice-detail';
 import NoticeContentCard from '@components/admin/notice-detail/notice-content-card';
 import NoticeHeroGraphic from '@components/admin/notice-detail/notice-hero-graphic';
 import NoticeNavigationRow from '@components/admin/notice-detail/notice-navigation-row';
 import CalendarIcon from '@components/common/calendar-icon';
+import Icon from '@components/common/icon';
+import LoadingPanel from '@components/common/loading-panel';
+import { useAdminNoticeDetail } from '@hooks/use-admin-notice-detail';
 
 type AdminNoticeDetailViewProps = ReturnType<typeof useAdminNoticeDetail>;
 
@@ -52,9 +53,10 @@ const AdminNoticeDetailView = ({
             ) : null}
 
             {isLoading ? (
-              <p className="text-[1.14rem] leading-[2] tracking-[-0.02em] text-[#202124] md:text-[1.28rem]">
-                공지사항을 불러오는 중입니다.
-              </p>
+              <LoadingPanel
+                className="min-h-[28rem] rounded-[1.6rem] bg-[#FBFBF8]"
+                size={96}
+              />
             ) : isError ? (
               <p className="text-[1.14rem] leading-[2] tracking-[-0.02em] text-[#202124] md:text-[1.28rem]">
                 공지사항을 불러오지 못했습니다.
