@@ -18,7 +18,7 @@ const AdminProducts = () => {
   };
 
   return (
-    <div className="flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5erm] md:py-[3rem] lg:px-[10rem] lg:py-[7rem]">
+    <div className="flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5erm] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]">
       <div className="flex-col gap-[3.5rem]">
         <h1 className="title3">상품 목록</h1>
         <SearchBar

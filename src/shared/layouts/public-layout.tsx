@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import PublicFooter from './public-footer';
 import PublicHeader from './public-header';
+import PublicHomeHeader from './public-home-header';
 
 const PublicLayout = () => {
   const location = useLocation();
@@ -19,11 +20,12 @@ const PublicLayout = () => {
 
   const shouldShowLoginOverlay =
     !isLoggedIn && location.pathname === '/' && !isLoginOverlayDismissed;
+  const isHomePage = location.pathname === '/';
 
   return (
     <div className="relative min-h-screen w-full bg-[#fafafa] text-[#121212]">
-      <PublicHeader />
-      <main className="w-full">
+      {isHomePage ? <PublicHomeHeader /> : <PublicHeader />}
+      <main className={isHomePage ? 'w-full' : 'w-full pt-[8.2rem]'}>
         <Outlet />
       </main>
       <PublicFooter />

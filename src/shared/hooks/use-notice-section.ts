@@ -12,7 +12,11 @@ export type NoticeItem = {
 type UseNoticeSectionParams = {
   notices?: NoticeItem[];
   onClickAll?: () => void;
+  pageSize?: number;
+  searchKeyword?: string;
 };
+
+const DEFAULT_PAGE_SIZE = 2;
 
 const FALLBACK_PREVIEW =
   '\uACF5\uC9C0 \uC0C1\uC138 \uD398\uC774\uC9C0\uC5D0\uC11C \uBCF8\uBB38\uC744 \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.';
@@ -35,10 +39,12 @@ const formatNoticeDate = (value?: string) => {
 export function useNoticeSection({
   notices,
   onClickAll,
+  pageSize = DEFAULT_PAGE_SIZE,
+  searchKeyword = '',
 }: UseNoticeSectionParams = {}) {
   const hasInjectedNotices = Boolean(notices?.length);
   const noticeQuery = useGetNotices(
-    { page: 0, size: 2 },
+    { page: 0, size: pageSize },
     {
       query: {
         staleTime: 60_000,
@@ -65,11 +71,22 @@ export function useNoticeSection({
     }));
   }, [noticeQuery.data?.data?.notices, notices]);
 
+  const normalizedKeyword = searchKeyword.trim().toLowerCase();
+  const filteredNotices = useMemo(() => {
+    if (!normalizedKeyword) {
+      return resolvedNotices;
+    }
+
+    return resolvedNotices.filter((notice) =>
+      notice.title.toLowerCase().includes(normalizedKeyword),
+    );
+  }, [normalizedKeyword, resolvedNotices]);
+
   return {
     title: '\uACF5\uC9C0\uC0AC\uD56D',
     actionLabel:
       '\uC804\uCCB4 \uACF5\uC9C0\uC0AC\uD56D \uD655\uC778\uD558\uAE30',
-    notices: resolvedNotices,
+    notices: filteredNotices,
     isLoading: hasInjectedNotices ? false : noticeQuery.isLoading,
     isError: hasInjectedNotices ? false : noticeQuery.isError,
     handleClickAll: () => {

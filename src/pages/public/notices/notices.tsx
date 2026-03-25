@@ -1,17 +1,71 @@
-import { Link } from 'react-router-dom';
+import SearchBar from '@components/common/search-bar';
+import NoticeCard from '@components/notice/notice-card';
+import { useNoticeSection } from '@hooks/use-notice-section';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Notices = () => {
+  const navigate = useNavigate();
+  const [keyword, setKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const { notices, isLoading, isError } = useNoticeSection({
+    pageSize: 100,
+    searchKeyword,
+  });
+
+  const handleSearch = (value: string) => {
+    setSearchKeyword(value);
+  };
+
+  const handleRefresh = () => {
+    setKeyword('');
+    setSearchKeyword('');
+  };
+
   return (
-    <section>
-      <h1>Notices (List)</h1>
-      <ul>
-        <li>
-          <Link to="/notices/101">Notice #101</Link>
-        </li>
-        <li>
-          <Link to="/notices/102">Notice #102</Link>
-        </li>
-      </ul>
+    <section className="flex-col bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5erm] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]">
+      <div className="mb-[3rem] flex items-center">
+        <h1 className="title3 tracking-[-0.03em] text-gray-900">공지사항</h1>
+      </div>
+
+      <div className="mb-[5rem]">
+        <SearchBar
+          value={keyword}
+          onChange={setKeyword}
+          onSearch={handleSearch}
+          onRefresh={handleRefresh}
+          placeholder="찾으시는 공지사항 제목을 입력해 주세요."
+          buttonText="검색하기"
+          size="lg"
+        />
+      </div>
+
+      {isLoading ? (
+        <div className="rounded-2xl bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-gray-500">
+          공지사항을 불러오는 중입니다.
+        </div>
+      ) : isError ? (
+        <div className="rounded-2xl bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-red-500">
+          공지사항을 불러오지 못했습니다.
+        </div>
+      ) : notices.length ? (
+        <div className="flex flex-col gap-4">
+          {notices.map((notice) => (
+            <NoticeCard
+              key={notice.id}
+              notice={notice}
+              onClick={(noticeId) => {
+                navigate(`/notices/${noticeId}`);
+              }}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-gray-500">
+          표시할 공지사항이 없습니다.
+        </div>
+      )}
     </section>
   );
 };
