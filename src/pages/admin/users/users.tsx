@@ -1,7 +1,10 @@
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import UserListTable, {
+  type UserRow,
 } from '@components/admin/user-list/user-list-table';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
+import { useDeleteUser } from '@apis/telegro';
+import { toastError, toastSuccess } from '@components/common/toast/toast';
 import useUserList from '@hooks/use-user-list';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -12,10 +15,37 @@ const AdminUsers = () => {
   const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const { users, totalPages, totalCount, isLoading, isError } = useUserList({
+  const { users, totalPages, totalCount, isLoading, isError, refetch } = useUserList({
     page: currentPage - 1,
     size: PAGE_SIZE,
   });
+  const deleteUserMutation = useDeleteUser();
+
+  const handleEdit = (user: UserRow) => {
+    navigate(`/admin/users/${user.id}`);
+  };
+
+  const handleDelete = async (user: UserRow) => {
+    const isConfirmed = window.confirm(`${user.name} 유저를 삭제하시겠습니까?`);
+
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await deleteUserMutation.mutateAsync({ userId: user.id });
+      toastSuccess('유저를 삭제했습니다.');
+
+      if (users.length === 1 && currentPage > 1) {
+        setCurrentPage((page) => page - 1);
+        return;
+      }
+
+      await refetch();
+    } catch {
+      toastError('유저 삭제에 실패했습니다.');
+    }
+  };
 
   return (
     <div
@@ -41,7 +71,8 @@ const AdminUsers = () => {
             totalPages={totalPages}
             isLoading={isLoading}
             onPageChange={setCurrentPage}
-            onRowMenuClick={(user) => navigate(`/admin/users/${user.id}`)}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         )}
       </div>

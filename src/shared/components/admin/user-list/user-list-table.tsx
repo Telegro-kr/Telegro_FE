@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export type UserRole = 'MEMBER' | 'DEALER' | 'BEST' | 'BUSINESS' | 'ADMIN';
 
@@ -19,7 +19,8 @@ type UserListTableProps = {
   currentPage: number;
   totalPages: number;
   isLoading?: boolean;
-  onRowMenuClick?: (user: UserRow) => void;
+  onEdit?: (user: UserRow) => void;
+  onDelete?: (user: UserRow) => void;
   onPageChange?: (page: number) => void;
 };
 
@@ -36,10 +37,16 @@ function KebabButton({ onClick }: { onClick?: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-8 w-8 items-center justify-center rounded-md text-[#828282] transition hover:bg-slate-100"
+      className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-[#828282] transition hover:bg-slate-100"
       aria-label="사용자 메뉴 열기"
     >
-      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 20 20"
+        fill="none"
+        aria-hidden="true"
+      >
         <circle cx="10" cy="4" r="1.6" fill="currentColor" />
         <circle cx="10" cy="10" r="1.6" fill="currentColor" />
         <circle cx="10" cy="16" r="1.6" fill="currentColor" />
@@ -70,7 +77,13 @@ function PaginationArrow({
       ].join(' ')}
       aria-label={direction === 'prev' ? '이전 페이지' : '다음 페이지'}
     >
-      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 16 16"
+        fill="none"
+        aria-hidden="true"
+      >
         {direction === 'prev' ? (
           <path
             d="M9.5 3.5L5.5 8L9.5 12.5"
@@ -117,7 +130,15 @@ function getPaginationRange(
     ];
   }
 
-  return [1, 'ellipsis', currentPage - 1, currentPage, currentPage + 1, 'ellipsis', totalPages];
+  return [
+    1,
+    'ellipsis',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    'ellipsis',
+    totalPages,
+  ];
 }
 
 const UserListTable = ({
@@ -125,9 +146,31 @@ const UserListTable = ({
   currentPage,
   totalPages,
   isLoading = false,
-  onRowMenuClick,
+  onEdit,
+  onDelete,
   onPageChange,
 }: UserListTableProps) => {
+  const [openMenuUserId, setOpenMenuUserId] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (openMenuUserId === null) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setOpenMenuUserId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [openMenuUserId]);
+
   const paginationRange = useMemo(
     () => getPaginationRange(currentPage, totalPages),
     [currentPage, totalPages],
@@ -157,10 +200,10 @@ const UserListTable = ({
               {users.map((user) => (
                 <div
                   key={user.id}
-                  className="relative grid h-[58px] grid-cols-[92px_160px_210px_minmax(240px,1fr)_98px_108px_88px_44px] items-center overflow-hidden rounded-[8px] bg-white px-[18px]"
+                  className="relative grid h-[58px] grid-cols-[92px_160px_210px_minmax(240px,1fr)_98px_108px_88px_44px] items-center rounded-[8px] bg-white px-[18px]"
                 >
                   <div
-                    className="absolute bottom-[-10px] left-[-2px] top-[-10px] w-[8px]"
+                    className="absolute top-0 bottom-0 left-0 w-[8px] rounded-l-[8px]"
                     style={{ backgroundColor: ROLE_COLOR_MAP[user.role] }}
                     aria-hidden="true"
                   />
@@ -186,8 +229,42 @@ const UserListTable = ({
                   <div className="text-center text-[16px] font-normal text-[#828282]">
                     {user.rewardPoint}
                   </div>
-                  <div className="flex justify-center">
-                    <KebabButton onClick={() => onRowMenuClick?.(user)} />
+                  <div
+                    ref={openMenuUserId === user.id ? menuRef : undefined}
+                    className="relative flex justify-center"
+                  >
+                    <KebabButton
+                      onClick={() =>
+                        setOpenMenuUserId((prev) =>
+                          prev === user.id ? null : user.id,
+                        )
+                      }
+                    />
+
+                    {openMenuUserId === user.id ? (
+                      <div className="absolute top-[calc(100%+8px)] right-0 z-20 min-w-[120px] rounded-[12px] border border-[#E6E6E6] bg-white p-1 shadow-[0_12px_30px_rgba(17,17,17,0.08)]">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpenMenuUserId(null);
+                            onEdit?.(user);
+                          }}
+                          className="flex w-full cursor-pointer items-center rounded-[8px] px-4 py-3 text-left text-[15px] text-[#444444] transition hover:bg-[#F5F5F5]"
+                        >
+                          수정하기
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpenMenuUserId(null);
+                            onDelete?.(user);
+                          }}
+                          className="flex w-full cursor-pointer items-center rounded-[8px] px-4 py-3 text-left text-[15px] text-[#D14B4B] transition hover:bg-[#FFF3F3]"
+                        >
+                          삭제하기
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               ))}
