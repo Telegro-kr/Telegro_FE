@@ -20,9 +20,10 @@ type UseProductSectionParams = {
   onClickAll?: () => void;
   onClickArrow?: () => void;
   onClickProduct?: (product: ProductItem) => void;
+  pageSize?: number;
 };
 
-const PAGE_SIZE = 4;
+const DEFAULT_PAGE_SIZE = 4;
 const CATEGORY_OPTIONS: ProductCategory[] = [
   'HEADSET',
   'LINE_CORD',
@@ -38,10 +39,14 @@ const CATEGORY_LABELS: Record<ProductCategory, string> = {
   ACCESSORY: '\uC545\uC138\uC11C\uB9AC',
 };
 
-const getProductPageParams = (category: ProductCategory, page: number) => ({
+const getProductPageParams = (
+  category: ProductCategory,
+  page: number,
+  pageSize: number,
+) => ({
   category,
   page,
-  size: PAGE_SIZE,
+  size: pageSize,
 });
 
 const toProductItem = (
@@ -71,6 +76,7 @@ export function useProductSection({
   onClickAll,
   onClickArrow,
   onClickProduct,
+  pageSize = DEFAULT_PAGE_SIZE,
 }: UseProductSectionParams = {}) {
   const queryClient = useQueryClient();
   const hasInjectedProducts = Boolean(products?.length);
@@ -85,7 +91,7 @@ export function useProductSection({
   });
 
   const currentPage = pageByCategory[activeCategory];
-  const productQuery = useGetProducts(getProductPageParams(activeCategory, currentPage), {
+  const productQuery = useGetProducts(getProductPageParams(activeCategory, currentPage, pageSize), {
     query: {
       staleTime: 60_000,
     },
@@ -93,18 +99,18 @@ export function useProductSection({
 
   useEffect(() => {
     CATEGORY_OPTIONS.forEach((category) => {
-      void telegroPrefetch.products(queryClient, getProductPageParams(category, 0));
+      void telegroPrefetch.products(queryClient, getProductPageParams(category, 0, pageSize));
     });
-  }, [queryClient]);
+  }, [pageSize, queryClient]);
 
   useEffect(() => {
     if (!productQuery.data?.data?.isLast) {
       void telegroPrefetch.products(
         queryClient,
-        getProductPageParams(activeCategory, currentPage + 1),
+        getProductPageParams(activeCategory, currentPage + 1, pageSize),
       );
     }
-  }, [activeCategory, currentPage, productQuery.data?.data?.isLast, queryClient]);
+  }, [activeCategory, currentPage, pageSize, productQuery.data?.data?.isLast, queryClient]);
 
   const resolvedProducts = useMemo(() => {
     if (products?.length) {
@@ -147,7 +153,7 @@ export function useProductSection({
     isLoading: hasInjectedProducts ? false : productQuery.isLoading,
     isError: hasInjectedProducts ? false : productQuery.isError,
     isArrowDisabled: hasInjectedProducts
-      ? resolvedProducts.length <= PAGE_SIZE
+      ? resolvedProducts.length <= pageSize
       : Boolean(productQuery.data?.data?.isLast),
     setActiveCategory: handleChangeCategory,
     handleClickAll: () => onClickAll?.(),

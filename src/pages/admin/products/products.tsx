@@ -7,6 +7,7 @@ const AdminProducts = () => {
   return (
     <div className="bg-white px-8 py-10">
       <ProductSectionContainer
+        variant="list"
         onClickProduct={(product) => {
           navigate(`/admin/products/${product.id}`);
         }}

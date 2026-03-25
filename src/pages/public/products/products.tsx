@@ -1,18 +1,17 @@
-import { Link } from 'react-router-dom';
+import ProductSectionContainer from '@components/product-section/product-section-container';
+import { useNavigate } from 'react-router-dom';
 
 const PublicProducts = () => {
-  // 탭/필터는 추후 구현
+  const navigate = useNavigate();
+
   return (
-    <section>
-      <h1>Products (Public List)</h1>
-      <ul>
-        <li>
-          <Link to="/products/1">Go Product #1</Link>
-        </li>
-        <li>
-          <Link to="/products/2">Go Product #2</Link>
-        </li>
-      </ul>
+    <section className="mx-auto w-full max-w-[160rem] px-[2rem] py-[5rem] md:px-[3rem] lg:px-[10rem]">
+      <ProductSectionContainer
+        variant="list"
+        onClickProduct={(product) => {
+          navigate(`/products/${product.id}`);
+        }}
+      />
     </section>
   );
 };
