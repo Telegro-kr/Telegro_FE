@@ -1,3 +1,5 @@
+import { useRecordHits } from '@apis/telegro';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import headsetImage from '../../assets/images/Landing/headset.svg';
 import productImage1 from '../../assets/images/Landing/image1.png';
@@ -7,6 +9,8 @@ import productImage4 from '../../assets/images/Landing/image4.png';
 
 const productPath = '/products';
 const noticePath = '/notices';
+const HOME_HIT_GUARD_KEY = 'public-home-hit-recorded-at';
+const HOME_HIT_GUARD_MS = 1500;
 
 const floatingLinks = [
   {
@@ -104,6 +108,23 @@ const productCards = [
 const marqueeCards = [...productCards, ...productCards];
 
 const PublicHome = () => {
+  const { mutate: recordHits } = useRecordHits();
+
+  useEffect(() => {
+    const now = Date.now();
+    const lastRecordedAt = Number(sessionStorage.getItem(HOME_HIT_GUARD_KEY));
+
+    if (
+      Number.isFinite(lastRecordedAt) &&
+      now - lastRecordedAt < HOME_HIT_GUARD_MS
+    ) {
+      return;
+    }
+
+    sessionStorage.setItem(HOME_HIT_GUARD_KEY, String(now));
+    recordHits();
+  }, [recordHits]);
+
   return (
     <>
       <section className="relative flex items-center justify-center overflow-x-clip overflow-y-visible px-6 pt-6 pb-28 md:min-h-[60rem] md:px-12 md:pt-8 lg:px-16 lg:pt-4">
