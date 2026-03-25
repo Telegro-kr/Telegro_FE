@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
-import { FiRefreshCw } from 'react-icons/fi';
 import { cn } from '@utils/cn';
+import React, { useMemo, useState } from 'react';
+import { FiChevronDown, FiRefreshCw } from 'react-icons/fi';
 
 type SearchBarSize = 'md' | 'lg';
 
@@ -18,9 +18,12 @@ type SearchBarProps = {
   inputWrapClassName?: string;
   inputClassName?: string;
   buttonClassName?: string;
+  filterText?: string;
+  filterButtonClassName?: string;
   onChange?: (value: string) => void;
   onSearch?: (value: string) => void;
   onRefresh?: () => void;
+  onFilterClick?: () => void;
 };
 
 const sizeClasses: Record<
@@ -34,6 +37,9 @@ const sizeClasses: Record<
     buttonText: string;
     refreshButton: string;
     refreshIcon: string;
+    filterButton: string;
+    filterText: string;
+    filterIcon: string;
   }
 > = {
   md: {
@@ -45,6 +51,9 @@ const sizeClasses: Record<
     buttonText: 'text-xl',
     refreshButton: 'h-[5.3rem] w-[5.3rem] rounded-full',
     refreshIcon: 'h-6 w-6',
+    filterButton: 'h-[5.3rem] rounded-[12px] px-7',
+    filterText: 'text-xl',
+    filterIcon: 'h-5 w-5',
   },
   lg: {
     rootGap: 'gap-5',
@@ -55,10 +64,13 @@ const sizeClasses: Record<
     buttonText: 'body3',
     refreshButton: 'h-[5.3rem] w-[5.3rem] rounded-full',
     refreshIcon: 'h-7 w-7',
+    filterButton: 'h-[5.3rem] rounded-[12px] px-8',
+    filterText: 'body3',
+    filterIcon: 'h-5 w-5',
   },
 };
 
-function SearchIcon({ className }: { className?: string }) {
+const SearchIcon = ({ className }: { className?: string }) => {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
       <path
@@ -70,12 +82,12 @@ function SearchIcon({ className }: { className?: string }) {
       />
     </svg>
   );
-}
+};
 
-export default function SearchBar({
+const SearchBar = ({
   value,
   defaultValue = '',
-  placeholder = '찾으시는 항목의 이름을 입력해 주세요.',
+  placeholder = '찾으시는 항목명을 입력해 주세요.',
   buttonText = '검색하기',
   disabled = false,
   loading = false,
@@ -86,15 +98,19 @@ export default function SearchBar({
   inputWrapClassName,
   inputClassName,
   buttonClassName,
+  filterText,
+  filterButtonClassName,
   onChange,
   onSearch,
   onRefresh,
-}: SearchBarProps) {
+  onFilterClick,
+}: SearchBarProps) => {
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue);
 
   const currentValue = isControlled ? value : internalValue;
   const styles = sizeClasses[size];
+  const hasFilterButton = Boolean(filterText);
 
   const isSubmitDisabled = useMemo(() => {
     if (disabled || loading) return true;
@@ -164,6 +180,24 @@ export default function SearchBar({
         />
       </div>
 
+      {hasFilterButton ? (
+        <button
+          type="button"
+          disabled={disabled || loading}
+          onClick={onFilterClick}
+          className={cn(
+            'inline-flex shrink-0 items-center justify-center gap-3 bg-[#F5F5F5] font-medium text-[#2B2B2B] transition',
+            'hover:bg-[#EBEBEB] disabled:cursor-not-allowed disabled:opacity-60',
+            styles.filterButton,
+            styles.filterText,
+            filterButtonClassName,
+          )}
+        >
+          <span>{filterText}</span>
+          <FiChevronDown className={styles.filterIcon} />
+        </button>
+      ) : null}
+
       <button
         type="submit"
         disabled={isSubmitDisabled}
@@ -179,4 +213,6 @@ export default function SearchBar({
       </button>
     </form>
   );
-}
+};
+
+export default SearchBar;
