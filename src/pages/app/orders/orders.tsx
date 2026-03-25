@@ -1,7 +1,7 @@
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
-import OrderListTable, { type OrderRow } from '@components/order/order-list-table';
+import OrderListTable from '@components/order/order-list-table';
 import useOrderList, { type OrderFilterType } from '@hooks/use-order-list';
 import { useEffect, useRef, useState } from 'react';
 
@@ -42,8 +42,6 @@ const Orders = () => {
     setAppliedFilterBy(undefined);
     setIsFilterOpen(false);
   };
-
-  const handlePay = (_row: OrderRow) => {};
 
   useEffect(() => {
     if (!isFilterOpen) {
@@ -116,7 +114,7 @@ const Orders = () => {
           주문 목록을 불러오지 못했습니다.
         </div>
       ) : orders.length ? (
-        <OrderListTable data={orders} onPay={handlePay} />
+        <OrderListTable data={orders} />
       ) : (
         <div className="rounded-[1.6rem] bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-gray-500">
           표시할 주문 내역이 없습니다.
