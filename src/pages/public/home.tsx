@@ -1,6 +1,11 @@
-import { useRecordHits } from '@apis/telegro';
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import NoticePopup from '@components/notice/notice-popup';
+import {
+  getPopNotice,
+  useRecordHits,
+  type NoticeDetailDTO,
+} from '@apis/telegro';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import headsetImage from '../../assets/images/Landing/headset.svg';
 import productImage1 from '../../assets/images/Landing/image1.png';
 import productImage2 from '../../assets/images/Landing/image2.png';
@@ -11,6 +16,45 @@ const productPath = '/products';
 const noticePath = '/notices';
 const HOME_HIT_GUARD_KEY = 'public-home-hit-recorded-at';
 const HOME_HIT_GUARD_MS = 1500;
+const NOTICE_POPUP_DISMISS_KEY = 'public-home-notice-popup-dismiss-until';
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+const readNoticePopupDismissMap = (): Record<string, number> => {
+  const rawValue = localStorage.getItem(NOTICE_POPUP_DISMISS_KEY);
+
+  if (!rawValue) {
+    return {};
+  }
+
+  try {
+    const parsedValue = JSON.parse(rawValue);
+    return parsedValue && typeof parsedValue === 'object' ? parsedValue : {};
+  } catch {
+    localStorage.removeItem(NOTICE_POPUP_DISMISS_KEY);
+    return {};
+  }
+};
+
+const writeNoticePopupDismissMap = (value: Record<string, number>) => {
+  localStorage.setItem(NOTICE_POPUP_DISMISS_KEY, JSON.stringify(value));
+};
+
+const isNoticePopupDismissed = (noticeId: number) => {
+  const dismissMap = readNoticePopupDismissMap();
+  const dismissUntil = dismissMap[String(noticeId)];
+
+  if (!Number.isFinite(dismissUntil)) {
+    return false;
+  }
+
+  if (dismissUntil <= Date.now()) {
+    delete dismissMap[String(noticeId)];
+    writeNoticePopupDismissMap(dismissMap);
+    return false;
+  }
+
+  return true;
+};
 
 const floatingLinks = [
   {
@@ -109,6 +153,9 @@ const marqueeCards = [...productCards, ...productCards];
 
 const PublicHome = () => {
   const { mutate: recordHits } = useRecordHits();
+  const navigate = useNavigate();
+  const [popupNotice, setPopupNotice] = useState<NoticeDetailDTO | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
     const now = Date.now();
@@ -125,8 +172,70 @@ const PublicHome = () => {
     recordHits();
   }, [recordHits]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPopupNotice = async () => {
+      try {
+        const popupResponse = await getPopNotice({ withCredentials: false });
+        const notice = popupResponse.data;
+        const noticeId = notice?.id;
+
+        if (!isMounted || !noticeId || isNoticePopupDismissed(noticeId)) {
+          return;
+        }
+
+        setPopupNotice(notice);
+        setIsPopupOpen(true);
+      } catch {
+        setPopupNotice(null);
+        setIsPopupOpen(false);
+      }
+    };
+
+    void loadPopupNotice();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handleDismissPopupToday = () => {
+    if (!popupNotice?.id) {
+      setIsPopupOpen(false);
+      return;
+    }
+
+    const dismissMap = readNoticePopupDismissMap();
+    dismissMap[String(popupNotice.id)] = Date.now() + ONE_DAY_MS;
+    writeNoticePopupDismissMap(dismissMap);
+    setIsPopupOpen(false);
+  };
+
+  const handleOpenPopupNotice = () => {
+    if (!popupNotice?.id) {
+      return;
+    }
+
+    setIsPopupOpen(false);
+    navigate(`/notices/${popupNotice.id}`);
+  };
+
   return (
     <>
+      {popupNotice && isPopupOpen ? (
+        <NoticePopup
+          notice={popupNotice}
+          onClose={handleClosePopup}
+          onDismissToday={handleDismissPopupToday}
+          onOpenNotice={handleOpenPopupNotice}
+        />
+      ) : null}
+
       <section className="relative flex items-center justify-center overflow-x-clip overflow-y-visible px-6 pt-6 pb-28 md:min-h-[60rem] md:px-12 md:pt-8 lg:px-16 lg:pt-4">
         <div className="relative mx-auto w-full">
           <div className="flex-row-center pointer-events-none absolute inset-0">

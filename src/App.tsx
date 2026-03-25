@@ -1,4 +1,5 @@
-﻿import LoadingPage from '@components/common/loading-page';
+﻿import GlobalSiteToast from '@components/common/global-site-toast';
+import LoadingPage from '@components/common/loading-page';
 import AppErrorBoundary from '@components/errors/app-error-boundary';
 import { ToastProvider } from '@components/common/toast/toast-provider/toast-provider';
 import queryClient from '@libs/query-client';
@@ -17,6 +18,7 @@ const App = () => {
           <Suspense fallback={<LoadingPage noLayout />}>
             <RouterProvider router={router} />
           </Suspense>
+          <GlobalSiteToast />
           <ToastProvider />
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
