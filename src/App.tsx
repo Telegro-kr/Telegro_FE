@@ -1,7 +1,8 @@
-﻿import GlobalSiteToast from '@components/common/global-site-toast';
+import ChatButton from '@components/common/chat-button';
+import GlobalSiteToast from '@components/common/global-site-toast';
 import LoadingPage from '@components/common/loading-page';
-import AppErrorBoundary from '@components/errors/app-error-boundary';
 import { ToastProvider } from '@components/common/toast/toast-provider/toast-provider';
+import AppErrorBoundary from '@components/errors/app-error-boundary';
 import queryClient from '@libs/query-client';
 import { router } from '@routes/router';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -18,6 +19,7 @@ const App = () => {
           <Suspense fallback={<LoadingPage noLayout />}>
             <RouterProvider router={router} />
           </Suspense>
+          <ChatButton />
           <GlobalSiteToast />
           <ToastProvider />
           <ReactQueryDevtools initialIsOpen={false} />
