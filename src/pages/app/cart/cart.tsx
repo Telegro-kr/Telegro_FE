@@ -25,6 +25,8 @@ const Cart = () => {
     removeOption,
     removeItem,
     removeSelected,
+    purchaseSelected,
+    purchaseAll,
   } = useCart(fetchedItems);
 
   if (isLoading) {
@@ -101,18 +103,21 @@ const Cart = () => {
             <div className="flex-row-center mt-8 gap-4">
               <button
                 type="button"
+                onClick={() => navigate('/products')}
                 className="rounded-full border border-neutral-400 px-8 py-4 text-[15px] font-medium text-neutral-800 transition hover:bg-neutral-50"
               >
                 쇼핑하러 가기
               </button>
               <button
                 type="button"
+                onClick={purchaseSelected}
                 className="rounded-full border border-neutral-400 px-8 py-4 text-[15px] font-medium text-neutral-800 transition hover:bg-neutral-50"
               >
                 선택상품구매
               </button>
               <button
                 type="button"
+                onClick={purchaseAll}
                 className="rounded-full bg-black px-8 py-4 text-[15px] font-medium text-white transition hover:bg-neutral-800"
               >
                 전체상품구매
