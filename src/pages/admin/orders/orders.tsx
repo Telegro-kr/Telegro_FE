@@ -119,7 +119,7 @@ const AdminOrders = () => {
           주문 목록을 불러오지 못했습니다.
         </div>
       ) : orders.length ? (
-        <OrderListTable data={orders} />
+        <OrderListTable data={orders} detailBasePath="/admin/orders" />
       ) : (
         <div className="rounded-[1.6rem] bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-gray-500">
           표시할 주문 내역이 없습니다.
