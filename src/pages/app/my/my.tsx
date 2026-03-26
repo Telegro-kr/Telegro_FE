@@ -2,6 +2,7 @@ import type { DeliveryAddressDetailDTO, OrderDetailDTO } from '@apis/telegro';
 import { useGetMyPage, useGetOrders } from '@apis/telegro';
 import LoadingPage from '@components/common/loading-page';
 import { formatNumber } from '@utils/format';
+import { FiEdit2 } from 'react-icons/fi';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -39,7 +40,7 @@ function formatOrderDate(value?: string) {
 
 function formatOrderPrice(value?: number) {
   if (value === undefined || value === null) return '-';
-  return `${formatNumber(value)}원`;
+  return `${formatNumber(value)}`;
 }
 
 function getOrderProductName(order: OrderDetailDTO) {
@@ -168,7 +169,9 @@ function AddressRow({ address }: { address: DeliveryAddressDetailDTO }) {
         surfaceClass,
       ].join(' ')}
     >
-      <div className={`absolute left-0 top-0 bottom-0 w-[0.6rem] ${accentClass}`} />
+      <div
+        className={`absolute top-0 bottom-0 left-0 w-[0.6rem] ${accentClass}`}
+      />
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -184,7 +187,6 @@ function AddressRow({ address }: { address: DeliveryAddressDetailDTO }) {
 
           <p className="mt-3 text-[1.4rem] font-medium text-[#444444]">
             {(address.recipientName?.trim() || '-') +
-              ' · ' +
               formatPhoneNumber(address.phoneNumber)}
           </p>
           <p className="mt-2 text-[1.4rem] leading-[1.7] text-[#6D6D6D]">
@@ -192,7 +194,7 @@ function AddressRow({ address }: { address: DeliveryAddressDetailDTO }) {
           </p>
           {address.zipcode ? (
             <p className="mt-1 text-[1.2rem] text-[#9A9A9A]">
-              우편번호 {address.zipcode}
+              {address.zipcode}
             </p>
           ) : null}
         </div>
@@ -264,7 +266,6 @@ const MyPage = () => {
                 alt="사용자 프로필"
                 className="h-[8rem] w-[8rem] rounded-[1rem] border border-[#EFE7DB] bg-white object-cover p-3"
               />
-
               <div className="mt-5">
                 <p className="text-[2.4rem] font-semibold tracking-[-0.03em] text-[#171717]">
                   {user?.userName?.trim() || '사용자'}
@@ -326,6 +327,14 @@ const MyPage = () => {
                   title="계정 정보"
                   description="가입한 기본 정보를 확인할 수 있습니다."
                 />
+
+                <button
+                  type="button"
+                  aria-label="계정정보 수정"
+                  className="absolute top-8 right-8 inline-flex h-12 w-12 items-center justify-center rounded-[1rem] border border-[#E7E1D7] bg-[#F8F5EF] text-[#5F7A35] transition-colors hover:bg-[#F1ECE3]"
+                >
+                  <FiEdit2 className="text-[1.8rem]" />
+                </button>
 
                 <div className="mt-8 grid gap-4 md:grid-cols-2">
                   <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">

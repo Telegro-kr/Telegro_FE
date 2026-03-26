@@ -16,6 +16,12 @@ const PublicHeader = () => {
         <Link to="/notices" className={linkClass}>
           Notice
         </Link>
+        <Link to="/app/cart" className={linkClass}>
+          Cart
+        </Link>
+        <Link to="/app/my" className={linkClass}>
+          My
+        </Link>
       </nav>
     </header>
   );
