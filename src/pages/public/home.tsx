@@ -239,7 +239,7 @@ const PublicHome = () => {
       <section className="relative flex items-center justify-center overflow-x-clip overflow-y-visible px-6 pt-6 pb-28 md:min-h-[60rem] md:px-12 md:pt-8 lg:px-16 lg:pt-4">
         <div className="relative mx-auto w-full">
           <div className="flex-row-center pointer-events-none absolute inset-0">
-            <h2 className="bg-gradient-to-r from-[#666666] via-[#363636] to-[#000000] bg-clip-text font-['Pretendard',sans-serif] text-[8rem] font-extrabold tracking-[0.01em] whitespace-nowrap text-transparent uppercase sm:text-[12rem] md:text-[18rem] lg:text-[22rem] xl:text-[25rem]">
+            <h2 className="bg-gradient-to-r from-[#666666] via-[#363636] to-[#000000] bg-clip-text font-['Pretendard',sans-serif] text-[8rem] font-extrabold tracking-[0.01em] whitespace-nowrap text-transparent uppercase sm:text-[12rem] md:text-[18rem] lg:text-[20rem] xl:text-[23rem]">
               premium telegro
             </h2>
           </div>
