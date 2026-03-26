@@ -44,14 +44,16 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="text-[1.3rem] font-semibold text-[#5D5D5D]">{label}</span>
+      <span className="text-[1.3rem] font-semibold text-[#5D5D5D]">
+        {label}
+      </span>
       <input
         type={type}
         name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="mt-3 h-[5.6rem] w-full rounded-[1.2rem] border border-[#E5DED2] bg-[#FCFAF6] px-5 text-[1.5rem] text-[#1F1F1F] outline-none transition-colors placeholder:text-[#A29A8E] focus:border-[#5F7A35]"
+        className="focus:border-primary mt-3 h-[5.6rem] w-full rounded-[1.2rem] border border-gray-300 px-5 text-[1.5rem] text-[#1F1F1F] transition-colors outline-none placeholder:text-gray-500"
       />
     </label>
   );
@@ -103,7 +105,12 @@ const MyEditPage = () => {
       return;
     }
 
-    if (!form.username.trim() || !form.userId.trim() || !form.email.trim() || !form.phone.trim()) {
+    if (
+      !form.username.trim() ||
+      !form.userId.trim() ||
+      !form.email.trim() ||
+      !form.phone.trim()
+    ) {
       toastError('이름, 아이디, 이메일, 연락처를 모두 입력해 주세요.');
       return;
     }
@@ -168,9 +175,9 @@ const MyEditPage = () => {
   }
 
   return (
-    <section className="min-h-screen bg-[#F7F4EE] px-6 py-8 lg:px-10 lg:py-10">
+    <section className="min-h-screen px-6 py-8 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-[72rem]">
-        <div className="rounded-[2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(248,245,239,0.98)_100%)] p-8 shadow-[0_24px_60px_rgba(22,22,22,0.08)] lg:p-10">
+        <div className="rounded-[2rem] border border-white/70 p-8 shadow-[0_24px_60px_rgba(22,22,22,0.08)] lg:p-10">
           <div>
             <Link
               to="/app/my"
@@ -220,7 +227,7 @@ const MyEditPage = () => {
               />
             </div>
 
-            <div className="rounded-[1.4rem] border border-[#EBE4D9] bg-[#FCFAF6] p-6">
+            <div className="rounded-[1.4rem] border border-gray-300 p-6">
               <Field
                 label="비밀번호"
                 name="password"
@@ -229,7 +236,7 @@ const MyEditPage = () => {
                 type="password"
                 placeholder="변경할 때만 입력해 주세요"
               />
-              <p className="mt-3 text-[1.3rem] text-[#8A8175]">
+              <p className="mt-3 text-[1.3rem] text-gray-600">
                 비밀번호를 비워두면 기존 비밀번호를 유지합니다.
               </p>
             </div>
@@ -238,14 +245,14 @@ const MyEditPage = () => {
               <button
                 type="button"
                 onClick={() => navigate('/app/my')}
-                className="rounded-[999px] border border-[#D9D2C6] px-7 py-3 text-[1.4rem] font-semibold text-[#4D4D4D]"
+                className="rounded-[999px] border border-gray-300 px-7 py-3 text-[1.4rem] font-semibold text-[#4D4D4D]"
               >
                 취소
               </button>
               <button
                 type="submit"
                 disabled={updateUserMutation.isPending}
-                className="rounded-[999px] bg-[#5F7A35] px-8 py-3 text-[1.4rem] font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#A8B792]"
+                className="bg-primary rounded-[999px] px-8 py-3 text-[1.4rem] font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#A8B792]"
               >
                 {updateUserMutation.isPending ? '저장 중...' : '저장하기'}
               </button>

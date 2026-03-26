@@ -5,8 +5,9 @@ import { formatNumber } from '@utils/format';
 import { FiEdit2 } from 'react-icons/fi';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import ConfirmModal from '@components/common/confirm-modal';
 
-const menuItems = ['프로필', '주문', '배송지'] as const;
+const menuItems = ['프로필', '주문', '배송지', '로그아웃'] as const;
 
 const orderStatusLabels: Record<string, string> = {
   ORDER_CREATED: '주문 생성',
@@ -207,6 +208,27 @@ const MyPage = () => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] =
     useState<(typeof menuItems)[number]>('프로필');
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const handleMenuClick = (item: (typeof menuItems)[number]) => {
+    if (item === menuItems[3]) {
+      setIsLogoutModalOpen(true);
+      return;
+    }
+
+    setActiveMenu(item);
+  };
+
+  const handleLogoutCancel = () => {
+    setIsLogoutModalOpen(false);
+  };
+
+  const handleLogoutConfirm = () => {
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('accessToken');
+    setIsLogoutModalOpen(false);
+    navigate('/');
+  };
 
   const myPageQuery = useGetMyPage({
     query: {
@@ -282,7 +304,7 @@ const MyPage = () => {
                 <button
                   key={item}
                   type="button"
-                  onClick={() => setActiveMenu(item)}
+                  onClick={() => handleMenuClick(item)}
                   className={[
                     'rounded-[0.9rem] px-5 py-4 text-left text-[1.5rem] font-semibold',
                     activeMenu === item
@@ -437,6 +459,14 @@ const MyPage = () => {
           </div>
         </div>
       </div>
+
+      {isLogoutModalOpen ? (
+        <ConfirmModal
+          message="로그아웃하시겠습니까?"
+          onCancel={handleLogoutCancel}
+          onConfirm={handleLogoutConfirm}
+        />
+      ) : null}
     </section>
   );
 };
