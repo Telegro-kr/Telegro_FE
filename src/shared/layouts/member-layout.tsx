@@ -1,21 +1,15 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import PublicFooter from './public-footer';
+import PublicHeader from './public-header';
 
 const MemberLayout = () => {
   return (
-    <div>
-      <header style={{ padding: 12, borderBottom: '1px solid #eee' }}>
-        <nav style={{ display: 'flex', gap: 12 }}>
-          <Link to="/app/cart">Cart</Link>
-          <Link to="/app/checkout">Checkout</Link>
-          <Link to="/app/orders">Orders</Link>
-          <Link to="/app/my">My</Link>
-          <Link to="/">Back to Public</Link>
-        </nav>
-      </header>
-      <main style={{ padding: 16 }}>
+    <div className="relative min-h-screen w-full bg-[#fafafa] text-[#121212]">
+      <PublicHeader />
+      <main className="w-full pt-[8.2rem]">
         <Outlet />
       </main>
-      <footer style={{ padding: 12, borderTop: '1px solid #eee' }}>© Member</footer>
+      <PublicFooter />
     </div>
   );
 };
