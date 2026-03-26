@@ -64,6 +64,36 @@ const AdminNoticeDetailView = ({
             ) : (
               <NoticeContentCard content={notice.content} />
             )}
+
+            {!isLoading && !isError && notice.attachments.length ? (
+              <section className="rounded-[1.4rem] border border-[#E6ECFF] bg-[#F7F9FF] px-6 py-6 md:px-8">
+                <div className="flex flex-col gap-4">
+                  <h2 className="text-[1.05rem] font-semibold tracking-[-0.02em] text-[#202124] md:text-[1.15rem]">
+                    첨부파일
+                  </h2>
+
+                  <div className="flex flex-col divide-y divide-[#DCE4FF]">
+                    {notice.attachments.map((file) => (
+                      <a
+                        key={file.id || file.fileUrl}
+                        href={file.fileUrl}
+                        download={file.fileName}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center justify-between gap-4 py-4 text-[1rem] transition-colors hover:text-[#3557F6] md:text-[1.08rem]"
+                      >
+                        <span className="min-w-0 truncate text-[#202124]">
+                          {file.fileName}
+                        </span>
+                        <span className="shrink-0 font-medium text-[#5B74F7]">
+                          다운로드
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            ) : null}
           </article>
 
           <div className="border-t border-[#E9E9E9]">
