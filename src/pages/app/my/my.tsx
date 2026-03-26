@@ -2,7 +2,7 @@ import type { DeliveryAddressDetailDTO, OrderDetailDTO } from '@apis/telegro';
 import { useGetMyPage, useGetOrders } from '@apis/telegro';
 import LoadingPage from '@components/common/loading-page';
 import { formatNumber } from '@utils/format';
-import { FiEdit2 } from 'react-icons/fi';
+import { FiChevronRight, FiEdit2 } from 'react-icons/fi';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ConfirmModal from '@components/common/confirm-modal';
@@ -137,7 +137,7 @@ function OrderRow({ order }: { order: OrderDetailDTO }) {
   return (
     <Link
       to={order.orderId ? `/app/orders/${order.orderId}` : '/app/orders'}
-      className="flex items-center justify-between gap-6 rounded-[1.2rem] border border-[#ECE8E1] bg-white px-6 py-5"
+      className="flex items-center justify-between gap-6 rounded-[1.2rem] border border-[#ECE8E1] bg-white px-6 py-5 transition hover:border-[#D9D2C7] hover:bg-[#FCFAF6]"
     >
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-3">
@@ -152,9 +152,12 @@ function OrderRow({ order }: { order: OrderDetailDTO }) {
         </div>
       </div>
 
-      <p className="shrink-0 text-[1.5rem] font-semibold text-[#303030]">
-        {formatOrderPrice(order.amount)}
-      </p>
+      <div className="flex shrink-0 items-center gap-3">
+        <p className="text-[1.5rem] font-semibold text-[#303030]">
+          {formatOrderPrice(order.amount)}
+        </p>
+        <FiChevronRight className="text-[1.8rem] text-[#A69A89]" />
+      </div>
     </Link>
   );
 }

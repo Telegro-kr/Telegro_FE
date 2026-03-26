@@ -1,8 +1,7 @@
-import { useParams } from 'react-router-dom';
+import OrderDetailPage from '@components/order/order-detail-page';
 
 const OrderDetail = () => {
-  const { orderId } = useParams<{ orderId: string }>();
-  return <h1>Order Detail - #{orderId}</h1>;
+  return <OrderDetailPage fallbackPath="/app/orders" />;
 };
 
 export default OrderDetail;

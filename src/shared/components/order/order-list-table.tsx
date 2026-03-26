@@ -2,6 +2,7 @@ import { useUpdateOrderStatus } from '@apis/telegro';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 export type OrderStatusValue =
   | 'ORDER_CREATED'
@@ -28,6 +29,7 @@ export type OrderRow = {
 
 type Props = {
   data: OrderRow[];
+  detailBasePath?: string;
 };
 
 const STATUS_OPTIONS: Array<{ label: string; value: OrderStatusValue }> = [
@@ -93,7 +95,11 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
   }
 
   return (
-    <div ref={containerRef} className="relative flex justify-center">
+    <div
+      ref={containerRef}
+      className="relative flex justify-center"
+      onClick={(event) => event.stopPropagation()}
+    >
       <button
         type="button"
         disabled={updateOrderStatus.isPending}
@@ -135,7 +141,11 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
   );
 };
 
-const OrderListTable = ({ data }: Props) => {
+const OrderListTable = ({
+  data,
+  detailBasePath = '/app/orders',
+}: Props) => {
+  const navigate = useNavigate();
   const [isHeaderFilterOpen, setIsHeaderFilterOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatusValue | 'ALL'>(
     'ALL',
@@ -249,7 +259,8 @@ const OrderListTable = ({ data }: Props) => {
           {filteredData.map((row) => (
             <tr
               key={row.id}
-              className="h-[9.2rem] border-b border-slate-200 last:border-b-0"
+              onClick={() => navigate(`${detailBasePath}/${row.orderId}`)}
+              className="h-[9.2rem] cursor-pointer border-b border-slate-200 transition hover:bg-[#FAFAFA] last:border-b-0"
             >
               <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.id}</span>
