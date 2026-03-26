@@ -8,7 +8,7 @@ const AuthGuard = () => {
   const hasStoredToken = Boolean(getStoredAccessToken());
 
   if (!isLoggedIn && !hasStoredToken) {
-    return <Navigate to="/login" replace state={{ from: loc }} />;
+    return <Navigate to="/" replace state={{ from: loc }} />;
   }
 
   return <Outlet />;
