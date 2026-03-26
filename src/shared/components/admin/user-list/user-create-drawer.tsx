@@ -1,14 +1,41 @@
+import {
+  SignUpUserInfoDtoRole,
+  type CompanySignUpDTO,
+  type SignUpUserInfoDtoRole as CompanyRole,
+  useCreateCompany,
+} from '@apis/telegro';
 import Icon from '@components/common/icon';
-import { useEffect, useMemo, useState } from 'react';
-import signupLogo from '/signup-logo.svg';
+import { toastError, toastSuccess } from '@components/common/toast/toast';
+import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@utils/cn';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
+import signupLogo from '/signup-logo.svg';
 
 type UserCreateDrawerProps = {
   open: boolean;
   onClose: () => void;
 };
 
+type CreateCompanyForm = {
+  username: string;
+  userid: string;
+  password: string;
+  companyName: string;
+  phone: string;
+  email: string;
+  managerName: string;
+  managerPhone: string;
+  companyNumber: string;
+  companyType: string;
+  companyItem: string;
+  address: string;
+  zipCode: string;
+  addressDetail: string;
+  companyDescription: string;
+};
+
 type StepField = {
+  key: keyof CreateCompanyForm;
   label: string;
   placeholder: string;
   required?: boolean;
@@ -16,7 +43,56 @@ type StepField = {
   actionLabel?: string;
 };
 
-const ROLE_OPTIONS = ['Member', 'Dealer', 'Best', 'Business', 'Admin'] as const;
+type DaumPostcodeData = {
+  zonecode: string;
+  address: string;
+  addressType: 'R' | 'J';
+  bname: string;
+  buildingName: string;
+  apartment: 'Y' | 'N';
+};
+
+declare global {
+  interface Window {
+    daum?: {
+      Postcode: new (options: {
+        oncomplete: (data: DaumPostcodeData) => void;
+      }) => {
+        open: () => void;
+      };
+    };
+  }
+}
+
+const POSTCODE_SCRIPT_ID = 'daum-postcode-script';
+const POSTCODE_SCRIPT_SRC =
+  'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+
+const ROLE_OPTIONS: Array<{ label: string; value: CompanyRole }> = [
+  { label: 'Member', value: SignUpUserInfoDtoRole.MEMBER },
+  { label: 'Dealer', value: SignUpUserInfoDtoRole.DEALER },
+  { label: 'Best', value: SignUpUserInfoDtoRole.BEST },
+  { label: 'Business', value: SignUpUserInfoDtoRole.BUSINESS },
+  { label: 'Admin', value: SignUpUserInfoDtoRole.ADMIN },
+];
+
+const INITIAL_FORM: CreateCompanyForm = {
+  username: '',
+  userid: '',
+  password: '',
+  companyName: '',
+  phone: '',
+  email: '',
+  managerName: '',
+  managerPhone: '',
+  companyNumber: '',
+  companyType: '',
+  companyItem: '',
+  address: '',
+  zipCode: '',
+  addressDetail: '',
+  companyDescription: '',
+};
 
 const STEP_FIELDS: Array<{
   step: number;
@@ -28,24 +104,28 @@ const STEP_FIELDS: Array<{
     title: '회원 유형 선택',
     fields: [
       {
+        key: 'username',
         label: '회원명',
-        placeholder: '회원 이름을 입력해 주세요',
+        placeholder: '회원명을 입력해 주세요.',
         required: true,
       },
       {
+        key: 'userid',
         label: '아이디',
-        placeholder: '아이디를 입력해 주세요',
+        placeholder: '아이디를 입력해 주세요.',
         required: true,
       },
       {
+        key: 'password',
         label: '비밀번호',
-        placeholder: '비밀번호를 입력해 주세요',
+        placeholder: '비밀번호를 입력해 주세요.',
         required: true,
         type: 'password',
       },
       {
+        key: 'companyName',
         label: '상호명',
-        placeholder: '상호명을 입력해 주세요',
+        placeholder: '상호명을 입력해 주세요.',
         required: true,
       },
     ],
@@ -55,25 +135,29 @@ const STEP_FIELDS: Array<{
     title: '연락처 정보',
     fields: [
       {
+        key: 'phone',
         label: '전화번호',
-        placeholder: '전화번호를 입력해 주세요',
+        placeholder: '전화번호를 입력해 주세요.',
         required: true,
         type: 'tel',
       },
       {
+        key: 'email',
         label: '이메일(세금계산서용)',
-        placeholder: '이메일을 입력해 주세요',
+        placeholder: '이메일을 입력해 주세요.',
         required: true,
         type: 'email',
       },
       {
+        key: 'managerName',
         label: '담당자 이름',
-        placeholder: '담당자 이름을 입력해 주세요',
+        placeholder: '담당자 이름을 입력해 주세요.',
         required: true,
       },
       {
+        key: 'managerPhone',
         label: '담당자 전화번호',
-        placeholder: '담당자 전화번호를 입력해 주세요',
+        placeholder: '담당자 전화번호를 입력해 주세요.',
         required: true,
         type: 'tel',
       },
@@ -84,34 +168,40 @@ const STEP_FIELDS: Array<{
     title: '사업자 정보',
     fields: [
       {
+        key: 'companyNumber',
         label: '사업자 번호',
-        placeholder: '사업자 번호를 입력해 주세요',
+        placeholder: '사업자 번호를 입력해 주세요.',
         required: true,
       },
       {
+        key: 'companyType',
         label: '업태',
-        placeholder: '업태를 입력해 주세요',
+        placeholder: '업태를 입력해 주세요.',
         required: true,
       },
       {
+        key: 'companyItem',
         label: '종목',
-        placeholder: '종목을 입력해 주세요',
+        placeholder: '종목을 입력해 주세요.',
         required: true,
       },
       {
+        key: 'address',
         label: '주소',
-        placeholder: '주소를 검색해 주세요',
+        placeholder: '주소를 검색해 주세요.',
         required: true,
         actionLabel: '주소 검색',
       },
       {
+        key: 'zipCode',
         label: '우편번호',
         placeholder: '우편번호',
         required: true,
       },
       {
+        key: 'addressDetail',
         label: '상세주소',
-        placeholder: '상세주소를 입력해 주세요',
+        placeholder: '상세주소를 입력해 주세요.',
         required: true,
       },
     ],
@@ -121,8 +211,9 @@ const STEP_FIELDS: Array<{
     title: '메모',
     fields: [
       {
+        key: 'companyDescription',
         label: '메모',
-        placeholder: '메모를 입력해 주세요',
+        placeholder: '메모를 입력해 주세요.',
       },
     ],
   },
@@ -134,10 +225,191 @@ const labelClass =
 const inputClass =
   "h-[5.6rem] w-full rounded-[1rem] border border-[#E9E9E9] bg-white px-[1.6rem] font-['Pretendard',sans-serif] text-[1.6rem] font-normal text-[#2B2B2B] outline-none transition placeholder:text-[#6D6D6D] focus:border-[#FFC633]";
 
+const getErrorMessage = (error: unknown) => {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    typeof error.response === 'object' &&
+    error.response !== null &&
+    'status' in error.response &&
+    error.response.status === 409
+  ) {
+    return '이미 사용 중인 상호명 혹은 ID입니다.';
+  }
+
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    typeof error.response === 'object' &&
+    error.response !== null &&
+    'data' in error.response &&
+    typeof error.response.data === 'object' &&
+    error.response.data !== null &&
+    'message' in error.response.data &&
+    typeof error.response.data.message === 'string'
+  ) {
+    return error.response.data.message;
+  }
+
+  return '사용자 등록에 실패했습니다.';
+};
+
+const buildRoadAddress = (data: DaumPostcodeData) => {
+  if (data.addressType !== 'R') {
+    return data.address;
+  }
+
+  const extras = [
+    data.bname,
+    data.apartment === 'Y' ? data.buildingName : '',
+  ].filter(Boolean);
+
+  if (extras.length === 0) {
+    return data.address;
+  }
+
+  return `${data.address} (${extras.join(', ')})`;
+};
+
 const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
+  const queryClient = useQueryClient();
+  const createCompanyMutation = useCreateCompany();
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedRole, setSelectedRole] =
-    useState<(typeof ROLE_OPTIONS)[number]>('Member');
+  const [selectedRole, setSelectedRole] = useState<CompanyRole>(
+    SignUpUserInfoDtoRole.MEMBER,
+  );
+  const [isPostcodeReady, setIsPostcodeReady] = useState(false);
+  const [form, setForm] = useState<CreateCompanyForm>(INITIAL_FORM);
+
+  const resetDrawer = () => {
+    setCurrentStep(1);
+    setSelectedRole(SignUpUserInfoDtoRole.MEMBER);
+    setForm(INITIAL_FORM);
+  };
+
+  const handleFieldChange =
+    (key: keyof CreateCompanyForm) =>
+    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setForm((prev) => ({ ...prev, [key]: event.target.value }));
+    };
+
+  const handleAddressSearch = () => {
+    if (!window.daum?.Postcode) {
+      toastError('주소 검색을 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
+      return;
+    }
+
+    new window.daum.Postcode({
+      oncomplete: (data) => {
+        setForm((prev) => ({
+          ...prev,
+          zipCode: data.zonecode,
+          address: buildRoadAddress(data),
+        }));
+      },
+    }).open();
+  };
+
+  const validateStep = (step: number) => {
+    const stepConfig = STEP_FIELDS.find((item) => item.step === step);
+
+    if (!stepConfig) {
+      return true;
+    }
+
+    const hasEmptyRequiredField = stepConfig.fields.some(
+      (field) => field.required && !form[field.key].trim(),
+    );
+
+    if (hasEmptyRequiredField) {
+      toastError('모든 필수 항목을 입력해 주세요.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const activeStep = useMemo(
+    () => STEP_FIELDS.find((item) => item.step === currentStep) ?? STEP_FIELDS[0],
+    [currentStep],
+  );
+
+  const isLastStep = currentStep === STEP_FIELDS.length;
+
+  const handleNextStep = () => {
+    if (!validateStep(currentStep)) {
+      return;
+    }
+
+    setCurrentStep((step) => Math.min(STEP_FIELDS.length, step + 1));
+  };
+
+  const handleSubmit = async () => {
+    if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
+      return;
+    }
+
+    const payload: CompanySignUpDTO = {
+      signUpUserInfoDto: {
+        userid: form.userid.trim(),
+        username: form.username.trim(),
+        password: form.password,
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        role: selectedRole,
+        address: form.address.trim(),
+        addressDetail: form.addressDetail.trim(),
+        zipCode: form.zipCode.trim(),
+      },
+      company: {
+        managerName: form.managerName.trim(),
+        managerPhone: form.managerPhone.trim(),
+        companyName: form.companyName.trim(),
+        companyNumber: form.companyNumber.trim(),
+        companyType: form.companyType.trim(),
+        companyItem: form.companyItem.trim(),
+        companyDescription: form.companyDescription.trim(),
+      },
+    };
+
+    try {
+      await createCompanyMutation.mutateAsync({ data: payload });
+      await queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      toastSuccess('사용자 정보가 성공적으로 등록되었습니다.');
+      resetDrawer();
+      onClose();
+    } catch (error) {
+      toastError(getErrorMessage(error));
+    }
+  };
+
+  useEffect(() => {
+    if (window.daum?.Postcode) {
+      setIsPostcodeReady(true);
+      return;
+    }
+
+    const existingScript = document.getElementById(
+      POSTCODE_SCRIPT_ID,
+    ) as HTMLScriptElement | null;
+    const handleLoad = () => setIsPostcodeReady(true);
+
+    if (existingScript) {
+      existingScript.addEventListener('load', handleLoad, { once: true });
+      return () => existingScript.removeEventListener('load', handleLoad);
+    }
+
+    const script = document.createElement('script');
+    script.id = POSTCODE_SCRIPT_ID;
+    script.src = POSTCODE_SCRIPT_SRC;
+    script.async = true;
+    script.addEventListener('load', handleLoad, { once: true });
+    document.body.appendChild(script);
+
+    return () => script.removeEventListener('load', handleLoad);
+  }, []);
 
   useEffect(() => {
     if (!open) {
@@ -162,18 +434,9 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
 
   useEffect(() => {
     if (!open) {
-      setCurrentStep(1);
-      setSelectedRole('Member');
+      resetDrawer();
     }
   }, [open]);
-
-  const activeStep = useMemo(
-    () =>
-      STEP_FIELDS.find((item) => item.step === currentStep) ?? STEP_FIELDS[0],
-    [currentStep],
-  );
-
-  const isLastStep = currentStep === STEP_FIELDS.length;
 
   return (
     <>
@@ -209,7 +472,7 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="뒤로가기"
+                aria-label="닫기"
                 className="flex cursor-pointer"
               >
                 <Icon
@@ -228,9 +491,7 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
                     key={item.step}
                     className={[
                       'h-[1rem] flex-1 rounded-[0.8rem]',
-                      item.step <= currentStep
-                        ? 'bg-[#FFC633]'
-                        : 'bg-[#F0F1F4]',
+                      item.step <= currentStep ? 'bg-[#FFC633]' : 'bg-[#F0F1F4]',
                     ].join(' ')}
                   />
                 ))}
@@ -242,33 +503,31 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
             <div className="flex flex-col gap-[2.4rem]">
               {currentStep === 1 ? (
                 <section className="flex flex-col gap-[2.4rem]">
-                  <p className={labelClass}>회원 유형 선택</p>
+                  <p className={labelClass}>{activeStep.title}</p>
 
                   <div className="flex flex-col gap-[1.6rem] pl-[1rem]">
                     <div className="flex flex-wrap gap-x-[5.6rem] gap-y-[1.6rem]">
                       {ROLE_OPTIONS.map((role) => (
                         <label
-                          key={role}
+                          key={role.value}
                           className="flex min-w-[10rem] items-center gap-[0.8rem]"
                         >
                           <span
                             className={[
                               'h-[1.5rem] w-[1.5rem] rounded-full border border-[#979B9F]',
-                              selectedRole === role
-                                ? 'bg-[#FFC633]'
-                                : 'bg-white',
+                              selectedRole === role.value ? 'bg-[#FFC633]' : 'bg-white',
                             ].join(' ')}
                           />
                           <input
                             type="radio"
                             name="user-role"
-                            value={role}
-                            checked={selectedRole === role}
-                            onChange={() => setSelectedRole(role)}
+                            value={role.value}
+                            checked={selectedRole === role.value}
+                            onChange={() => setSelectedRole(role.value)}
                             className="sr-only"
                           />
                           <span className="font-['Pretendard',sans-serif] text-[1.6rem] leading-[2.2rem] font-medium text-[#2B2B2B]">
-                            {role}
+                            {role.label}
                           </span>
                         </label>
                       ))}
@@ -279,17 +538,18 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
 
               <div className="flex flex-col gap-[3.2rem]">
                 {activeStep.fields.map((field) => {
-                  const isMemo = field.label === '메모';
+                  const isMemo = field.key === 'companyDescription';
+                  const isAddress = field.key === 'address';
+                  const isZipCode = field.key === 'zipCode';
 
                   return (
-                    <label
-                      key={field.label}
-                      className="flex flex-col gap-[2.4rem]"
-                    >
+                    <label key={field.key} className="flex flex-col gap-[2.4rem]">
                       <span className={labelClass}>{field.label}</span>
 
                       {isMemo ? (
                         <textarea
+                          value={form[field.key]}
+                          onChange={handleFieldChange(field.key)}
                           placeholder={field.placeholder}
                           className={`${inputClass} min-h-[33rem] resize-none py-[1.6rem]`}
                         />
@@ -297,13 +557,21 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
                         <div className="relative">
                           <input
                             type={field.type ?? 'text'}
+                            value={form[field.key]}
+                            onChange={handleFieldChange(field.key)}
                             placeholder={field.placeholder}
-                            className={inputClass}
+                            readOnly={isAddress || isZipCode}
+                            className={cn(
+                              inputClass,
+                              isAddress || isZipCode ? 'bg-[#FAFAFA]' : '',
+                            )}
                           />
                           {field.actionLabel ? (
                             <button
                               type="button"
-                              className="absolute top-1/2 right-[1.2rem] -translate-y-1/2 rounded-[0.8rem] border border-[#F2F2F7] bg-[#FFF4D8] px-[1.4rem] py-[0.8rem] font-['Pretendard',sans-serif] text-[1.3rem] font-bold text-[#2B2B2B] transition hover:bg-[#FFEAB5]"
+                              onClick={handleAddressSearch}
+                              disabled={!isPostcodeReady}
+                              className="absolute top-1/2 right-[1.2rem] -translate-y-1/2 rounded-[0.8rem] border border-[#F2F2F7] bg-[#FFF4D8] px-[1.4rem] py-[0.8rem] font-['Pretendard',sans-serif] text-[1.3rem] font-bold text-[#2B2B2B] transition hover:bg-[#FFEAB5] disabled:cursor-not-allowed disabled:bg-[#F3F3F3] disabled:text-[#9A9A9A]"
                             >
                               {field.actionLabel}
                             </button>
@@ -332,18 +600,15 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
 
             <button
               type="button"
-              onClick={() => {
-                if (isLastStep) {
-                  return;
-                }
-
-                setCurrentStep((step) =>
-                  Math.min(STEP_FIELDS.length, step + 1),
-                );
-              }}
-              className="flex-1 rounded-[0.8rem] border border-[#F2F2F7] bg-[#FFC633] px-[2.4rem] py-[1.4rem] font-['Pretendard',sans-serif] text-[1.8rem] font-bold text-white transition hover:brightness-95"
+              onClick={isLastStep ? handleSubmit : handleNextStep}
+              disabled={createCompanyMutation.isPending}
+              className="flex-1 rounded-[0.8rem] border border-[#F2F2F7] bg-[#FFC633] px-[2.4rem] py-[1.4rem] font-['Pretendard',sans-serif] text-[1.8rem] font-bold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isLastStep ? '등록 준비중' : '다음'}
+              {isLastStep
+                ? createCompanyMutation.isPending
+                  ? '등록 중...'
+                  : '등록'
+                : '다음'}
             </button>
           </div>
         </footer>

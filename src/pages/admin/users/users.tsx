@@ -150,19 +150,21 @@ const AdminUsers = () => {
 
       <div className="flex flex-col gap-[3.5rem]">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h1 className="title3 text-gray-900">사용자 관리</h1>
+          <div className="flex items-center gap-[2rem]">
+            <h1 className="title3 text-gray-900">사용자 관리</h1>
+            <button
+              type="button"
+              onClick={() => setIsCreateDrawerOpen(true)}
+              aria-label="?ъ슜???깅줉"
+              title="?ъ슜???깅줉"
+              className="flex-row-center h-[4rem] w-[4rem] cursor-pointer rounded-full bg-[#f5f5f5] transition-colors hover:bg-[#E3E3E3]"
+            >
+              <FiPlus className="text-[2rem] text-gray-600" />
+            </button>
+          </div>
           <span className="text-[1.6rem] text-[#7A7A7A]">
             총 {totalCount.toLocaleString()}명
           </span>
-          <button
-            type="button"
-            onClick={() => setIsCreateDrawerOpen(true)}
-            aria-label="?ъ슜???깅줉"
-            title="?ъ슜???깅줉"
-            className="flex-row-center h-[4rem] w-[4rem] cursor-pointer rounded-full bg-[#f5f5f5] transition-colors hover:bg-[#E3E3E3]"
-          >
-            <FiPlus className="text-[2rem] text-gray-600" />
-          </button>
         </div>
 
         <div ref={filterRef} className="relative">
