@@ -5,7 +5,6 @@ import {
   useGetNoticeDetail,
   type NoticeFile,
 } from '@apis/telegro';
-import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import queryClient from '@libs/query-client';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
@@ -24,7 +23,9 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 
 const isHtmlEmpty = (value: string) => {
-  const hasMediaContent = /<(img|video|iframe|audio|object|embed)\b/i.test(value);
+  const hasMediaContent = /<(img|video|iframe|audio|object|embed)\b/i.test(
+    value,
+  );
   if (hasMediaContent) {
     return false;
   }
@@ -221,9 +222,7 @@ const AdminNoticeCreate = () => {
         isEditMode ? '공지사항을 수정했습니다.' : '공지사항이 등록되었습니다.',
       );
       navigate(
-        isEditMode
-          ? `/admin/notices/${resolvedNoticeId}`
-          : '/admin/notices',
+        isEditMode ? `/admin/notices/${resolvedNoticeId}` : '/admin/notices',
       );
     } catch (submitError) {
       if (
@@ -250,11 +249,9 @@ const AdminNoticeCreate = () => {
 
   return (
     <div className="flex flex-col gap-[4rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]">
-      <AdminProfileCard onMove={() => navigate('/')} />
-
       <section className="overflow-hidden rounded-[3rem] border border-[#EAEAEA] bg-white shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
         <div className="border-b border-[#F1F1F1] bg-[linear-gradient(135deg,#FFF7ED_0%,#FFFFFF_58%)] px-[2.4rem] py-[2.4rem] md:px-[3.2rem]">
-          <p className="text-[1.3rem] font-semibold uppercase tracking-[0.24em] text-[#FF8A1F]">
+          <p className="text-[1.3rem] font-semibold tracking-[0.24em] text-[#FF8A1F] uppercase">
             Admin Notice
           </p>
           <h1 className="mt-[0.8rem] text-[3rem] font-semibold tracking-[-0.04em] text-gray-900">
@@ -276,7 +273,7 @@ const AdminNoticeCreate = () => {
               onChange={(event) => setTitle(event.target.value)}
               placeholder="제목을 입력해 주세요."
               disabled={isEditMode && noticeDetailQuery.isLoading}
-              className="h-[5.6rem] rounded-[1.6rem] border border-[#E3E3E3] px-[1.6rem] text-[1.5rem] text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#FF9B2F] focus:ring-4 focus:ring-[#FFE4C4] disabled:cursor-not-allowed disabled:bg-[#F7F7F7]"
+              className="h-[5.6rem] rounded-[1.6rem] border border-[#E3E3E3] px-[1.6rem] text-[1.5rem] text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-[#FF9B2F] focus:ring-4 focus:ring-[#FFE4C4] disabled:cursor-not-allowed disabled:bg-[#F7F7F7]"
             />
           </label>
 
@@ -349,7 +346,8 @@ const AdminNoticeCreate = () => {
                 useCommandShortcut
                 hooks={{ addImageBlobHook }}
                 onChange={() => {
-                  const nextContent = editorRef.current?.getInstance().getHTML() ?? '';
+                  const nextContent =
+                    editorRef.current?.getInstance().getHTML() ?? '';
                   setContent(nextContent);
                 }}
                 toolbarItems={[
@@ -362,7 +360,8 @@ const AdminNoticeCreate = () => {
               />
             </div>
             <p className="text-[1.3rem] leading-[1.7] text-gray-500">
-              에디터 이미지 버튼을 사용하면 presigned URL 업로드 후 본문에 즉시 삽입됩니다.
+              에디터 이미지 버튼을 사용하면 presigned URL 업로드 후 본문에 즉시
+              삽입됩니다.
             </p>
           </div>
 
@@ -377,7 +376,9 @@ const AdminNoticeCreate = () => {
               type="button"
               onClick={() =>
                 navigate(
-                  isEditMode ? `/admin/notices/${resolvedNoticeId}` : '/admin/notices',
+                  isEditMode
+                    ? `/admin/notices/${resolvedNoticeId}`
+                    : '/admin/notices',
                 )
               }
               disabled={isSubmitting}

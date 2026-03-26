@@ -8,7 +8,6 @@
 import ProductForm, {
   type ProductFormValues,
 } from '@components/admin/product/product-form';
-import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import LoadingPanel from '@components/common/loading-panel';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
 import queryClient from '@libs/query-client';
@@ -34,7 +33,9 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 
 const isHtmlEmpty = (value: string) => {
-  const hasMediaContent = /<(img|video|iframe|audio|object|embed)\b/i.test(value);
+  const hasMediaContent = /<(img|video|iframe|audio|object|embed)\b/i.test(
+    value,
+  );
   if (hasMediaContent) {
     return false;
   }
@@ -69,7 +70,8 @@ const AdminProductCreate = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
   const resolvedProductId = Number(productId);
-  const isEditMode = Number.isFinite(resolvedProductId) && resolvedProductId > 0;
+  const isEditMode =
+    Number.isFinite(resolvedProductId) && resolvedProductId > 0;
   const isHydratedRef = useRef(false);
   const editorRef = useRef<Editor>(null);
 
@@ -240,9 +242,14 @@ const AdminProductCreate = () => {
       await invalidateProductQueries();
 
       toastSuccess(isEditMode ? 'Product updated.' : 'Product created.');
-      navigate(isEditMode ? `/admin/products/${resolvedProductId}` : '/admin/products');
+      navigate(
+        isEditMode ? `/admin/products/${resolvedProductId}` : '/admin/products',
+      );
     } catch (submitError) {
-      if (axios.isAxiosError(submitError) && submitError.response?.status === 403) {
+      if (
+        axios.isAxiosError(submitError) &&
+        submitError.response?.status === 403
+      ) {
         setError('Admin permission is required.');
       } else {
         setError(
@@ -251,7 +258,9 @@ const AdminProductCreate = () => {
             : 'Failed to create the product.',
         );
       }
-      toastError(isEditMode ? 'Product update failed.' : 'Product creation failed.');
+      toastError(
+        isEditMode ? 'Product update failed.' : 'Product creation failed.',
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -261,7 +270,10 @@ const AdminProductCreate = () => {
     return <LoadingPanel fullScreen size={140} />;
   }
 
-  if (isEditMode && (productDetailQuery.isError || !productDetailQuery.data?.data)) {
+  if (
+    isEditMode &&
+    (productDetailQuery.isError || !productDetailQuery.data?.data)
+  ) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#FBFBF8] px-6 text-[1.1rem] text-[#4B5563]">
         Failed to load product details.
@@ -271,7 +283,6 @@ const AdminProductCreate = () => {
 
   return (
     <div className="flex flex-col gap-[4rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]">
-      <AdminProfileCard onMove={() => navigate('/')} />
       <ProductForm
         mode={isEditMode ? 'edit' : 'create'}
         values={values}
@@ -289,7 +300,8 @@ const AdminProductCreate = () => {
             useCommandShortcut
             hooks={{ addImageBlobHook }}
             onChange={() => {
-              const nextContent = editorRef.current?.getInstance().getHTML() ?? '';
+              const nextContent =
+                editorRef.current?.getInstance().getHTML() ?? '';
               updateField('content', nextContent);
             }}
             toolbarItems={[
@@ -307,12 +319,18 @@ const AdminProductCreate = () => {
         onRemovePicture={(index) =>
           setValues((prev) => ({
             ...prev,
-            pictures: prev.pictures.filter((_, pictureIndex) => pictureIndex !== index),
+            pictures: prev.pictures.filter(
+              (_, pictureIndex) => pictureIndex !== index,
+            ),
           }))
         }
         onSubmit={handleSubmit}
         onCancel={() =>
-          navigate(isEditMode ? `/admin/products/${resolvedProductId}` : '/admin/products')
+          navigate(
+            isEditMode
+              ? `/admin/products/${resolvedProductId}`
+              : '/admin/products',
+          )
         }
       />
     </div>

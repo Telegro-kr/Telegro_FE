@@ -11,12 +11,22 @@ type ProductDetailContainerProps = {
   productId?: number;
   product?: ProductDetailResponseDTO;
   recommendations?: RecommendationItem[];
+  isAdminMode?: boolean;
+  isDeletePending?: boolean;
+  recommendationDetailBasePath?: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 const ProductDetailContainer = ({
   productId,
   product,
   recommendations,
+  isAdminMode = false,
+  isDeletePending = false,
+  recommendationDetailBasePath = '/products',
+  onEdit,
+  onDelete,
 }: ProductDetailContainerProps) => {
   const category = product?.category as GetProductsCategory | undefined;
   const recommendationQuery = useGetProducts(
@@ -41,7 +51,7 @@ const ProductDetailContainer = ({
         (item): RecommendationItem => ({
           id: item.id ?? 0,
           title: item.productName?.trim() || 'Unknown product',
-          price: `${formatNumber(item.price)}\uC6D0`,
+          price: `${formatNumber(item.price)}원`,
           image: item.coverImage?.trim() || '/product1.png',
         }),
       ) ?? [];
@@ -84,6 +94,9 @@ const ProductDetailContainer = ({
       totalPriceLabel={totalPriceLabel}
       rewardPointLabel={rewardPointLabel}
       recommendations={resolvedRecommendations}
+      isAdminMode={isAdminMode}
+      isDeletePending={isDeletePending}
+      recommendationDetailBasePath={recommendationDetailBasePath}
       onChangeTab={setActiveTab}
       onSelectImage={setSelectedImage}
       onDecreaseQuantity={() => setQuantity((prev) => Math.max(1, prev - 1))}
@@ -91,6 +104,8 @@ const ProductDetailContainer = ({
       onToggleDetail={() => setIsDetailOpen((prev) => !prev)}
       onToggleLike={handleToggleLike}
       onShare={handleShare}
+      onEdit={onEdit}
+      onDelete={onDelete}
     />
   );
 };

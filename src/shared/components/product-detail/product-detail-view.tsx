@@ -1,4 +1,4 @@
-﻿import { type ProductDetailResponseDTO } from '@apis/telegro';
+import { type ProductDetailResponseDTO } from '@apis/telegro';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import {
   type ProductTab,
@@ -23,6 +23,9 @@ type ProductDetailViewProps = {
   totalPriceLabel: string;
   rewardPointLabel: string;
   recommendations: RecommendationItem[];
+  isAdminMode?: boolean;
+  isDeletePending?: boolean;
+  recommendationDetailBasePath?: string;
   onChangeTab: (tab: ProductTab) => void;
   onSelectImage: (image: string) => void;
   onDecreaseQuantity: () => void;
@@ -30,6 +33,8 @@ type ProductDetailViewProps = {
   onToggleDetail: () => void;
   onToggleLike: () => void;
   onShare: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 const ProductDetailView = ({
@@ -45,6 +50,9 @@ const ProductDetailView = ({
   totalPriceLabel,
   rewardPointLabel,
   recommendations,
+  isAdminMode = false,
+  isDeletePending = false,
+  recommendationDetailBasePath = '/products',
   onChangeTab,
   onSelectImage,
   onDecreaseQuantity,
@@ -52,6 +60,8 @@ const ProductDetailView = ({
   onToggleDetail,
   onToggleLike,
   onShare,
+  onEdit,
+  onDelete,
 }: ProductDetailViewProps) => {
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -84,6 +94,10 @@ const ProductDetailView = ({
             onIncrease={onIncreaseQuantity}
             onToggleLike={onToggleLike}
             onShare={onShare}
+            isAdminMode={isAdminMode}
+            isDeletePending={isDeletePending}
+            onEdit={onEdit}
+            onDelete={onDelete}
           />
         </section>
 
@@ -98,7 +112,7 @@ const ProductDetailView = ({
                 className="flex-row-center h-[4.8rem] w-full cursor-pointer gap-2 border-[2px] border-gray-600 bg-white text-[1.5rem] font-semibold text-[#263238] shadow-[0_8px_16px_rgba(38,50,56,0.08)] transition-colors hover:bg-gray-100"
               >
                 <span>
-                  {isDetailOpen ? 'Hide details' : 'Show details'}
+                  {isDetailOpen ? '상품 상세 접기' : '상품 상세 보기'}
                 </span>
                 <span className={isDetailOpen ? 'rotate-0' : 'rotate-180'}>
                   <ChevronUpIcon />
@@ -137,7 +151,10 @@ const ProductDetailView = ({
           ) : null}
         </section>
 
-        <ProductDetailRecommendationSection recommendations={recommendations} />
+        <ProductDetailRecommendationSection
+          recommendations={recommendations}
+          detailBasePath={recommendationDetailBasePath}
+        />
       </main>
       <ExploreScrollToTop targetRef={pageRef} />
     </div>
