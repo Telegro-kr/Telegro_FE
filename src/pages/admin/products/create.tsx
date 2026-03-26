@@ -130,7 +130,7 @@ const AdminProductCreate = () => {
     const presignedUrl = response.data?.url;
 
     if (!presignedUrl) {
-      throw new Error('Presigned URL not found');
+      throw new Error('Presigned URL을 찾을 수 없습니다.');
     }
 
     await axios.put(presignedUrl, file, {
@@ -154,10 +154,9 @@ const AdminProductCreate = () => {
     try {
       const imageUrl = await uploadImage(file);
       updateField('coverImage', imageUrl);
-      toastSuccess('Cover image uploaded.');
     } catch {
-      setError('Failed to upload the cover image.');
-      toastError('Cover image upload failed.');
+      setError('커버 이미지 업로드에 실패했습니다.');
+      toastError('커버 이미지 업로드에 실패했습니다.');
     } finally {
       setIsUploadingCover(false);
       event.target.value = '';
@@ -179,10 +178,9 @@ const AdminProductCreate = () => {
         ...prev,
         pictures: [...prev.pictures, ...imageUrls],
       }));
-      toastSuccess('Detail images uploaded.');
     } catch {
-      setError('Failed to upload detail images.');
-      toastError('Detail image upload failed.');
+      setError('상세 이미지 업로드에 실패했습니다.');
+      toastError('상세 이미지 업로드에 실패했습니다.');
     } finally {
       setIsUploadingPictures(false);
       event.target.value = '';
@@ -198,10 +196,9 @@ const AdminProductCreate = () => {
     try {
       const imageUrl = await uploadImage(blob);
       callback(imageUrl, 'image');
-      toastSuccess('Editor image uploaded.');
     } catch {
-      setError('Failed to upload an editor image.');
-      toastError('Editor image upload failed.');
+      setError('이미지 업로드에 실패했습니다.');
+      toastError('이미지 업로드에 실패했습니다.');
     }
   };
 
@@ -223,7 +220,7 @@ const AdminProductCreate = () => {
     }
 
     if (isHtmlEmpty(htmlContent)) {
-      setError('Please enter product description content.');
+      setError('상품 설명을 입력해 주세요.');
       return;
     }
 
@@ -241,7 +238,9 @@ const AdminProductCreate = () => {
 
       await invalidateProductQueries();
 
-      toastSuccess(isEditMode ? 'Product updated.' : 'Product created.');
+      toastSuccess(
+        isEditMode ? '상품이 수정되었습니다.' : '상품이 등록되었습니다.',
+      );
       navigate(
         isEditMode ? `/admin/products/${resolvedProductId}` : '/admin/products',
       );
@@ -250,16 +249,16 @@ const AdminProductCreate = () => {
         axios.isAxiosError(submitError) &&
         submitError.response?.status === 403
       ) {
-        setError('Admin permission is required.');
+        setError('관리자 권한이 필요해요.');
       } else {
         setError(
           isEditMode
-            ? 'Failed to update the product.'
-            : 'Failed to create the product.',
+            ? '상품 수정에 실패했습니다.'
+            : '상품 생성에 실패했습니다.',
         );
       }
       toastError(
-        isEditMode ? 'Product update failed.' : 'Product creation failed.',
+        isEditMode ? '상품 수정에 실패했습니다.' : '상품 생성에 실패했습니다.',
       );
     } finally {
       setIsSubmitting(false);
@@ -276,7 +275,7 @@ const AdminProductCreate = () => {
   ) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#FBFBF8] px-6 text-[1.1rem] text-[#4B5563]">
-        Failed to load product details.
+        상품을 불러오는 데 실패했습니다.
       </div>
     );
   }

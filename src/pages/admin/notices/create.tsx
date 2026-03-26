@@ -122,7 +122,7 @@ const AdminNoticeCreate = () => {
     const presignedUrl = response.data?.url;
 
     if (!presignedUrl) {
-      throw new Error('Presigned URL not found');
+      throw new Error('Presigned URL을 찾을 수 없습니다.');
     }
 
     await axios.put(presignedUrl, file, {
@@ -252,14 +252,11 @@ const AdminNoticeCreate = () => {
       <section className="overflow-hidden rounded-[3rem] border border-[#EAEAEA] bg-white shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
         <div className="border-b border-[#F1F1F1] bg-[linear-gradient(135deg,#FFF7ED_0%,#FFFFFF_58%)] px-[2.4rem] py-[2.4rem] md:px-[3.2rem]">
           <p className="text-[1.3rem] font-semibold tracking-[0.24em] text-[#FF8A1F] uppercase">
-            Admin Notice
+            공지사항 관리
           </p>
           <h1 className="mt-[0.8rem] text-[3rem] font-semibold tracking-[-0.04em] text-gray-900">
             {isEditMode ? '공지사항 수정' : '공지사항 등록'}
           </h1>
-          <p className="mt-[0.8rem] text-[1.5rem] leading-[1.7] text-gray-500">
-            Toast UI 에디터로 본문을 작성하고 첨부파일까지 함께 관리합니다.
-          </p>
         </div>
 
         <div className="flex flex-col gap-[2.4rem] px-[2rem] py-[2.4rem] md:px-[3.2rem] md:py-[3.2rem]">
