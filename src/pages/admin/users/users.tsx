@@ -2,6 +2,8 @@ import type { GetUsersFilteredBy } from '@apis/telegro';
 import { useDeleteUser } from '@apis/telegro';
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import RoleDonutCard from '@components/admin/user-list/role-donut-card';
+import UserCreateDrawer from '@components/admin/user-list/user-create-drawer';
+import { FiPlus } from 'react-icons/fi';
 import UserListTable, {
   type UserRow,
 } from '@components/admin/user-list/user-list-table';
@@ -40,6 +42,7 @@ const AdminUsers = () => {
   const [appliedRoleFilter, setAppliedRoleFilter] =
     useState<GetUsersFilteredBy>();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
   const [deleteTargetUser, setDeleteTargetUser] = useState<UserRow | null>(
     null,
   );
@@ -132,7 +135,7 @@ const AdminUsers = () => {
   return (
     <div
       ref={pageRef}
-      className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
+      className="flex-col bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
     >
       <div className="flex gap-8 sm:flex-col md:flex-row md:items-start md:justify-between">
         <AdminProfileCard onMove={() => navigate('/')} />
@@ -142,9 +145,20 @@ const AdminUsers = () => {
         />
       </div>
 
-      <div className="flex flex-col gap-[3.5rem]">
-        <div className="flex items-end justify-between gap-4">
-          <h1 className="title3 text-gray-900">사용자 관리</h1>
+      <div className="flex-col gap-[3.5rem]">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex items-center gap-[2rem]">
+            <h1 className="title3 text-gray-900">사용자 관리</h1>
+            <button
+              type="button"
+              onClick={() => setIsCreateDrawerOpen(true)}
+              aria-label="사용자 등록"
+              title="사용자 등록"
+              className="flex-row-center h-[4rem] w-[4rem] cursor-pointer rounded-full bg-[#f5f5f5] transition-colors hover:bg-[#E3E3E3]"
+            >
+              <FiPlus className="text-[2rem] text-gray-600" />
+            </button>
+          </div>
           <span className="text-[1.6rem] text-[#7A7A7A]">
             총 {totalCount.toLocaleString()}명
           </span>
@@ -211,6 +225,10 @@ const AdminUsers = () => {
       </div>
 
       <ExploreScrollToTop targetRef={pageRef} />
+      <UserCreateDrawer
+        open={isCreateDrawerOpen}
+        onClose={() => setIsCreateDrawerOpen(false)}
+      />
 
       {deleteTargetUser ? (
         <ConfirmModal
