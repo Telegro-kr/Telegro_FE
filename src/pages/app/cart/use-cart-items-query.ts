@@ -4,7 +4,7 @@ import { useGetCartItems } from '@apis/telegro';
 
 import { mapCartResponseToCartItems } from './cart.adapters';
 
-const CART_ITEMS_QUERY_PARAMS = {
+export const CART_ITEMS_QUERY_PARAMS = {
   page: 0,
   size: 100,
 };

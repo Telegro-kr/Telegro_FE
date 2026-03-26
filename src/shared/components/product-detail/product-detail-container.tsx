@@ -1,11 +1,18 @@
 import {
+  telegroInvalidate,
+  useAddCartItem,
   useGetProducts,
   type GetProductsCategory,
   type ProductDetailResponseDTO,
 } from '@apis/telegro';
-import { useProductDetail, type RecommendationItem } from '@hooks/use-product-detail';
+import { toastError, toastSuccess } from '@components/common/toast/toast';
 import ProductDetailView from '@components/product-detail/product-detail-view';
+import { useProductDetail, type RecommendationItem } from '@hooks/use-product-detail';
+import { useQueryClient } from '@tanstack/react-query';
 import { formatNumber } from '@utils/format';
+import { useNavigate } from 'react-router-dom';
+
+import { CART_ITEMS_QUERY_PARAMS } from '@pages/app/cart/use-cart-items-query';
 
 type ProductDetailContainerProps = {
   productId?: number;
@@ -28,6 +35,9 @@ const ProductDetailContainer = ({
   onEdit,
   onDelete,
 }: ProductDetailContainerProps) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const addCartItemMutation = useAddCartItem();
   const category = product?.category as GetProductsCategory | undefined;
   const recommendationQuery = useGetProducts(
     {
@@ -64,6 +74,10 @@ const ProductDetailContainer = ({
     setSelectedImage,
     quantity,
     setQuantity,
+    selectedOption,
+    setSelectedOption,
+    inputOption,
+    setInputOption,
     galleryImages,
     isDetailOpen,
     setIsDetailOpen,
@@ -80,12 +94,47 @@ const ProductDetailContainer = ({
     recommendations: recommendations ?? apiRecommendations,
   });
 
+  const handleAddCart = async () => {
+    if (!productId) {
+      toastError('유효하지 않은 상품입니다.');
+      return;
+    }
+
+    if (!selectedOption) {
+      toastError('옵션을 선택해주세요.');
+      return;
+    }
+
+    try {
+      await addCartItemMutation.mutateAsync({
+        productId,
+        data: {
+          selectOption: selectedOption,
+          quantity,
+          inputOption,
+        },
+      });
+      await telegroInvalidate.cartItems(queryClient, CART_ITEMS_QUERY_PARAMS);
+      toastSuccess('상품이 장바구니에 담겼습니다.');
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        toastError('로그인을 먼저 진행해주세요.');
+        navigate('/login');
+        return;
+      }
+
+      toastError('장바구니 담기에 실패했습니다.');
+    }
+  };
+
   return (
     <ProductDetailView
       product={resolvedProduct}
       activeTab={activeTab}
       selectedImage={selectedImage}
       quantity={quantity}
+      selectedOption={selectedOption}
+      inputOption={inputOption}
       galleryImages={galleryImages}
       isDetailOpen={isDetailOpen}
       isLiked={isLiked}
@@ -101,6 +150,9 @@ const ProductDetailContainer = ({
       onSelectImage={setSelectedImage}
       onDecreaseQuantity={() => setQuantity((prev) => Math.max(1, prev - 1))}
       onIncreaseQuantity={() => setQuantity((prev) => prev + 1)}
+      onSelectOption={setSelectedOption}
+      onInputOptionChange={setInputOption}
+      onAddCart={handleAddCart}
       onToggleDetail={() => setIsDetailOpen((prev) => !prev)}
       onToggleLike={handleToggleLike}
       onShare={handleShare}
