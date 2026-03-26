@@ -30,11 +30,22 @@ const AdminNotices = () => {
   return (
     <div
       ref={pageRef}
-      className="flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
+      className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
     >
       <AdminProfileCard onMove={() => navigate('/')} />
-      <div className="flex-col gap-[3.5rem]">
-        <h1 className="title3 text-gray-900">공지사항</h1>
+
+      <div className="flex flex-col gap-[3.5rem]">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h1 className="title3 text-gray-900">공지사항</h1>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/notices/create')}
+            className="inline-flex h-[5.2rem] items-center justify-center rounded-[1.5rem] border border-[#FFE2C0] bg-[linear-gradient(135deg,#FF9B2F_0%,#FFB652_100%)] px-[2rem] text-[1.5rem] font-semibold tracking-[-0.03em] text-white shadow-[0_16px_34px_rgba(255,155,47,0.24)] transition hover:-translate-y-0.5"
+          >
+            공지 등록
+          </button>
+        </div>
+
         <SearchBar
           value={keyword}
           onChange={setKeyword}
@@ -69,6 +80,7 @@ const AdminNotices = () => {
           표시할 공지사항이 없습니다.
         </div>
       )}
+
       <ExploreScrollToTop targetRef={pageRef} />
     </div>
   );

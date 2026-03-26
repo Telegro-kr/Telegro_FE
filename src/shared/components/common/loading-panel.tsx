@@ -15,7 +15,7 @@ const LoadingPanel = ({
   return (
     <div
       className={cn(
-        'flex items-center justify-center rounded-[1.6rem] bg-white px-[2.2rem] py-[3.2rem]',
+        'flex items-center justify-center rounded-[1.6rem] bg-white px-[2.2rem] py-[9rem]',
         fullScreen && 'min-h-screen rounded-none bg-[#FBFBF8]',
         className,
       )}

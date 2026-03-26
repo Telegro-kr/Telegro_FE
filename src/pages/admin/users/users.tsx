@@ -1,109 +1,53 @@
-import type { GetUsersFilteredBy } from '@apis/telegro';
-import { useDeleteUser } from '@apis/telegro';
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import RoleDonutCard from '@components/admin/user-list/role-donut-card';
-import UserListTable, {
-  type UserRow,
-} from '@components/admin/user-list/user-list-table';
+import UserCreateDrawer from '@components/admin/user-list/user-create-drawer';
+import UserListTable from '@components/admin/user-list/user-list-table';
 import ConfirmModal from '@components/common/confirm-modal';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
-import { toastError, toastSuccess } from '@components/common/toast/toast';
-import useUserList from '@hooks/use-user-list';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-
-const PAGE_SIZE = 9;
-
-const ROLE_FILTER_OPTIONS: Array<{
-  label: string;
-  value: GetUsersFilteredBy | 'ALL';
-}> = [
-  { label: '전체', value: 'ALL' },
-  { label: 'MEMBER', value: 'MEMBER' },
-  { label: 'DEALER', value: 'DEALER' },
-  { label: 'BEST', value: 'BEST' },
-  { label: 'BUSINESS', value: 'BUSINESS' },
-];
+import { ROLE_FILTER_OPTIONS } from './users.constants';
+import { useAdminUsersPage } from './use-admin-users-page';
 
 const AdminUsers = () => {
   const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [keyword, setKeyword] = useState('');
-  const [appliedSearchKeyword, setAppliedSearchKeyword] = useState('');
-  const [selectedRoleFilter, setSelectedRoleFilter] = useState<
-    GetUsersFilteredBy | 'ALL'
-  >('ALL');
-  const [appliedRoleFilter, setAppliedRoleFilter] =
-    useState<GetUsersFilteredBy>();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [deleteTargetUser, setDeleteTargetUser] = useState<UserRow | null>(
-    null,
-  );
-  const { roleCounts } = useUserList({
-    page: 0,
-    size: PAGE_SIZE,
-  });
-  const { users, totalPages, totalCount, isLoading, isError, refetch } =
-    useUserList({
-      page: currentPage - 1,
-      size: PAGE_SIZE,
-      filteredBy: appliedRoleFilter,
-      searchKeyword: appliedSearchKeyword,
-    });
-  const deleteUserMutation = useDeleteUser();
+  const {
+    closeDrawer,
+    currentPage,
+    deleteTargetUser,
+    drawerInitialData,
+    drawerMode,
+    handleDeleteCancel,
+    handleDeleteConfirm,
+    handleDeleteRequest,
+    handleEdit,
+    handleRefresh,
+    handleSearch,
+    isCreateDrawerOpen,
+    isError,
+    isFilterOpen,
+    isLoading,
+    keyword,
+    openCreateDrawer,
+    roleCounts,
+    selectedRoleFilter,
+    setAppliedRoleFilter,
+    setCurrentPage,
+    setIsFilterOpen,
+    setKeyword,
+    setSelectedRoleFilter,
+    totalCount,
+    totalPages,
+    users,
+  } = useAdminUsersPage();
 
   const selectedRoleLabel =
-    ROLE_FILTER_OPTIONS.find((option) => option.value === selectedRoleFilter)
-      ?.label ?? '전체';
-
-  const handleSearch = (value: string) => {
-    setAppliedSearchKeyword(value);
-    setCurrentPage(1);
-    setIsFilterOpen(false);
-  };
-
-  const handleRefresh = () => {
-    setKeyword('');
-    setAppliedSearchKeyword('');
-    setSelectedRoleFilter('ALL');
-    setAppliedRoleFilter(undefined);
-    setCurrentPage(1);
-    setIsFilterOpen(false);
-  };
-
-  const handleEdit = (user: UserRow) => {
-    navigate(`/admin/users/${user.id}`);
-  };
-
-  const handleDeleteRequest = (user: UserRow) => {
-    setDeleteTargetUser(user);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!deleteTargetUser) {
-      return;
-    }
-
-    try {
-      await deleteUserMutation.mutateAsync({ userId: deleteTargetUser.id });
-      setDeleteTargetUser(null);
-      toastSuccess('유저를 삭제했습니다.');
-
-      if (users.length === 1 && currentPage > 1) {
-        setCurrentPage((page) => page - 1);
-        return;
-      }
-
-      await refetch();
-    } catch {
-      setDeleteTargetUser(null);
-      toastError('유저 삭제에 실패했습니다.');
-    }
-  };
+    ROLE_FILTER_OPTIONS.find((option) => option.value === selectedRoleFilter)?.label ?? '전체';
 
   useEffect(() => {
     if (!isFilterOpen) {
@@ -121,13 +65,7 @@ const AdminUsers = () => {
     return () => {
       document.removeEventListener('mousedown', handlePointerDown);
     };
-  }, [isFilterOpen]);
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
+  }, [isFilterOpen, setIsFilterOpen]);
 
   return (
     <div
@@ -136,18 +74,24 @@ const AdminUsers = () => {
     >
       <div className="flex gap-8 sm:flex-col md:flex-row md:items-start md:justify-between">
         <AdminProfileCard onMove={() => navigate('/')} />
-        <RoleDonutCard
-          className="w-full max-w-[30rem] shrink-0"
-          roleCounts={roleCounts}
-        />
+        <RoleDonutCard className="w-full max-w-[30rem] shrink-0" roleCounts={roleCounts} />
       </div>
 
       <div className="flex flex-col gap-[3.5rem]">
-        <div className="flex items-end justify-between gap-4">
-          <h1 className="title3 text-gray-900">사용자 관리</h1>
-          <span className="text-[1.6rem] text-[#7A7A7A]">
-            총 {totalCount.toLocaleString()}명
-          </span>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex items-center gap-[2rem]">
+            <h1 className="title3 text-gray-900">사용자 관리</h1>
+            <button
+              type="button"
+              onClick={openCreateDrawer}
+              aria-label="사용자 등록"
+              title="사용자 등록"
+              className="flex-row-center h-[4rem] w-[4rem] cursor-pointer rounded-full bg-[#f5f5f5] transition-colors hover:bg-[#E3E3E3]"
+            >
+              <FiPlus className="text-[2rem] text-gray-600" />
+            </button>
+          </div>
+          <span className="text-[1.6rem] text-[#7A7A7A]">총 {totalCount.toLocaleString()}명</span>
         </div>
 
         <div ref={filterRef} className="relative">
@@ -171,9 +115,7 @@ const AdminUsers = () => {
                   type="button"
                   onClick={() => {
                     setSelectedRoleFilter(option.value);
-                    setAppliedRoleFilter(
-                      option.value === 'ALL' ? undefined : option.value,
-                    );
+                    setAppliedRoleFilter(option.value === 'ALL' ? undefined : option.value);
                     setCurrentPage(1);
                     setIsFilterOpen(false);
                   }}
@@ -195,7 +137,7 @@ const AdminUsers = () => {
           <LoadingPanel />
         ) : isError ? (
           <div className="rounded-[1.6rem] bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-red-500">
-            유저 목록을 불러오지 못했습니다.
+            사용자 목록을 불러오지 못했습니다.
           </div>
         ) : (
           <UserListTable
@@ -211,13 +153,19 @@ const AdminUsers = () => {
       </div>
 
       <ExploreScrollToTop targetRef={pageRef} />
+      <UserCreateDrawer
+        open={isCreateDrawerOpen}
+        mode={drawerMode}
+        initialData={drawerInitialData}
+        onClose={closeDrawer}
+      />
 
       {deleteTargetUser ? (
         <ConfirmModal
           message="정말 삭제하시겠습니까?"
           confirmText="삭제"
           cancelText="취소"
-          onCancel={() => setDeleteTargetUser(null)}
+          onCancel={handleDeleteCancel}
           onConfirm={handleDeleteConfirm}
         />
       ) : null}

@@ -1,6 +1,12 @@
 import { useGetNoticeDetail, useGetNotices } from '@apis/telegro';
 import { useMemo } from 'react';
 
+export type AdminNoticeAttachment = {
+  id: number;
+  fileName: string;
+  fileUrl: string;
+};
+
 export type AdminNoticeDetailItem = {
   id: number;
   title: string;
@@ -10,6 +16,7 @@ export type AdminNoticeDetailItem = {
   createdAt: string;
   relativeLabel?: string;
   author?: string;
+  attachments: AdminNoticeAttachment[];
 };
 
 export type AdminNoticeSibling = {
@@ -33,6 +40,7 @@ const DEFAULT_NOTICE: AdminNoticeDetailItem = {
   content: '',
   views: 0,
   createdAt: '-',
+  attachments: [],
 };
 
 const FALLBACK_SUMMARY = '공지 상세 페이지에서 본문을 확인할 수 있습니다.';
@@ -116,6 +124,7 @@ export const useAdminNoticeDetail = ({
       views: notice.viewCount ?? 0,
       createdAt: formatNoticeDate(notice.noticeCreateDate),
       author: notice.noticeAuthor?.trim() || '',
+      attachments: [],
     }));
   }, [noticeListQuery.data?.data?.notices, notices]);
 
@@ -131,6 +140,13 @@ export const useAdminNoticeDetail = ({
         views: detail.viewCount ?? 0,
         createdAt: formatNoticeDate(detail.noticeCreateDate),
         author: detail.noticeAuthor?.trim() || '',
+        attachments: (detail.noticeFiles ?? [])
+          .map((file) => ({
+            id: file.id ?? 0,
+            fileName: file.fileName?.trim() || '첨부파일',
+            fileUrl: file.fileUrl?.trim() || '',
+          }))
+          .filter((file) => Boolean(file.fileUrl)),
       };
     }
 
