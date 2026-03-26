@@ -42,10 +42,6 @@ const AdminNoticeDetailView = ({
           <NoticeHeroGraphic />
 
           <article className="flex flex-col gap-8 text-[#202124]">
-            <p className="text-[1.28rem] leading-[1.9] tracking-[-0.02em] text-[#202124] md:text-[1.45rem]">
-              안녕하세요. 텔레그로 운영팀입니다.
-            </p>
-
             {notice.summary ? (
               <p className="text-[1.2rem] leading-[1.95] font-medium tracking-[-0.02em] text-[#5B74F7] md:text-[1.35rem]">
                 {notice.summary}
