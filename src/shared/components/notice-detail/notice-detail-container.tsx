@@ -5,6 +5,7 @@ import {
 import AdminNoticeDetailView from '@components/admin/notice-detail/admin-notice-detail-view';
 
 type NoticeDetailContainerProps = {
+  isAdmin?: boolean;
   noticeId?: number;
   notices?: AdminNoticeDetailItem[];
   onBack?: () => void;
@@ -15,7 +16,7 @@ type NoticeDetailContainerProps = {
 const NoticeDetailContainer = (props: NoticeDetailContainerProps) => {
   const detailState = useAdminNoticeDetail(props);
 
-  return <AdminNoticeDetailView {...detailState} />;
+  return <AdminNoticeDetailView isAdmin={props.isAdmin} {...detailState} />;
 };
 
 export default NoticeDetailContainer;

@@ -1,6 +1,8 @@
 import {
   createNotice,
   getPresignedUrl,
+  updateNotice,
+  useGetNoticeDetail,
   type NoticeFile,
 } from '@apis/telegro';
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
@@ -8,9 +10,15 @@ import queryClient from '@libs/query-client';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
 import color from '@toast-ui/editor-plugin-color-syntax';
-import { useRef, useState, type ChangeEvent, type MouseEvent } from 'react';
-import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type MouseEvent,
+} from 'react';
+import { toastError, toastSuccess } from '@components/common/toast/toast';
+import { useNavigate, useParams } from 'react-router-dom';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
@@ -34,16 +42,64 @@ const getUploadFileName = (file: Blob | File) => {
   return `notice-image-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
 };
 
+const invalidateNoticeQueries = () =>
+  queryClient.invalidateQueries({
+    predicate: (query) =>
+      Array.isArray(query.queryKey) &&
+      typeof query.queryKey[0] === 'string' &&
+      query.queryKey[0].startsWith('/notices'),
+  });
+
 const AdminNoticeCreate = () => {
   const navigate = useNavigate();
+  const { noticeId } = useParams();
+  const resolvedNoticeId = Number(noticeId);
+  const isEditMode = Number.isFinite(resolvedNoticeId) && resolvedNoticeId > 0;
+
   const editorRef = useRef<Editor>(null);
   const attachmentInputRef = useRef<HTMLInputElement>(null);
+  const isHydratedRef = useRef(false);
 
   const [title, setTitle] = useState('');
   const [noticeFiles, setNoticeFiles] = useState<NoticeFile[]>([]);
   const [error, setError] = useState('');
   const [isUploadingFiles, setIsUploadingFiles] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const noticeDetailQuery = useGetNoticeDetail(resolvedNoticeId, {
+    query: {
+      enabled: isEditMode,
+      staleTime: 60_000,
+    },
+  });
+
+  useEffect(() => {
+    isHydratedRef.current = false;
+  }, [resolvedNoticeId]);
+
+  useEffect(() => {
+    if (!isEditMode || isHydratedRef.current) {
+      return;
+    }
+
+    const detail = noticeDetailQuery.data?.data;
+    const editorInstance = editorRef.current?.getInstance();
+
+    if (!detail || !editorInstance) {
+      return;
+    }
+
+    setTitle(detail.noticeTitle?.trim() || '');
+    setNoticeFiles(
+      (detail.noticeFiles ?? []).map((file) => ({
+        id: file.id,
+        fileName: file.fileName?.trim() || '',
+        fileUrl: file.fileUrl?.trim() || '',
+      })),
+    );
+    editorInstance.setHTML(detail.noticeContent?.trim() || '');
+    isHydratedRef.current = true;
+  }, [isEditMode, noticeDetailQuery.data?.data]);
 
   const uploadToPresignedUrl = async (
     file: Blob | File,
@@ -85,10 +141,10 @@ const AdminNoticeCreate = () => {
       );
 
       setNoticeFiles((prev) => [...prev, ...uploadedFiles]);
-      toast.success('첨부파일 업로드를 완료했습니다.');
+      toastSuccess('첨부파일 업로드를 완료했습니다.');
     } catch {
       setError('파일 업로드 중 오류가 발생했습니다.');
-      toast.error('파일 업로드에 실패했습니다.');
+      toastError('파일 업로드에 실패했습니다.');
     } finally {
       setIsUploadingFiles(false);
       event.target.value = '';
@@ -110,10 +166,10 @@ const AdminNoticeCreate = () => {
     try {
       const uploadedImage = await uploadToPresignedUrl(blob);
       callback(uploadedImage.fileUrl ?? '', 'image');
-      toast.success('이미지 업로드를 완료했습니다.');
+      toastSuccess('이미지 업로드를 완료했습니다.');
     } catch {
       setError('이미지 업로드 중 오류가 발생했습니다.');
-      toast.error('이미지 업로드에 실패했습니다.');
+      toastError('이미지 업로드에 실패했습니다.');
     }
   };
 
@@ -137,18 +193,30 @@ const AdminNoticeCreate = () => {
     setIsSubmitting(true);
 
     try {
-      await createNotice({
-        title: title.trim(),
-        context: htmlContent,
-        noticeFiles,
-      });
+      if (isEditMode) {
+        await updateNotice(resolvedNoticeId, {
+          title: title.trim(),
+          context: htmlContent,
+          noticeFiles,
+        });
+      } else {
+        await createNotice({
+          title: title.trim(),
+          context: htmlContent,
+          noticeFiles,
+        });
+      }
 
-      await queryClient.invalidateQueries({
-        queryKey: ['/notices'],
-      });
+      await invalidateNoticeQueries();
 
-      toast.success('공지사항이 등록되었습니다.');
-      navigate('/admin/notices');
+      toastSuccess(
+        isEditMode ? '공지사항을 수정했습니다.' : '공지사항이 등록되었습니다.',
+      );
+      navigate(
+        isEditMode
+          ? `/admin/notices/${resolvedNoticeId}`
+          : '/admin/notices',
+      );
     } catch (submitError) {
       if (
         axios.isAxiosError(submitError) &&
@@ -156,9 +224,17 @@ const AdminNoticeCreate = () => {
       ) {
         setError('관리자 계정으로 로그인해 주세요.');
       } else {
-        setError('공지사항 등록 중 오류가 발생했습니다.');
+        setError(
+          isEditMode
+            ? '공지사항 수정 중 오류가 발생했습니다.'
+            : '공지사항 등록 중 오류가 발생했습니다.',
+        );
       }
-      toast.error('공지사항 등록에 실패했습니다.');
+      toastError(
+        isEditMode
+          ? '공지사항 수정에 실패했습니다.'
+          : '공지사항 등록에 실패했습니다.',
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -174,10 +250,10 @@ const AdminNoticeCreate = () => {
             Admin Notice
           </p>
           <h1 className="mt-[0.8rem] text-[3rem] font-semibold tracking-[-0.04em] text-gray-900">
-            공지사항 등록
+            {isEditMode ? '공지사항 수정' : '공지사항 등록'}
           </h1>
           <p className="mt-[0.8rem] text-[1.5rem] leading-[1.7] text-gray-500">
-            Toast UI 에디터로 본문을 작성하고 첨부파일까지 함께 등록합니다.
+            Toast UI 에디터로 본문을 작성하고 첨부파일까지 함께 관리합니다.
           </p>
         </div>
 
@@ -191,7 +267,8 @@ const AdminNoticeCreate = () => {
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               placeholder="제목을 입력해 주세요."
-              className="h-[5.6rem] rounded-[1.6rem] border border-[#E3E3E3] px-[1.6rem] text-[1.5rem] text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#FF9B2F] focus:ring-4 focus:ring-[#FFE4C4]"
+              disabled={isEditMode && noticeDetailQuery.isLoading}
+              className="h-[5.6rem] rounded-[1.6rem] border border-[#E3E3E3] px-[1.6rem] text-[1.5rem] text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#FF9B2F] focus:ring-4 focus:ring-[#FFE4C4] disabled:cursor-not-allowed disabled:bg-[#F7F7F7]"
             />
           </label>
 
@@ -203,7 +280,11 @@ const AdminNoticeCreate = () => {
               <button
                 type="button"
                 onClick={() => attachmentInputRef.current?.click()}
-                disabled={isUploadingFiles || isSubmitting}
+                disabled={
+                  isUploadingFiles ||
+                  isSubmitting ||
+                  (isEditMode && noticeDetailQuery.isLoading)
+                }
                 className="inline-flex h-[4.4rem] items-center justify-center rounded-[1.4rem] border border-[#FFD8B0] bg-[#FFF5EA] px-[1.6rem] text-[1.4rem] font-semibold text-[#D86B00] transition hover:bg-[#FFEBD4] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isUploadingFiles ? '업로드 중...' : '파일 추가'}
@@ -282,7 +363,11 @@ const AdminNoticeCreate = () => {
           <div className="flex flex-col-reverse gap-[1rem] pt-[0.8rem] sm:flex-row sm:justify-end">
             <button
               type="button"
-              onClick={() => navigate('/admin/notices')}
+              onClick={() =>
+                navigate(
+                  isEditMode ? `/admin/notices/${resolvedNoticeId}` : '/admin/notices',
+                )
+              }
               disabled={isSubmitting}
               className="inline-flex h-[5.2rem] items-center justify-center rounded-[1.6rem] border border-[#E5E7EB] bg-white px-[2rem] text-[1.5rem] font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
             >
@@ -291,10 +376,20 @@ const AdminNoticeCreate = () => {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isSubmitting || isUploadingFiles}
+              disabled={
+                isSubmitting ||
+                isUploadingFiles ||
+                (isEditMode && noticeDetailQuery.isLoading)
+              }
               className="inline-flex h-[5.2rem] items-center justify-center rounded-[1.6rem] border border-[#FFE2C0] bg-[linear-gradient(135deg,#FF9B2F_0%,#FFB652_100%)] px-[2rem] text-[1.5rem] font-semibold text-white shadow-[0_16px_34px_rgba(255,155,47,0.24)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
             >
-              {isSubmitting ? '등록 중...' : '등록'}
+              {isSubmitting
+                ? isEditMode
+                  ? '수정 중...'
+                  : '등록 중...'
+                : isEditMode
+                  ? '수정'
+                  : '등록'}
             </button>
           </div>
         </div>
