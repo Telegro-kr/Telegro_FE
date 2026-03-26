@@ -1,5 +1,15 @@
-import { useGetNoticeDetail, useGetNotices } from '@apis/telegro';
-import { useMemo } from 'react';
+import {
+  deleteNotice,
+  setPopNotice,
+  useGetNoticeDetail,
+  useGetNotices,
+} from '@apis/telegro';
+import {
+  toastError,
+  toastSuccess,
+} from '@components/common/toast/toast';
+import queryClient from '@libs/query-client';
+import { useMemo, useState } from 'react';
 
 export type AdminNoticeAttachment = {
   id: number;
@@ -17,6 +27,7 @@ export type AdminNoticeDetailItem = {
   relativeLabel?: string;
   author?: string;
   attachments: AdminNoticeAttachment[];
+  isPop: boolean;
 };
 
 export type AdminNoticeSibling = {
@@ -41,6 +52,7 @@ const DEFAULT_NOTICE: AdminNoticeDetailItem = {
   views: 0,
   createdAt: '-',
   attachments: [],
+  isPop: false,
 };
 
 const FALLBACK_SUMMARY = '공지 상세 페이지에서 본문을 확인할 수 있습니다.';
@@ -81,6 +93,14 @@ const toSummary = (content?: string) => {
   return `${plainText.slice(0, 120).trim()}...`;
 };
 
+const invalidateNoticeQueries = () =>
+  queryClient.invalidateQueries({
+    predicate: (query) =>
+      Array.isArray(query.queryKey) &&
+      typeof query.queryKey[0] === 'string' &&
+      query.queryKey[0].startsWith('/notices'),
+  });
+
 export const useAdminNoticeDetail = ({
   noticeId,
   notices,
@@ -88,8 +108,11 @@ export const useAdminNoticeDetail = ({
   onGoList,
   onOpenNotice,
 }: UseAdminNoticeDetailParams) => {
-  const hasValidNoticeId = typeof noticeId === 'number' && Number.isFinite(noticeId);
+  const hasValidNoticeId =
+    typeof noticeId === 'number' && Number.isFinite(noticeId);
   const hasInjectedNotices = Boolean(notices?.length);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSettingPopup, setIsSettingPopup] = useState(false);
 
   const noticeDetailQuery = useGetNoticeDetail(noticeId ?? 0, {
     query: {
@@ -125,6 +148,7 @@ export const useAdminNoticeDetail = ({
       createdAt: formatNoticeDate(notice.noticeCreateDate),
       author: notice.noticeAuthor?.trim() || '',
       attachments: [],
+      isPop: false,
     }));
   }, [noticeListQuery.data?.data?.notices, notices]);
 
@@ -147,6 +171,7 @@ export const useAdminNoticeDetail = ({
             fileUrl: file.fileUrl?.trim() || '',
           }))
           .filter((file) => Boolean(file.fileUrl)),
+        isPop: Boolean(detail.isPop),
       };
     }
 
@@ -168,6 +193,40 @@ export const useAdminNoticeDetail = ({
       : null;
   const nextNotice = currentIndex > 0 ? resolvedNotices[currentIndex - 1] : null;
 
+  const handleDelete = async () => {
+    if (!notice.id) return;
+
+    setIsDeleting(true);
+
+    try {
+      await deleteNotice(notice.id);
+      await invalidateNoticeQueries();
+      toastSuccess('공지사항을 삭제했습니다.');
+      onGoList?.();
+    } catch {
+      toastError('공지사항 삭제에 실패했습니다.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleSetPopup = async () => {
+    if (!notice.id || notice.isPop) return;
+
+    setIsSettingPopup(true);
+
+    try {
+      await setPopNotice(notice.id);
+      await invalidateNoticeQueries();
+      await noticeDetailQuery.refetch();
+      toastSuccess('공지사항을 팝업 고정했습니다.');
+    } catch {
+      toastError('공지사항 고정에 실패했습니다.');
+    } finally {
+      setIsSettingPopup(false);
+    }
+  };
+
   return {
     notice,
     prevNotice: prevNotice
@@ -186,8 +245,12 @@ export const useAdminNoticeDetail = ({
       : null,
     isLoading: noticeDetailQuery.isLoading,
     isError: noticeDetailQuery.isError || !hasValidNoticeId,
+    isDeleting,
+    isSettingPopup,
     handleBack: () => onBack?.(),
     handleGoList: () => onGoList?.(),
     handleOpenNotice: (id: number) => onOpenNotice?.(id),
+    handleDelete,
+    handleSetPopup,
   };
 };

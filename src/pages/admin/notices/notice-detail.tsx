@@ -7,6 +7,7 @@ const AdminNoticeDetailPage = () => {
 
   return (
     <NoticeDetailContainer
+      isAdmin
       noticeId={Number(noticeId) || undefined}
       onGoList={() => navigate('/admin/notices')}
       onOpenNotice={(id) => navigate(`/admin/notices/${id}`)}
