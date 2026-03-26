@@ -87,20 +87,20 @@ export function CartItemSection({
         <div className="flex gap-2 lg:flex-col lg:items-stretch lg:justify-start lg:px-4 lg:pt-1">
           <button
             type="button"
-            className="h-10 border border-neutral-300 px-4 text-sm font-medium hover:bg-neutral-50"
+            className="caption4 h-10 border border-neutral-300 px-4 hover:bg-neutral-50"
           >
             옵션추가
           </button>
           <button
             type="button"
-            className="h-10 bg-black px-4 text-sm font-medium text-white hover:bg-neutral-800"
+            className="caption4 h-10 bg-black px-4 text-white hover:bg-neutral-800"
           >
             바로 구매
           </button>
           <button
             type="button"
             onClick={() => onRemoveItem(item.id)}
-            className="h-10 border border-neutral-300 px-4 text-sm text-neutral-500 hover:bg-neutral-50"
+            className="caption4 h-10 border border-neutral-300 px-4 text-neutral-500 hover:bg-neutral-50"
           >
             삭제
           </button>

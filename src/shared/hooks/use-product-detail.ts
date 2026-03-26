@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
 import { type ProductDetailResponseDTO } from '@apis/telegro';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
+import { useEffect, useMemo, useState } from 'react';
 
 export type RecommendationItem = {
   id: number;
@@ -22,7 +22,7 @@ const DEFAULT_PRODUCT: ProductDetailResponseDTO = {
   options: ['기본 구성', '1개'],
   category: 'ACCESSORY',
   content:
-    '여행 가방에 가볍게 넣어두기 좋은 칵테일 키트입니다. 군더더기 없는 패키지와 차분한 무드의 디테일을 중심으로 구성되어 선물용으로도 잘 어울립니다.\n\n패키지 내부에는 간단한 칵테일 제조에 필요한 기본 구성이 포함되어 있으며, 감각적인 오브제로도 활용할 수 있도록 절제된 톤의 디자인을 적용했습니다.',
+    '휴대가 간편한 샘플 상품 설명입니다. 실제 응답이 없을 때도 화면 구조를 확인할 수 있도록 기본 텍스트를 제공합니다.',
   price: '24,000',
   priceBussiness: '22,000',
   priceBest: '21,000',
@@ -38,6 +38,8 @@ export const useProductDetail = ({
 }: UseProductDetailParams = {}) => {
   const [activeTab, setActiveTab] = useState<ProductTab>('detail');
   const [quantity, setQuantity] = useState(1);
+  const [selectedOption, setSelectedOption] = useState('');
+  const [inputOption, setInputOption] = useState('');
   const [isDetailOpen, setIsDetailOpen] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -53,18 +55,26 @@ export const useProductDetail = ({
   const [selectedImage, setSelectedImage] = useState(product.coverImage ?? '');
 
   const basePrice = useMemo(() => {
-    const numeric = (product.price ?? '24,000').replace(/[,원\s]/g, '');
+    const numeric = (product.price ?? '24,000').replace(/[,\s원]/g, '');
     return Number(numeric) || 24000;
   }, [product.price]);
 
   const totalPriceLabel = useMemo(
-    () => (basePrice * quantity).toLocaleString(),
+    () => `${(basePrice * quantity).toLocaleString()}원`,
     [basePrice, quantity],
   );
   const rewardPointLabel = useMemo(
-    () => `${(1000 * quantity).toLocaleString()} 포인트 적립예정`,
+    () => `${(1000 * quantity).toLocaleString()} 포인트 적립 예정`,
     [quantity],
   );
+
+  useEffect(() => {
+    const firstOption = product.options?.find((option) => option?.trim())?.trim() ?? '';
+    setSelectedImage(product.coverImage ?? '');
+    setSelectedOption(firstOption);
+    setInputOption('');
+    setQuantity(1);
+  }, [product]);
 
   useEffect(() => {
     if (!isShareCopied) return;
@@ -106,6 +116,10 @@ export const useProductDetail = ({
     setSelectedImage,
     quantity,
     setQuantity,
+    selectedOption,
+    setSelectedOption,
+    inputOption,
+    setInputOption,
     galleryImages,
     isDetailOpen,
     setIsDetailOpen,

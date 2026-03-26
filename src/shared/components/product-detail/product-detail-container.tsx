@@ -5,8 +5,8 @@ import {
   type GetProductsCategory,
   type ProductDetailResponseDTO,
 } from '@apis/telegro';
-import ProductDetailView from '@components/product-detail/product-detail-view';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
+import ProductDetailView from '@components/product-detail/product-detail-view';
 import { useProductDetail, type RecommendationItem } from '@hooks/use-product-detail';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatNumber } from '@utils/format';
@@ -74,6 +74,10 @@ const ProductDetailContainer = ({
     setSelectedImage,
     quantity,
     setQuantity,
+    selectedOption,
+    setSelectedOption,
+    inputOption,
+    setInputOption,
     galleryImages,
     isDetailOpen,
     setIsDetailOpen,
@@ -96,15 +100,18 @@ const ProductDetailContainer = ({
       return;
     }
 
-    const selectOption = resolvedProduct.options?.find((option) => option?.trim())?.trim();
+    if (!selectedOption) {
+      toastError('옵션을 선택해주세요.');
+      return;
+    }
 
     try {
       await addCartItemMutation.mutateAsync({
         productId,
         data: {
-          selectOption,
+          selectOption: selectedOption,
           quantity,
-          inputOption: '',
+          inputOption,
         },
       });
       await telegroInvalidate.cartItems(queryClient, CART_ITEMS_QUERY_PARAMS);
@@ -126,6 +133,8 @@ const ProductDetailContainer = ({
       activeTab={activeTab}
       selectedImage={selectedImage}
       quantity={quantity}
+      selectedOption={selectedOption}
+      inputOption={inputOption}
       galleryImages={galleryImages}
       isDetailOpen={isDetailOpen}
       isLiked={isLiked}
@@ -141,6 +150,8 @@ const ProductDetailContainer = ({
       onSelectImage={setSelectedImage}
       onDecreaseQuantity={() => setQuantity((prev) => Math.max(1, prev - 1))}
       onIncreaseQuantity={() => setQuantity((prev) => prev + 1)}
+      onSelectOption={setSelectedOption}
+      onInputOptionChange={setInputOption}
       onAddCart={handleAddCart}
       onToggleDetail={() => setIsDetailOpen((prev) => !prev)}
       onToggleLike={handleToggleLike}

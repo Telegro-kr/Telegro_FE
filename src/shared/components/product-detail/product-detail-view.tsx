@@ -15,6 +15,8 @@ type ProductDetailViewProps = {
   activeTab: ProductTab;
   selectedImage: string;
   quantity: number;
+  selectedOption: string;
+  inputOption: string;
   galleryImages: string[];
   isDetailOpen: boolean;
   isLiked: boolean;
@@ -30,6 +32,8 @@ type ProductDetailViewProps = {
   onSelectImage: (image: string) => void;
   onDecreaseQuantity: () => void;
   onIncreaseQuantity: () => void;
+  onSelectOption: (option: string) => void;
+  onInputOptionChange: (value: string) => void;
   onAddCart?: () => void;
   onToggleDetail: () => void;
   onToggleLike: () => void;
@@ -43,6 +47,8 @@ const ProductDetailView = ({
   activeTab,
   selectedImage,
   quantity,
+  selectedOption,
+  inputOption,
   galleryImages,
   isDetailOpen,
   isLiked,
@@ -58,6 +64,8 @@ const ProductDetailView = ({
   onSelectImage,
   onDecreaseQuantity,
   onIncreaseQuantity,
+  onSelectOption,
+  onInputOptionChange,
   onAddCart,
   onToggleDetail,
   onToggleLike,
@@ -88,12 +96,18 @@ const ProductDetailView = ({
             price={product.price}
             rewardPointLabel={rewardPointLabel}
             quantity={quantity}
+            category={product.category}
+            options={product.options ?? []}
+            selectedOption={selectedOption}
+            inputOption={inputOption}
             isLiked={isLiked}
             likeCount={likeCount}
             isShareCopied={isShareCopied}
             totalPriceLabel={totalPriceLabel}
             onDecrease={onDecreaseQuantity}
             onIncrease={onIncreaseQuantity}
+            onSelectOption={onSelectOption}
+            onInputOptionChange={onInputOptionChange}
             onAddCart={onAddCart}
             onToggleLike={onToggleLike}
             onShare={onShare}
