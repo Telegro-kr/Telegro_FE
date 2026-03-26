@@ -1,237 +1,53 @@
-import { SignUpUserInfoDtoRole, getUserDetail, type GetUsersFilteredBy, useDeleteUser } from '@apis/telegro';
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
 import RoleDonutCard from '@components/admin/user-list/role-donut-card';
-import UserCreateDrawer, {
-  type CreateCompanyForm,
-  type UserDrawerInitialData,
-} from '@components/admin/user-list/user-create-drawer';
-import UserListTable, { type UserRow } from '@components/admin/user-list/user-list-table';
+import UserCreateDrawer from '@components/admin/user-list/user-create-drawer';
+import UserListTable from '@components/admin/user-list/user-list-table';
 import ConfirmModal from '@components/common/confirm-modal';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
-import { toastError, toastSuccess } from '@components/common/toast/toast';
-import useUserList from '@hooks/use-user-list';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-
-const PAGE_SIZE = 9;
-
-const ROLE_FILTER_OPTIONS: Array<{
-  label: string;
-  value: GetUsersFilteredBy | 'ALL';
-}> = [
-  { label: '전체', value: 'ALL' },
-  { label: 'MEMBER', value: 'MEMBER' },
-  { label: 'DEALER', value: 'DEALER' },
-  { label: 'BEST', value: 'BEST' },
-  { label: 'BUSINESS', value: 'BUSINESS' },
-];
-
-const EMPTY_FORM: CreateCompanyForm = {
-  username: '',
-  userid: '',
-  password: '',
-  companyName: '',
-  phone: '',
-  email: '',
-  managerName: '',
-  managerPhone: '',
-  companyNumber: '',
-  companyType: '',
-  companyItem: '',
-  address: '',
-  zipCode: '',
-  addressDetail: '',
-  companyDescription: '',
-};
-
-const ROLE_MAP = {
-  MEMBER: SignUpUserInfoDtoRole.MEMBER,
-  DEALER: SignUpUserInfoDtoRole.DEALER,
-  BEST: SignUpUserInfoDtoRole.BEST,
-  BUSINESS: SignUpUserInfoDtoRole.BUSINESS,
-  ADMIN: SignUpUserInfoDtoRole.ADMIN,
-} as const;
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null;
-
-const getString = (value: unknown) => (typeof value === 'string' ? value : '');
-
-const toRole = (value: unknown) =>
-  typeof value === 'string' && value in ROLE_MAP
-    ? ROLE_MAP[value as keyof typeof ROLE_MAP]
-    : SignUpUserInfoDtoRole.MEMBER;
-
-const buildInitialDataFromUser = (user: UserRow): UserDrawerInitialData => ({
-  userId: user.id,
-  role: toRole(user.role),
-  form: {
-    ...EMPTY_FORM,
-    username: user.name === '-' ? '' : user.name,
-    userid: user.userId === '-' ? '' : user.userId,
-    phone: user.phone === '-' ? '' : user.phone,
-    email: user.email === '-' ? '' : user.email,
-  },
-});
-
-const mergeUserDetail = (
-  base: UserDrawerInitialData,
-  rawData: unknown,
-): UserDrawerInitialData => {
-  if (!isRecord(rawData)) {
-    return base;
-  }
-
-  const rawUser = isRecord(rawData.user)
-    ? rawData.user
-    : isRecord(rawData.data)
-      ? rawData.data
-      : rawData;
-  const rawCompany = isRecord(rawData.company)
-    ? rawData.company
-    : isRecord(rawUser.company)
-      ? rawUser.company
-      : {};
-
-  return {
-    userId:
-      typeof rawUser.id === 'number'
-        ? rawUser.id
-        : typeof rawData.id === 'number'
-          ? rawData.id
-          : base.userId,
-    role: toRole(rawUser.role ?? rawData.role ?? base.role),
-    form: {
-      ...base.form,
-      username: getString(rawUser.username ?? rawUser.userName) || base.form.username,
-      userid: getString(rawUser.userId ?? rawUser.userid) || base.form.userid,
-      phone: getString(rawUser.phone) || base.form.phone,
-      email: getString(rawUser.email) || base.form.email,
-      address: getString(rawUser.address) || base.form.address,
-      addressDetail: getString(rawUser.addressDetail) || base.form.addressDetail,
-      zipCode: getString(rawUser.zipCode) || base.form.zipCode,
-      companyName:
-        getString(rawCompany.companyName ?? rawData.companyName) || base.form.companyName,
-      managerName:
-        getString(rawCompany.managerName ?? rawData.managerName) || base.form.managerName,
-      managerPhone:
-        getString(rawCompany.managerPhone ?? rawData.managerPhone) || base.form.managerPhone,
-      companyNumber:
-        getString(rawCompany.companyNumber ?? rawData.companyNumber) ||
-        base.form.companyNumber,
-      companyType:
-        getString(rawCompany.companyType ?? rawData.companyType) || base.form.companyType,
-      companyItem:
-        getString(rawCompany.companyItem ?? rawData.companyItem) || base.form.companyItem,
-      companyDescription:
-        getString(rawCompany.companyDescription ?? rawData.companyDescription) ||
-        base.form.companyDescription,
-    },
-  };
-};
+import { ROLE_FILTER_OPTIONS } from './users.constants';
+import { useAdminUsersPage } from './use-admin-users-page';
 
 const AdminUsers = () => {
   const navigate = useNavigate();
   const pageRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [keyword, setKeyword] = useState('');
-  const [appliedSearchKeyword, setAppliedSearchKeyword] = useState('');
-  const [selectedRoleFilter, setSelectedRoleFilter] = useState<GetUsersFilteredBy | 'ALL'>('ALL');
-  const [appliedRoleFilter, setAppliedRoleFilter] = useState<GetUsersFilteredBy>();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
-  const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
-  const [drawerInitialData, setDrawerInitialData] = useState<UserDrawerInitialData | null>(null);
-  const [deleteTargetUser, setDeleteTargetUser] = useState<UserRow | null>(null);
-
-  const { roleCounts } = useUserList({
-    page: 0,
-    size: PAGE_SIZE,
-  });
-
-  const { users, totalPages, totalCount, isLoading, isError, refetch } = useUserList({
-    page: currentPage - 1,
-    size: PAGE_SIZE,
-    filteredBy: appliedRoleFilter,
-    searchKeyword: appliedSearchKeyword,
-  });
-
-  const deleteUserMutation = useDeleteUser();
+  const {
+    closeDrawer,
+    currentPage,
+    deleteTargetUser,
+    drawerInitialData,
+    drawerMode,
+    handleDeleteCancel,
+    handleDeleteConfirm,
+    handleDeleteRequest,
+    handleEdit,
+    handleRefresh,
+    handleSearch,
+    isCreateDrawerOpen,
+    isError,
+    isFilterOpen,
+    isLoading,
+    keyword,
+    openCreateDrawer,
+    roleCounts,
+    selectedRoleFilter,
+    setAppliedRoleFilter,
+    setCurrentPage,
+    setIsFilterOpen,
+    setKeyword,
+    setSelectedRoleFilter,
+    totalCount,
+    totalPages,
+    users,
+  } = useAdminUsersPage();
 
   const selectedRoleLabel =
     ROLE_FILTER_OPTIONS.find((option) => option.value === selectedRoleFilter)?.label ?? '전체';
-
-  const openCreateDrawer = () => {
-    setDrawerMode('create');
-    setDrawerInitialData(null);
-    setIsCreateDrawerOpen(true);
-  };
-
-  const closeDrawer = () => {
-    setIsCreateDrawerOpen(false);
-    setDrawerInitialData(null);
-    setDrawerMode('create');
-  };
-
-  const handleSearch = (value: string) => {
-    setAppliedSearchKeyword(value);
-    setCurrentPage(1);
-    setIsFilterOpen(false);
-  };
-
-  const handleRefresh = () => {
-    setKeyword('');
-    setAppliedSearchKeyword('');
-    setSelectedRoleFilter('ALL');
-    setAppliedRoleFilter(undefined);
-    setCurrentPage(1);
-    setIsFilterOpen(false);
-  };
-
-  const handleEdit = async (user: UserRow) => {
-    const fallbackData = buildInitialDataFromUser(user);
-
-    setDrawerMode('edit');
-    setDrawerInitialData(fallbackData);
-    setIsCreateDrawerOpen(true);
-
-    try {
-      const response = await getUserDetail(user.id);
-      setDrawerInitialData(mergeUserDetail(fallbackData, response?.data));
-    } catch {
-      toastError('사용자 상세 정보를 모두 불러오지 못해 기본 정보만 표시합니다.');
-    }
-  };
-
-  const handleDeleteRequest = (user: UserRow) => {
-    setDeleteTargetUser(user);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!deleteTargetUser) {
-      return;
-    }
-
-    try {
-      await deleteUserMutation.mutateAsync({ userId: deleteTargetUser.id });
-      setDeleteTargetUser(null);
-      toastSuccess('사용자를 삭제했습니다.');
-
-      if (users.length === 1 && currentPage > 1) {
-        setCurrentPage((page) => page - 1);
-        return;
-      }
-
-      await refetch();
-    } catch {
-      setDeleteTargetUser(null);
-      toastError('사용자 삭제에 실패했습니다.');
-    }
-  };
 
   useEffect(() => {
     if (!isFilterOpen) {
@@ -249,13 +65,7 @@ const AdminUsers = () => {
     return () => {
       document.removeEventListener('mousedown', handlePointerDown);
     };
-  }, [isFilterOpen]);
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
+  }, [isFilterOpen, setIsFilterOpen]);
 
   return (
     <div
@@ -355,7 +165,7 @@ const AdminUsers = () => {
           message="정말 삭제하시겠습니까?"
           confirmText="삭제"
           cancelText="취소"
-          onCancel={() => setDeleteTargetUser(null)}
+          onCancel={handleDeleteCancel}
           onConfirm={handleDeleteConfirm}
         />
       ) : null}
