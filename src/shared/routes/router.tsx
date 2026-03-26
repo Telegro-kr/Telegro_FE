@@ -24,6 +24,7 @@ const CheckoutDone = lazy(() => import('@pages/app/checkout/complete'));
 const Orders = lazy(() => import('@pages/app/orders/orders'));
 const OrderDetail = lazy(() => import('@pages/app/orders/order-detail'));
 const MyPage = lazy(() => import('@pages/app/my/my'));
+const MyEditPage = lazy(() => import('@pages/app/my/edit'));
 
 const AdminDashboard = lazy(() => import('@pages/admin/dashboard/dashboard'));
 const AdminUsers = lazy(() => import('@pages/admin/users/users'));
@@ -68,6 +69,7 @@ export const router = createBrowserRouter([
           { path: 'orders', element: <Orders /> },
           { path: 'orders/:orderId', element: <OrderDetail /> },
           { path: 'my', element: <MyPage /> },
+          { path: 'my/edit', element: <MyEditPage /> },
         ],
       },
     ],

@@ -4,7 +4,7 @@ import LoadingPage from '@components/common/loading-page';
 import { formatNumber } from '@utils/format';
 import { FiEdit2 } from 'react-icons/fi';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const menuItems = ['프로필', '주문', '배송지'] as const;
 
@@ -204,6 +204,7 @@ function AddressRow({ address }: { address: DeliveryAddressDetailDTO }) {
 }
 
 const MyPage = () => {
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] =
     useState<(typeof menuItems)[number]>('프로필');
 
@@ -322,7 +323,7 @@ const MyPage = () => {
             </div>
 
             {activeMenu === '프로필' && (
-              <section className="rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="relative rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
                 <SectionHeader
                   title="계정 정보"
                   description="가입한 기본 정보를 확인할 수 있습니다."
@@ -331,6 +332,7 @@ const MyPage = () => {
                 <button
                   type="button"
                   aria-label="계정정보 수정"
+                  onClick={() => navigate('/app/my/edit')}
                   className="absolute top-8 right-8 inline-flex h-12 w-12 items-center justify-center rounded-[1rem] border border-[#E7E1D7] bg-[#F8F5EF] text-[#5F7A35] transition-colors hover:bg-[#F1ECE3]"
                 >
                   <FiEdit2 className="text-[1.8rem]" />
