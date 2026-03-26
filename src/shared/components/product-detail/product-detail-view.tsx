@@ -1,4 +1,4 @@
-import { type ProductDetailResponseDTO } from '@apis/telegro';
+﻿import { type ProductDetailResponseDTO } from '@apis/telegro';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import {
   type ProductTab,
@@ -98,7 +98,7 @@ const ProductDetailView = ({
                 className="flex-row-center h-[4.8rem] w-full cursor-pointer gap-2 border-[2px] border-gray-600 bg-white text-[1.5rem] font-semibold text-[#263238] shadow-[0_8px_16px_rgba(38,50,56,0.08)] transition-colors hover:bg-gray-100"
               >
                 <span>
-                  {isDetailOpen ? '상세정보 접기' : '상세정보 펼치기'}
+                  {isDetailOpen ? 'Hide details' : 'Show details'}
                 </span>
                 <span className={isDetailOpen ? 'rotate-0' : 'rotate-180'}>
                   <ChevronUpIcon />
@@ -108,7 +108,7 @@ const ProductDetailView = ({
               {isDetailOpen ? (
                 product.content?.trim().startsWith('<') ? (
                   <div
-                    className="text-[1.18rem] leading-[2] text-gray-700 [&_h4]:text-[1.3rem] [&_h4]:font-semibold [&_h5]:text-[1.18rem] [&_h5]:font-semibold [&_p]:min-h-[1.5rem] [&_strong]:font-semibold"
+                    className="text-[1.18rem] leading-[2] text-gray-700 [&_h1]:text-[2rem] [&_h1]:font-semibold [&_h2]:text-[1.7rem] [&_h2]:font-semibold [&_h3]:text-[1.45rem] [&_h3]:font-semibold [&_h4]:text-[1.3rem] [&_h4]:font-semibold [&_h5]:text-[1.18rem] [&_h5]:font-semibold [&_img]:my-6 [&_img]:rounded-[1.6rem] [&_img]:shadow-[0_12px_24px_rgba(15,23,42,0.08)] [&_li]:ml-6 [&_ol]:list-decimal [&_p]:min-h-[1.5rem] [&_strong]:font-semibold [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[#E5E7EB] [&_td]:px-3 [&_td]:py-2 [&_th]:border [&_th]:border-[#E5E7EB] [&_th]:bg-[#F8FAFC] [&_th]:px-3 [&_th]:py-2 [&_ul]:list-disc"
                     dangerouslySetInnerHTML={{ __html: product.content }}
                   />
                 ) : (
@@ -120,20 +120,20 @@ const ProductDetailView = ({
             </>
           )}
           {activeTab === 'review' ? (
-            <EmptyPanel title="아직 등록된 구매평이 없습니다." />
+            <EmptyPanel title="No reviews yet." />
           ) : null}
           {activeTab === 'return' ? (
             <InfoPanel
-              title="반품 / 교환 안내"
+              title="Returns and exchanges"
               lines={[
-                '단순 변심에 의한 반품/교환은 상품 수령 후 7일 이내 접수 가능합니다.',
-                '상품 훼손 및 사용 흔적이 있는 경우 반품이 제한될 수 있습니다.',
-                '정확한 안내는 판매 정책을 함께 확인해 주세요.',
+                'Requests can be submitted within 7 days after delivery for simple change-of-mind cases.',
+                'Items with signs of use or damaged packaging may be rejected depending on inspection results.',
+                'Please check the purchase policy for category-specific details.',
               ]}
             />
           ) : null}
           {activeTab === 'qna' ? (
-            <EmptyPanel title="등록된 문의가 없습니다." />
+            <EmptyPanel title="No questions yet." />
           ) : null}
         </section>
 
