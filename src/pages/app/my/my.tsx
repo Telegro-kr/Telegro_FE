@@ -115,7 +115,7 @@ function SummaryCard({
   sub: string;
 }) {
   return (
-    <article className="rounded-[1.8rem] border border-white/70 px-8 py-7 shadow-[0_20px_50px_rgba(35,35,35,0.06)] backdrop-blur">
+    <article className="rounded-[1.3rem] border border-white/70 px-8 py-7 shadow-[0_20px_50px_rgba(35,35,35,0.06)] backdrop-blur">
       <p className="text-[1.2rem] font-semibold tracking-[0.08em] text-[#8B8B8B] uppercase">
         {label}
       </p>
@@ -135,7 +135,7 @@ function OrderRow({ order }: { order: OrderDetailDTO }) {
   return (
     <Link
       to={order.orderId ? `/app/orders/${order.orderId}` : '/app/orders'}
-      className="flex items-center justify-between gap-6 rounded-[1.6rem] border border-[#ECE8E1] bg-white px-6 py-5"
+      className="flex items-center justify-between gap-6 rounded-[1.2rem] border border-[#ECE8E1] bg-white px-6 py-5"
     >
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-3">
@@ -158,8 +158,17 @@ function OrderRow({ order }: { order: OrderDetailDTO }) {
 }
 
 function AddressRow({ address }: { address: DeliveryAddressDetailDTO }) {
+  const accentClass = address.isDefault ? 'bg-[#5F7A35]' : 'bg-[#C9B89D]';
+  const surfaceClass = address.isDefault ? 'bg-[#F7FAF2]' : 'bg-[#FCF8F3]';
+
   return (
-    <article className="rounded-[1.6rem] border border-[#ECE8E1] bg-white px-6 py-5 shadow-[0_12px_24px_rgba(20,20,20,0.03)]">
+    <article
+      className={[
+        'relative overflow-hidden rounded-[1.2rem] border border-[#ECE8E1] px-6 py-5 pl-9 shadow-[0_12px_24px_rgba(20,20,20,0.03)]',
+        surfaceClass,
+      ].join(' ')}
+    >
+      <div className={`absolute left-0 top-0 bottom-0 w-[0.6rem] ${accentClass}`} />
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -218,7 +227,7 @@ const MyPage = () => {
   if (myPageQuery.isError) {
     return (
       <section className="min-h-screen bg-[#F7F4EE] px-8 py-10">
-        <div className="mx-auto max-w-[120rem] rounded-[2.4rem] border border-[#EAE3D8] bg-white px-10 py-12 text-center shadow-[0_24px_60px_rgba(30,30,30,0.06)]">
+        <div className="mx-auto max-w-[120rem] rounded-[1.8rem] border border-[#EAE3D8] bg-white px-10 py-12 text-center shadow-[0_24px_60px_rgba(30,30,30,0.06)]">
           <p className="text-[2.2rem] font-semibold text-[#1E1E1E]">
             마이페이지 정보를 불러오지 못했습니다.
           </p>
@@ -248,12 +257,12 @@ const MyPage = () => {
     <section className="min-h-screen px-6 py-8 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-[120rem]">
         <div className="grid gap-6 lg:grid-cols-[28rem_minmax(0,1fr)]">
-          <aside className="h-fit overflow-hidden rounded-[2.2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(249,245,238,0.98)_100%)] p-6 shadow-[0_24px_60px_rgba(22,22,22,0.07)]">
+          <aside className="h-fit overflow-hidden rounded-[1.6rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(249,245,238,0.98)_100%)] p-6 shadow-[0_24px_60px_rgba(22,22,22,0.07)]">
             <div className="border-b border-[#EEE7DD]">
               <img
                 src="/my-profile.svg"
                 alt="사용자 프로필"
-                className="h-[8rem] w-[8rem] rounded-[1.4rem] border border-[#EFE7DB] bg-white object-cover p-3"
+                className="h-[8rem] w-[8rem] rounded-[1rem] border border-[#EFE7DB] bg-white object-cover p-3"
               />
 
               <div className="mt-5">
@@ -273,7 +282,7 @@ const MyPage = () => {
                   type="button"
                   onClick={() => setActiveMenu(item)}
                   className={[
-                    'rounded-[1.2rem] px-5 py-4 text-left text-[1.5rem] font-semibold',
+                    'rounded-[0.9rem] px-5 py-4 text-left text-[1.5rem] font-semibold',
                     activeMenu === item
                       ? 'bg-[#202020] text-white shadow-[0_14px_24px_rgba(22,22,22,0.18)]'
                       : 'text-[#535353]',
@@ -284,7 +293,7 @@ const MyPage = () => {
               ))}
             </nav>
 
-            <div className="mt-8 rounded-[1.6rem] bg-[#F3EEE7] px-5 py-5">
+            <div className="mt-8 rounded-[1.2rem] bg-[#F3EEE7] px-5 py-5">
               <p className="text-[1.2rem] font-semibold tracking-[0.08em] text-[#8A7D6A] uppercase">
                 Contact
               </p>
@@ -312,14 +321,14 @@ const MyPage = () => {
             </div>
 
             {activeMenu === '프로필' && (
-              <section className="rounded-[2.2rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
                 <SectionHeader
                   title="계정 정보"
                   description="가입한 기본 정보를 확인할 수 있습니다."
                 />
 
                 <div className="mt-8 grid gap-4 md:grid-cols-2">
-                  <div className="rounded-[1.4rem] bg-[#F8F5EF] px-6 py-5">
+                  <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">
                     <p className="text-[1.2rem] font-semibold text-[#8B8B8B]">
                       이름
                     </p>
@@ -327,7 +336,7 @@ const MyPage = () => {
                       {user?.userName?.trim() || '-'}
                     </p>
                   </div>
-                  <div className="rounded-[1.4rem] bg-[#F8F5EF] px-6 py-5">
+                  <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">
                     <p className="text-[1.2rem] font-semibold text-[#8B8B8B]">
                       아이디
                     </p>
@@ -335,7 +344,7 @@ const MyPage = () => {
                       {user?.userId?.trim() || '-'}
                     </p>
                   </div>
-                  <div className="rounded-[1.4rem] bg-[#F8F5EF] px-6 py-5">
+                  <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">
                     <p className="text-[1.2rem] font-semibold text-[#8B8B8B]">
                       이메일
                     </p>
@@ -343,7 +352,7 @@ const MyPage = () => {
                       {user?.email?.trim() || '-'}
                     </p>
                   </div>
-                  <div className="rounded-[1.4rem] bg-[#F8F5EF] px-6 py-5">
+                  <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">
                     <p className="text-[1.2rem] font-semibold text-[#8B8B8B]">
                       연락처
                     </p>
@@ -356,7 +365,7 @@ const MyPage = () => {
             )}
 
             {(activeMenu === '프로필' || activeMenu === '주문') && (
-              <section className="rounded-[2.2rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
                 <SectionHeader
                   title="최근 주문"
                   description="최근 주문 상태를 빠르게 확인할 수 있습니다."
@@ -366,7 +375,7 @@ const MyPage = () => {
 
                 <div className="mt-8 space-y-4">
                   {ordersQuery.isLoading ? (
-                    <div className="rounded-[1.4rem] bg-[#F8F5EF] px-6 py-8 text-[1.5rem] text-[#6D6D6D]">
+                    <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-8 text-[1.5rem] text-[#6D6D6D]">
                       주문 정보를 불러오는 중입니다.
                     </div>
                   ) : recentOrders.length ? (
@@ -379,7 +388,7 @@ const MyPage = () => {
                       />
                     ))
                   ) : (
-                    <div className="rounded-[1.4rem] bg-[#F8F5EF] px-6 py-8 text-[1.5rem] text-[#6D6D6D]">
+                    <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-8 text-[1.5rem] text-[#6D6D6D]">
                       최근 주문 내역이 없습니다.
                     </div>
                   )}
@@ -388,7 +397,7 @@ const MyPage = () => {
             )}
 
             {(activeMenu === '프로필' || activeMenu === '배송지') && (
-              <section className="rounded-[2.2rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
                 <SectionHeader
                   title="배송지 관리"
                   description="기본 배송지를 우선으로 정렬해 보여줍니다."
@@ -407,7 +416,7 @@ const MyPage = () => {
                       />
                     ))
                   ) : (
-                    <div className="rounded-[1.4rem] bg-[#F8F5EF] px-6 py-8 text-[1.5rem] text-[#6D6D6D]">
+                    <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-8 text-[1.5rem] text-[#6D6D6D]">
                       등록된 배송지가 없습니다.
                     </div>
                   )}
