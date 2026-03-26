@@ -1,9 +1,12 @@
 import { FiCheck } from 'react-icons/fi';
 
 import type { CartItem } from '../cart.types';
-import { formatWon, getItemTotalPrice, isItemFullySelected } from '../cart.utils';
+import {
+  formatWon,
+  getItemTotalPrice,
+  isItemFullySelected,
+} from '../cart.utils';
 import { CartOptionRow } from './cart-option-row';
-import { CartProductBottle } from './cart-product-bottle';
 
 type CartItemSectionProps = {
   item: CartItem;
@@ -47,25 +50,37 @@ export function CartItemSection({
         </div>
 
         <div className="flex gap-4 lg:pr-8">
-          <CartProductBottle tone={item.tone} />
+          <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-md bg-neutral-50">
+            <img
+              src={item.imageSrc}
+              alt={item.name}
+              className="h-full w-full object-contain"
+            />
+          </div>
           <div className="pt-2">
-            <h2 className="mb-1 text-[17px] leading-6 font-medium">{item.name}</h2>
-            <p className="text-sm text-neutral-500">{item.subtitle}</p>
+            <h2 className="title5 mb-1">{item.name}</h2>
+            <p className="caption3 text-neutral-500">{item.subtitle}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4 text-sm lg:contents">
           <div className="rounded-md bg-neutral-50 px-4 py-3 text-center lg:rounded-none lg:bg-transparent lg:px-2 lg:py-7">
-            <div className="mb-1 text-[12px] text-neutral-400 lg:hidden">포인트</div>
-            <div>{formatWon(item.point)}</div>
+            <div className="mb-1 text-[12px] text-neutral-400 lg:hidden">
+              포인트
+            </div>
+            <div className="caption3">{formatWon(item.point)}</div>
           </div>
           <div className="rounded-md bg-neutral-50 px-4 py-3 text-center lg:rounded-none lg:bg-transparent lg:px-2 lg:py-7">
-            <div className="mb-1 text-[12px] text-neutral-400 lg:hidden">할인</div>
-            <div>{formatWon(item.discount)}</div>
+            <div className="mb-1 text-[12px] text-neutral-400 lg:hidden">
+              할인
+            </div>
+            <div className="caption3">{formatWon(item.discount)}</div>
           </div>
           <div className="rounded-md bg-neutral-50 px-4 py-3 text-center lg:rounded-none lg:bg-transparent lg:px-2 lg:py-7">
-            <div className="mb-1 text-[12px] text-neutral-400 lg:hidden">결제금액</div>
-            <div>{formatWon(itemTotal)}</div>
+            <div className="mb-1 text-[12px] text-neutral-400 lg:hidden">
+              결제금액
+            </div>
+            <div className="caption3">{formatWon(itemTotal)}</div>
           </div>
         </div>
 

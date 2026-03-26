@@ -12,6 +12,7 @@ export type CartItem = {
   id: string;
   name: string;
   subtitle: string;
+  imageSrc: string;
   point: number;
   discount: number;
   tone: CartTone;

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 
 import type { CartItem } from './cart.types';
 import {
@@ -13,6 +13,11 @@ export const useCart = (initialItems: CartItem[]) => {
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(() =>
     getAllOptionIds(initialItems),
   );
+
+  useLayoutEffect(() => {
+    setItems(initialItems);
+    setSelectedOptionIds(getAllOptionIds(initialItems));
+  }, [initialItems]);
 
   const selectedItems = useMemo(
     () => buildSelectedItems(items, selectedOptionIds),

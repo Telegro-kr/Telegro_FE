@@ -1,13 +1,18 @@
+import LoadingPage from '@components/common/loading-page';
+import ErrorView from '@components/errors/error-view';
 import { FiCheck, FiTrash2 } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
-import { INITIAL_CART_ITEMS } from './cart.mock';
 import { CartEmptyState } from './components/cart-empty-state';
 import { CartItemSection } from './components/cart-item-section';
 import { CartStepIndicator } from './components/cart-step-indicator';
 import { CartSummary } from './components/cart-summary';
 import { useCart } from './use-cart';
+import { useCartItemsQuery } from './use-cart-items-query';
 
 const Cart = () => {
+  const navigate = useNavigate();
+  const { items: fetchedItems, isLoading, isError } = useCartItemsQuery();
   const {
     items,
     selectedOptionIds,
@@ -20,10 +25,18 @@ const Cart = () => {
     removeOption,
     removeItem,
     removeSelected,
-  } = useCart(INITIAL_CART_ITEMS);
+  } = useCart(fetchedItems);
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (isError) {
+    return <ErrorView onGoHome={() => navigate('/')} />;
+  }
 
   return (
-    <div className="min-h-screen px-5 py-10 text-[#111] sm:px-8 lg:px-12">
+    <div className="min-h-screen bg-[#f6f6f6] px-5 py-10 text-[#111] sm:px-8 lg:px-12">
       <div className="mx-auto w-full max-w-[1100px] bg-white px-5 py-8 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:px-8 lg:px-12 lg:py-12">
         <header className="mb-12 flex flex-col items-center">
           <h1 className="title1 mb-8">장바구니</h1>
