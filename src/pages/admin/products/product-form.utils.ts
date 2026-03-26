@@ -27,7 +27,7 @@ export const mapProductDetailToFormValues = (
   productName: product.productName?.trim() || '',
   category: product.category ?? ProductRequestDTOCategory.HEADSET,
   content: product.content?.trim() || '',
-  optionsText: (product.options ?? []).join('\n'),
+  optionsText: (product.options ?? []).join(', '),
   price: product.price?.trim() || '',
   priceBussiness: product.priceBussiness?.trim() || '',
   priceBest: product.priceBest?.trim() || '',
@@ -45,7 +45,7 @@ export const normalizeProductPayload = (
   category: values.category,
   content: values.content.trim(),
   options: values.optionsText
-    .split('\n')
+    .split(',')
     .map((option) => option.trim())
     .filter(Boolean),
   price: values.price.trim(),

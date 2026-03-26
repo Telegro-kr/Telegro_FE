@@ -94,9 +94,6 @@ const ProductForm = ({
   return (
     <section className="overflow-hidden rounded-[3rem] border border-[#EAEAEA] bg-white shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
       <div className="border-b border-[#F1F1F1] bg-[linear-gradient(135deg,#F3F8FF_0%,#FFFFFF_60%)] px-[2.4rem] py-[2.4rem] md:px-[3.2rem]">
-        <p className="text-[1.3rem] font-semibold uppercase tracking-[0.24em] text-[#2D6CDF]">
-          상품 관리
-        </p>
         <h1 className="mt-[0.8rem] text-[3rem] font-semibold tracking-[-0.04em] text-gray-900">
           {mode === 'edit' ? '상품 수정' : '상품 등록'}
         </h1>
@@ -152,12 +149,13 @@ const ProductForm = ({
           </Field>
 
           <Field label="옵션">
-            <textarea
+            <input
+              type="text"
               value={values.optionsText}
               onChange={(event) => onChange('optionsText', event.target.value)}
-              placeholder="한 줄에 하나씩 옵션을 입력해 주세요"
+              placeholder="콤마(,)로 옵션을 구분해 입력해 주세요"
               disabled={isSubmitting}
-              className="min-h-[10rem] rounded-[1.8rem] border border-[#E3E3E3] bg-white px-[1.6rem] py-[1.4rem] text-[1.5rem] leading-[1.7] text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#FF9B2F] focus:ring-4 focus:ring-[#FFE4C4] disabled:cursor-not-allowed disabled:bg-[#F7F7F7]"
+              className={inputClassName}
             />
           </Field>
         </div>
@@ -315,13 +313,7 @@ const ProductForm = ({
   );
 };
 
-const Field = ({
-  label,
-  children,
-}: {
-  label: string;
-  children: ReactNode;
-}) => (
+const Field = ({ label, children }: { label: string; children: ReactNode }) => (
   <div className="flex flex-col gap-[0.8rem]">
     <span className="text-[1.5rem] font-semibold tracking-[-0.03em] text-gray-900">
       {label}
