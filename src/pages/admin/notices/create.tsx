@@ -24,6 +24,11 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 
 const isHtmlEmpty = (value: string) => {
+  const hasMediaContent = /<(img|video|iframe|audio|object|embed)\b/i.test(value);
+  if (hasMediaContent) {
+    return false;
+  }
+
   const normalized = value
     .replace(/<br\s*\/?>/gi, '')
     .replace(/&nbsp;/gi, ' ')
@@ -61,6 +66,7 @@ const AdminNoticeCreate = () => {
   const isHydratedRef = useRef(false);
 
   const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const [noticeFiles, setNoticeFiles] = useState<NoticeFile[]>([]);
   const [error, setError] = useState('');
   const [isUploadingFiles, setIsUploadingFiles] = useState(false);
@@ -97,7 +103,9 @@ const AdminNoticeCreate = () => {
         fileUrl: file.fileUrl?.trim() || '',
       })),
     );
-    editorInstance.setHTML(detail.noticeContent?.trim() || '');
+    const nextContent = detail.noticeContent?.trim() || '';
+    editorInstance.setHTML(nextContent);
+    setContent(nextContent);
     isHydratedRef.current = true;
   }, [isEditMode, noticeDetailQuery.data?.data]);
 
@@ -177,7 +185,7 @@ const AdminNoticeCreate = () => {
     event.preventDefault();
 
     const editorInstance = editorRef.current?.getInstance();
-    const htmlContent = editorInstance?.getHTML() ?? '';
+    const htmlContent = editorInstance?.getHTML() ?? content;
 
     if (!title.trim()) {
       setError('제목을 입력해 주세요.');
@@ -340,6 +348,10 @@ const AdminNoticeCreate = () => {
                 initialEditType="wysiwyg"
                 useCommandShortcut
                 hooks={{ addImageBlobHook }}
+                onChange={() => {
+                  const nextContent = editorRef.current?.getInstance().getHTML() ?? '';
+                  setContent(nextContent);
+                }}
                 toolbarItems={[
                   ['heading', 'bold', 'italic', 'strike'],
                   ['hr', 'quote'],
