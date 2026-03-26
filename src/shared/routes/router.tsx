@@ -88,6 +88,7 @@ export const router = createBrowserRouter([
           { path: 'users/:userId', element: <AdminUserDet /> },
           { path: 'products/create', element: <AdminProductNew /> },
           { path: 'products', element: <AdminProducts /> },
+          { path: 'products/:productId/edit', element: <AdminProductNew /> },
           { path: 'products/:productId', element: <AdminProductDetail /> },
           { path: 'orders', element: <AdminOrders /> },
           { path: 'notices/create', element: <AdminNoticesNew /> },

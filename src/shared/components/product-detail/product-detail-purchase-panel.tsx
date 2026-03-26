@@ -16,6 +16,10 @@ type ProductDetailPurchasePanelProps = {
   onIncrease: () => void;
   onToggleLike: () => void;
   onShare: () => void;
+  isAdminMode?: boolean;
+  isDeletePending?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 const ProductDetailPurchasePanel = ({
@@ -31,6 +35,10 @@ const ProductDetailPurchasePanel = ({
   onIncrease,
   onToggleLike,
   onShare,
+  isAdminMode = false,
+  isDeletePending = false,
+  onEdit,
+  onDelete,
 }: ProductDetailPurchasePanelProps) => {
   return (
     <aside className="flex flex-col gap-6 pt-1">
@@ -47,7 +55,7 @@ const ProductDetailPurchasePanel = ({
         <button
           type="button"
           aria-label="공유하기"
-          title={isShareCopied ? '복사되었습니다.' : '공유하기'}
+          title={isShareCopied ? '복사되었습니다' : '공유하기'}
           onClick={onShare}
           className={cn(
             'flex-row-center mt-2 h-12 w-12 cursor-pointer rounded-full bg-gray-200 transition-all',
@@ -63,7 +71,7 @@ const ProductDetailPurchasePanel = ({
       <div className="h-px w-full bg-[#DFE4E8]" />
 
       <div className="flex items-center gap-2 text-[1rem] text-[#637381]">
-        <span className="font-semibold text-[#263238]">구매혜택</span>
+        <span className="font-semibold text-[#263238]">구매 적립</span>
         <span>{rewardPointLabel}</span>
         <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-[#AEB7C0] text-[0.75rem] leading-none text-[#7B8794]">
           ?
@@ -96,32 +104,47 @@ const ProductDetailPurchasePanel = ({
 
       <div className="flex items-end justify-between pt-5">
         <span className="text-[1.6rem] text-[#637381]">
-          총 상품금액({quantity}개)
+          총 상품 금액({quantity}개)
         </span>
         <strong className="text-[2.3rem] leading-none font-medium text-[#263238]">
           {totalPriceLabel}
         </strong>
       </div>
 
-      <div className="grid grid-cols-[1.15fr_1fr_0.8fr] gap-3 pt-3">
-        <ActionButton variant="primary">구매하기</ActionButton>
-        <ActionButton variant="secondary">장바구니</ActionButton>
-        <ActionButton
-          variant="ghost"
-          onClick={onToggleLike}
-          active={isLiked}
-          ariaPressed={isLiked}
-        >
-          <span className="flex cursor-pointer items-center gap-2">
-            {isLiked ? (
-              <IoHeart className="h-5 w-5 text-[#E53935]" />
-            ) : (
-              <IoHeartOutline className="h-5 w-5 text-[#263238]" />
-            )}
-            <span>{likeCount}</span>
-          </span>
-        </ActionButton>
-      </div>
+      {isAdminMode ? (
+        <div className="grid grid-cols-2 gap-3 pt-3">
+          <ActionButton variant="primary" onClick={onEdit}>
+            수정하기
+          </ActionButton>
+          <ActionButton
+            variant="danger"
+            onClick={onDelete}
+            disabled={isDeletePending}
+          >
+            {isDeletePending ? '삭제 중...' : '삭제하기'}
+          </ActionButton>
+        </div>
+      ) : (
+        <div className="grid grid-cols-[1.15fr_1fr_0.8fr] gap-3 pt-3">
+          <ActionButton variant="primary">구매하기</ActionButton>
+          <ActionButton variant="secondary">장바구니</ActionButton>
+          <ActionButton
+            variant="ghost"
+            onClick={onToggleLike}
+            active={isLiked}
+            ariaPressed={isLiked}
+          >
+            <span className="flex cursor-pointer items-center gap-2">
+              {isLiked ? (
+                <IoHeart className="h-5 w-5 text-[#E53935]" />
+              ) : (
+                <IoHeartOutline className="h-5 w-5 text-[#263238]" />
+              )}
+              <span>{likeCount}</span>
+            </span>
+          </ActionButton>
+        </div>
+      )}
     </aside>
   );
 };
@@ -151,12 +174,14 @@ const ActionButton = ({
   onClick,
   active = false,
   ariaPressed,
+  disabled = false,
 }: {
   children: ReactNode;
-  variant: 'primary' | 'secondary' | 'ghost';
+  variant: 'primary' | 'secondary' | 'ghost' | 'danger';
   onClick?: () => void;
   active?: boolean;
   ariaPressed?: boolean;
+  disabled?: boolean;
 }) => {
   const classes = {
     primary: 'bg-[#1F3138] border-[#1F3138] text-white',
@@ -164,6 +189,7 @@ const ActionButton = ({
     ghost: active
       ? 'bg-[#FFF1F1] border-[#F3B8B8] text-[#E53935]'
       : 'bg-[#F2F6F7] border-[#C9D2D9] text-[#263238]',
+    danger: 'bg-[#FFF5F5] border-[#F5C2C2] text-[#D64545]',
   };
 
   return (
@@ -171,8 +197,9 @@ const ActionButton = ({
       type="button"
       onClick={onClick}
       aria-pressed={ariaPressed}
+      disabled={disabled}
       className={cn(
-        'flex-row-center h-[4.8rem] cursor-pointer border text-[1.35rem] font-semibold transition-colors',
+        'flex-row-center h-[4.8rem] cursor-pointer border text-[1.35rem] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60',
         classes[variant],
       )}
     >

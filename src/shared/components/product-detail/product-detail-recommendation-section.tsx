@@ -1,11 +1,14 @@
 import { type RecommendationItem } from '@hooks/use-product-detail';
+import { Link } from 'react-router-dom';
 
 type ProductDetailRecommendationSectionProps = {
   recommendations: RecommendationItem[];
+  detailBasePath?: string;
 };
 
 const ProductDetailRecommendationSection = ({
   recommendations,
+  detailBasePath = '/products',
 }: ProductDetailRecommendationSectionProps) => {
   return (
     <section className="mt-24 border-t border-[#ECECEC] pt-10">
@@ -28,17 +31,27 @@ const ProductDetailRecommendationSection = ({
 
       <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-5">
         {recommendations.map((item) => (
-          <article key={item.id} className="flex flex-col gap-3">
-            <div className="overflow-hidden bg-[#F5F5F2]">
-              <img src={item.image} alt={item.title} className="aspect-[1/1] w-full object-cover" />
-            </div>
-            <div className="flex flex-col gap-1">
-              <strong className="line-clamp-2 text-[1.15rem] font-medium leading-[1.45] text-[#263238]">
-                {item.title}
-              </strong>
-              <span className="text-[1rem] text-[#7B8794]">{item.price}</span>
-            </div>
-          </article>
+          <Link
+            key={item.id}
+            to={`${detailBasePath}/${item.id}`}
+            className="group flex flex-col gap-3"
+          >
+            <article className="flex flex-col gap-3">
+              <div className="overflow-hidden bg-[#F5F5F2]">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="aspect-[1/1] w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <strong className="line-clamp-2 text-[1.15rem] font-medium leading-[1.45] text-[#263238] transition-colors group-hover:text-[#2457B8]">
+                  {item.title}
+                </strong>
+                <span className="text-[1rem] text-[#7B8794]">{item.price}</span>
+              </div>
+            </article>
+          </Link>
         ))}
       </div>
     </section>

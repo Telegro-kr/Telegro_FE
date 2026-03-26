@@ -3,8 +3,8 @@ import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import SearchBar from '@components/common/search-bar';
 import ProductSectionContainer from '@components/product-section/product-section-container';
 import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FiPlus } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 const AdminProducts = () => {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const AdminProducts = () => {
           onChange={setKeyword}
           onSearch={handleSearch}
           onRefresh={handleRefresh}
-          placeholder="찾으시는 상품의 이름을 입력해 주세요"
+          placeholder="찾으시는 상품명을 입력해 주세요"
           buttonText="검색하기"
           size="lg"
         />
