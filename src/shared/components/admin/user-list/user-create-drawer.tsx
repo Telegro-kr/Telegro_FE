@@ -1,8 +1,11 @@
 import {
   SignUpUserInfoDtoRole,
   type CompanySignUpDTO,
-  type SignUpUserInfoDtoRole as CompanyRole,
+  type SignUpUserInfoDtoRole as DrawerRole,
+  type UserRole,
+  type UserRequestDTO,
   useCreateCompany,
+  useUpdateUser,
 } from '@apis/telegro';
 import Icon from '@components/common/icon';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
@@ -11,12 +14,7 @@ import { cn } from '@utils/cn';
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import signupLogo from '/signup-logo.svg';
 
-type UserCreateDrawerProps = {
-  open: boolean;
-  onClose: () => void;
-};
-
-type CreateCompanyForm = {
+export type CreateCompanyForm = {
   username: string;
   userid: string;
   password: string;
@@ -32,6 +30,19 @@ type CreateCompanyForm = {
   zipCode: string;
   addressDetail: string;
   companyDescription: string;
+};
+
+export type UserDrawerInitialData = {
+  userId?: number;
+  role: DrawerRole;
+  form: CreateCompanyForm;
+};
+
+type UserCreateDrawerProps = {
+  open: boolean;
+  mode?: 'create' | 'edit';
+  initialData?: UserDrawerInitialData | null;
+  onClose: () => void;
 };
 
 type StepField = {
@@ -68,7 +79,7 @@ const POSTCODE_SCRIPT_ID = 'daum-postcode-script';
 const POSTCODE_SCRIPT_SRC =
   'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
 
-const ROLE_OPTIONS: Array<{ label: string; value: CompanyRole }> = [
+const ROLE_OPTIONS: Array<{ label: string; value: DrawerRole }> = [
   { label: 'Member', value: SignUpUserInfoDtoRole.MEMBER },
   { label: 'Dealer', value: SignUpUserInfoDtoRole.DEALER },
   { label: 'Best', value: SignUpUserInfoDtoRole.BEST },
@@ -225,7 +236,20 @@ const labelClass =
 const inputClass =
   "h-[5.6rem] w-full rounded-[1rem] border border-[#E9E9E9] bg-white px-[1.6rem] font-['Pretendard',sans-serif] text-[1.6rem] font-normal text-[#2B2B2B] outline-none transition placeholder:text-[#6D6D6D] focus:border-[#FFC633]";
 
-const getErrorMessage = (error: unknown) => {
+const buildRoadAddress = (data: DaumPostcodeData) => {
+  if (data.addressType !== 'R') {
+    return data.address;
+  }
+
+  const extras = [
+    data.bname,
+    data.apartment === 'Y' ? data.buildingName : '',
+  ].filter(Boolean);
+
+  return extras.length === 0 ? data.address : `${data.address} (${extras.join(', ')})`;
+};
+
+const getErrorMessage = (error: unknown, mode: 'create' | 'edit') => {
   if (
     typeof error === 'object' &&
     error !== null &&
@@ -253,39 +277,35 @@ const getErrorMessage = (error: unknown) => {
     return error.response.data.message;
   }
 
-  return '사용자 등록에 실패했습니다.';
+  return mode === 'edit'
+    ? '사용자 정보 수정에 실패했습니다.'
+    : '사용자 등록에 실패했습니다.';
 };
 
-const buildRoadAddress = (data: DaumPostcodeData) => {
-  if (data.addressType !== 'R') {
-    return data.address;
-  }
-
-  const extras = [
-    data.bname,
-    data.apartment === 'Y' ? data.buildingName : '',
-  ].filter(Boolean);
-
-  if (extras.length === 0) {
-    return data.address;
-  }
-
-  return `${data.address} (${extras.join(', ')})`;
-};
-
-const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
+const UserCreateDrawer = ({
+  open,
+  mode = 'create',
+  initialData,
+  onClose,
+}: UserCreateDrawerProps) => {
   const queryClient = useQueryClient();
   const createCompanyMutation = useCreateCompany();
+  const updateUserMutation = useUpdateUser();
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedRole, setSelectedRole] = useState<CompanyRole>(
+  const [selectedRole, setSelectedRole] = useState<DrawerRole>(
     SignUpUserInfoDtoRole.MEMBER,
   );
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
   const [isPostcodeReady, setIsPostcodeReady] = useState(false);
   const [form, setForm] = useState<CreateCompanyForm>(INITIAL_FORM);
+
+  const isEditMode = mode === 'edit';
+  const isSubmitting = createCompanyMutation.isPending || updateUserMutation.isPending;
 
   const resetDrawer = () => {
     setCurrentStep(1);
     setSelectedRole(SignUpUserInfoDtoRole.MEMBER);
+    setEditingUserId(null);
     setForm(INITIAL_FORM);
   };
 
@@ -319,9 +339,13 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
       return true;
     }
 
-    const hasEmptyRequiredField = stepConfig.fields.some(
-      (field) => field.required && !form[field.key].trim(),
-    );
+    const hasEmptyRequiredField = stepConfig.fields.some((field) => {
+      if (isEditMode && field.key === 'password') {
+        return false;
+      }
+
+      return field.required && !form[field.key].trim();
+    });
 
     if (hasEmptyRequiredField) {
       toastError('모든 필수 항목을 입력해 주세요.');
@@ -351,37 +375,71 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
       return;
     }
 
-    const payload: CompanySignUpDTO = {
-      signUpUserInfoDto: {
-        userid: form.userid.trim(),
-        username: form.username.trim(),
-        password: form.password,
-        phone: form.phone.trim(),
-        email: form.email.trim(),
-        role: selectedRole,
-        address: form.address.trim(),
-        addressDetail: form.addressDetail.trim(),
-        zipCode: form.zipCode.trim(),
-      },
-      company: {
-        managerName: form.managerName.trim(),
-        managerPhone: form.managerPhone.trim(),
-        companyName: form.companyName.trim(),
-        companyNumber: form.companyNumber.trim(),
-        companyType: form.companyType.trim(),
-        companyItem: form.companyItem.trim(),
-        companyDescription: form.companyDescription.trim(),
-      },
-    };
-
     try {
-      await createCompanyMutation.mutateAsync({ data: payload });
+      if (isEditMode) {
+        if (editingUserId == null) {
+          toastError('수정할 사용자 정보를 찾을 수 없습니다.');
+          return;
+        }
+
+        const payload: UserRequestDTO = {
+          user: {
+            username: form.username.trim(),
+            userId: form.userid.trim(),
+            ...(form.password.trim() ? { password: form.password } : {}),
+            role: selectedRole as UserRole,
+            phone: form.phone.trim(),
+            email: form.email.trim(),
+            address: form.address.trim(),
+            addressDetail: form.addressDetail.trim(),
+            zipCode: form.zipCode.trim(),
+          },
+          company: {
+            companyName: form.companyName.trim(),
+            managerName: form.managerName.trim(),
+            managerPhone: form.managerPhone.trim(),
+            companyNumber: form.companyNumber.trim(),
+            companyType: form.companyType.trim(),
+            companyItem: form.companyItem.trim(),
+            companyDescription: form.companyDescription.trim(),
+          },
+        };
+
+        await updateUserMutation.mutateAsync({ userId: editingUserId, data: payload });
+        toastSuccess('사용자 정보가 성공적으로 수정되었습니다.');
+      } else {
+        const payload: CompanySignUpDTO = {
+          signUpUserInfoDto: {
+            userid: form.userid.trim(),
+            username: form.username.trim(),
+            password: form.password,
+            phone: form.phone.trim(),
+            email: form.email.trim(),
+            role: selectedRole,
+            address: form.address.trim(),
+            addressDetail: form.addressDetail.trim(),
+            zipCode: form.zipCode.trim(),
+          },
+          company: {
+            managerName: form.managerName.trim(),
+            managerPhone: form.managerPhone.trim(),
+            companyName: form.companyName.trim(),
+            companyNumber: form.companyNumber.trim(),
+            companyType: form.companyType.trim(),
+            companyItem: form.companyItem.trim(),
+            companyDescription: form.companyDescription.trim(),
+          },
+        };
+
+        await createCompanyMutation.mutateAsync({ data: payload });
+        toastSuccess('사용자 정보가 성공적으로 등록되었습니다.');
+      }
+
       await queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-      toastSuccess('사용자 정보가 성공적으로 등록되었습니다.');
       resetDrawer();
       onClose();
     } catch (error) {
-      toastError(getErrorMessage(error));
+      toastError(getErrorMessage(error, mode));
     }
   };
 
@@ -435,15 +493,26 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
   useEffect(() => {
     if (!open) {
       resetDrawer();
+      return;
     }
-  }, [open]);
+
+    if (isEditMode && initialData) {
+      setCurrentStep(1);
+      setEditingUserId(initialData.userId ?? null);
+      setSelectedRole(initialData.role);
+      setForm(initialData.form);
+      return;
+    }
+
+    resetDrawer();
+  }, [initialData, isEditMode, open]);
 
   return (
     <>
       <button
         type="button"
         onClick={onClose}
-        aria-label="사용자 등록 닫기"
+        aria-label={isEditMode ? '사용자 수정 닫기' : '사용자 등록 닫기'}
         className={cn(
           'fixed inset-0 z-40 bg-black/10 backdrop-blur-[1px] transition-opacity duration-300',
           open ? 'opacity-100' : 'pointer-events-none opacity-0',
@@ -482,6 +551,12 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
                   rotate={180}
                 />
               </button>
+            </div>
+
+            <div className="pt-[2rem]">
+              <p className="font-['Pretendard',sans-serif] text-[2rem] font-semibold text-[#2B2B2B]">
+                {isEditMode ? '사용자 수정' : '사용자 등록'}
+              </p>
             </div>
 
             <div className="flex flex-col gap-[4rem] pt-[2rem]">
@@ -559,7 +634,11 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
                             type={field.type ?? 'text'}
                             value={form[field.key]}
                             onChange={handleFieldChange(field.key)}
-                            placeholder={field.placeholder}
+                            placeholder={
+                              isEditMode && field.key === 'password'
+                                ? '변경 시에만 입력해 주세요.'
+                                : field.placeholder
+                            }
                             readOnly={isAddress || isZipCode}
                             className={cn(
                               inputClass,
@@ -601,14 +680,10 @@ const UserCreateDrawer = ({ open, onClose }: UserCreateDrawerProps) => {
             <button
               type="button"
               onClick={isLastStep ? handleSubmit : handleNextStep}
-              disabled={createCompanyMutation.isPending}
+              disabled={isSubmitting}
               className="flex-1 rounded-[0.8rem] border border-[#F2F2F7] bg-[#FFC633] px-[2.4rem] py-[1.4rem] font-['Pretendard',sans-serif] text-[1.8rem] font-bold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isLastStep
-                ? createCompanyMutation.isPending
-                  ? '등록 중...'
-                  : '등록'
-                : '다음'}
+              {isLastStep ? (isSubmitting ? '처리 중...' : isEditMode ? '수정' : '등록') : '다음'}
             </button>
           </div>
         </footer>
