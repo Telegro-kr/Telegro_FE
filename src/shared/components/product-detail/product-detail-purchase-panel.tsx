@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+
 import { cn } from '@libs/cn';
 import { FiShare2 } from 'react-icons/fi';
 import { IoHeart, IoHeartOutline } from 'react-icons/io5';
@@ -14,6 +15,7 @@ type ProductDetailPurchasePanelProps = {
   totalPriceLabel: string;
   onDecrease: () => void;
   onIncrease: () => void;
+  onAddCart?: () => void;
   onToggleLike: () => void;
   onShare: () => void;
   isAdminMode?: boolean;
@@ -33,6 +35,7 @@ const ProductDetailPurchasePanel = ({
   totalPriceLabel,
   onDecrease,
   onIncrease,
+  onAddCart,
   onToggleLike,
   onShare,
   isAdminMode = false,
@@ -55,7 +58,7 @@ const ProductDetailPurchasePanel = ({
         <button
           type="button"
           aria-label="공유하기"
-          title={isShareCopied ? '복사되었습니다' : '공유하기'}
+          title={isShareCopied ? '복사되었습니다.' : '공유하기'}
           onClick={onShare}
           className={cn(
             'flex-row-center mt-2 h-12 w-12 cursor-pointer rounded-full bg-gray-200 transition-all',
@@ -127,7 +130,9 @@ const ProductDetailPurchasePanel = ({
       ) : (
         <div className="grid grid-cols-[1.15fr_1fr_0.8fr] gap-3 pt-3">
           <ActionButton variant="primary">구매하기</ActionButton>
-          <ActionButton variant="secondary">장바구니</ActionButton>
+          <ActionButton variant="secondary" onClick={onAddCart}>
+            장바구니
+          </ActionButton>
           <ActionButton
             variant="ghost"
             onClick={onToggleLike}

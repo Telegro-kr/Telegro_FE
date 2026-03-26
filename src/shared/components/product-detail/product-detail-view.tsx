@@ -1,13 +1,13 @@
 import { type ProductDetailResponseDTO } from '@apis/telegro';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
+import ProductDetailGallery from '@components/product-detail/product-detail-gallery';
+import ProductDetailPurchasePanel from '@components/product-detail/product-detail-purchase-panel';
+import ProductDetailRecommendationSection from '@components/product-detail/product-detail-recommendation-section';
+import ProductDetailTabs from '@components/product-detail/product-detail-tabs';
 import {
   type ProductTab,
   type RecommendationItem,
 } from '@hooks/use-product-detail';
-import ProductDetailGallery from '@components/product-detail/product-detail-gallery';
-import ProductDetailPurchasePanel from '@components/product-detail/product-detail-purchase-panel';
-import ProductDetailTabs from '@components/product-detail/product-detail-tabs';
-import ProductDetailRecommendationSection from '@components/product-detail/product-detail-recommendation-section';
 import { useRef } from 'react';
 
 type ProductDetailViewProps = {
@@ -30,6 +30,7 @@ type ProductDetailViewProps = {
   onSelectImage: (image: string) => void;
   onDecreaseQuantity: () => void;
   onIncreaseQuantity: () => void;
+  onAddCart?: () => void;
   onToggleDetail: () => void;
   onToggleLike: () => void;
   onShare: () => void;
@@ -57,6 +58,7 @@ const ProductDetailView = ({
   onSelectImage,
   onDecreaseQuantity,
   onIncreaseQuantity,
+  onAddCart,
   onToggleDetail,
   onToggleLike,
   onShare,
@@ -67,7 +69,7 @@ const ProductDetailView = ({
 
   return (
     <div ref={pageRef} className="min-h-screen bg-[#FBFBF8] text-gray-900">
-      <main className="mx-auto flex w-full max-w-[124rem] flex-col px-6 pt-10 pb-24">
+      <main className="mx-auto flex w-full max-w-[124rem] flex-col px-6 pb-24 pt-10">
         <div className="mb-8 flex items-center gap-3 text-[1.05rem] text-[#9CA3AF]">
           <span>Product</span>
           <span>/</span>
@@ -92,6 +94,7 @@ const ProductDetailView = ({
             totalPriceLabel={totalPriceLabel}
             onDecrease={onDecreaseQuantity}
             onIncrease={onIncreaseQuantity}
+            onAddCart={onAddCart}
             onToggleLike={onToggleLike}
             onShare={onShare}
             isAdminMode={isAdminMode}
@@ -111,9 +114,7 @@ const ProductDetailView = ({
                 onClick={onToggleDetail}
                 className="flex-row-center h-[4.8rem] w-full cursor-pointer gap-2 border-[2px] border-gray-600 bg-white text-[1.5rem] font-semibold text-[#263238] shadow-[0_8px_16px_rgba(38,50,56,0.08)] transition-colors hover:bg-gray-100"
               >
-                <span>
-                  {isDetailOpen ? '상품 상세 접기' : '상품 상세 보기'}
-                </span>
+                <span>{isDetailOpen ? '상품 상세 접기' : '상품 상세 보기'}</span>
                 <span className={isDetailOpen ? 'rotate-0' : 'rotate-180'}>
                   <ChevronUpIcon />
                 </span>
@@ -126,16 +127,14 @@ const ProductDetailView = ({
                     dangerouslySetInnerHTML={{ __html: product.content }}
                   />
                 ) : (
-                  <div className="text-[1.18rem] leading-[2] whitespace-pre-line text-gray-700">
+                  <div className="whitespace-pre-line text-[1.18rem] leading-[2] text-gray-700">
                     {product.content}
                   </div>
                 )
               ) : null}
             </>
           )}
-          {activeTab === 'review' ? (
-            <EmptyPanel title="No reviews yet." />
-          ) : null}
+          {activeTab === 'review' ? <EmptyPanel title="No reviews yet." /> : null}
           {activeTab === 'return' ? (
             <InfoPanel
               title="Returns and exchanges"
@@ -146,9 +145,7 @@ const ProductDetailView = ({
               ]}
             />
           ) : null}
-          {activeTab === 'qna' ? (
-            <EmptyPanel title="No questions yet." />
-          ) : null}
+          {activeTab === 'qna' ? <EmptyPanel title="No questions yet." /> : null}
         </section>
 
         <ProductDetailRecommendationSection
