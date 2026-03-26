@@ -6,7 +6,7 @@ const linkClass =
 const AdminLayout = () => {
   return (
     <div className="min-h-screen bg-white">
-      <header className="fixed top-0 z-10 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem]">
+      <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem]">
         <nav className="flex gap-[3rem] px-[3rem]">
           <Link to="/admin" className={linkClass}>
             Dashboard

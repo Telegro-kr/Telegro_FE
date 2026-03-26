@@ -47,7 +47,7 @@ const PublicHomeHeader = () => {
 
   return (
     <>
-      <header className="relative z-20 px-6 py-4 md:px-12 lg:px-16">
+      <header className="relative z-50 px-6 py-4 md:px-12 lg:px-16">
         <div
           className={[
             'mx-auto flex min-h-[8rem] max-w-[1440px] items-start justify-between py-2 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:min-h-[9.6rem]',
