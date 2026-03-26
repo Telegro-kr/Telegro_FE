@@ -6,7 +6,6 @@ import NoticeCard from '@components/notice/notice-card';
 import { useNoticeSection } from '@hooks/use-notice-section';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiPlus } from 'react-icons/fi';
 
 const AdminNotices = () => {
   const navigate = useNavigate();
@@ -34,21 +33,19 @@ const AdminNotices = () => {
       className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
     >
       <AdminProfileCard onMove={() => navigate('/')} />
+
       <div className="flex flex-col gap-[3.5rem]">
-        <div className="flex items-center gap-[2rem]">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <h1 className="title3 text-gray-900">공지사항</h1>
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={() => navigate('/admin/notices/create')}
-              aria-label="공지 등록"
-              title="공지 등록"
-              className="flex-row-center h-[4rem] w-[4rem] cursor-pointer rounded-full bg-[#f5f5f5] transition-colors hover:bg-[#E3E3E3]"
-            >
-              <FiPlus className="text-[2rem] text-gray-600" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/notices/create')}
+            className="inline-flex h-[5.2rem] items-center justify-center rounded-[1.5rem] border border-[#FFE2C0] bg-[linear-gradient(135deg,#FF9B2F_0%,#FFB652_100%)] px-[2rem] text-[1.5rem] font-semibold tracking-[-0.03em] text-white shadow-[0_16px_34px_rgba(255,155,47,0.24)] transition hover:-translate-y-0.5"
+          >
+            공지 등록
+          </button>
         </div>
+
         <SearchBar
           value={keyword}
           onChange={setKeyword}
@@ -83,6 +80,7 @@ const AdminNotices = () => {
           표시할 공지사항이 없습니다.
         </div>
       )}
+
       <ExploreScrollToTop targetRef={pageRef} />
     </div>
   );

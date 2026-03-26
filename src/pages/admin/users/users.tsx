@@ -46,10 +46,12 @@ const AdminUsers = () => {
   const [deleteTargetUser, setDeleteTargetUser] = useState<UserRow | null>(
     null,
   );
+
   const { roleCounts } = useUserList({
     page: 0,
     size: PAGE_SIZE,
   });
+
   const { users, totalPages, totalCount, isLoading, isError, refetch } =
     useUserList({
       page: currentPage - 1,
@@ -57,6 +59,7 @@ const AdminUsers = () => {
       filteredBy: appliedRoleFilter,
       searchKeyword: appliedSearchKeyword,
     });
+
   const deleteUserMutation = useDeleteUser();
 
   const selectedRoleLabel =
@@ -94,7 +97,7 @@ const AdminUsers = () => {
     try {
       await deleteUserMutation.mutateAsync({ userId: deleteTargetUser.id });
       setDeleteTargetUser(null);
-      toastSuccess('유저를 삭제했습니다.');
+      toastSuccess('사용자를 삭제했습니다.');
 
       if (users.length === 1 && currentPage > 1) {
         setCurrentPage((page) => page - 1);
@@ -104,7 +107,7 @@ const AdminUsers = () => {
       await refetch();
     } catch {
       setDeleteTargetUser(null);
-      toastError('유저 삭제에 실패했습니다.');
+      toastError('사용자 삭제에 실패했습니다.');
     }
   };
 
@@ -135,7 +138,7 @@ const AdminUsers = () => {
   return (
     <div
       ref={pageRef}
-      className="flex-col bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
+      className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
     >
       <div className="flex gap-8 sm:flex-col md:flex-row md:items-start md:justify-between">
         <AdminProfileCard onMove={() => navigate('/')} />
@@ -145,23 +148,21 @@ const AdminUsers = () => {
         />
       </div>
 
-      <div className="flex-col gap-[3.5rem]">
+      <div className="flex flex-col gap-[3.5rem]">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="flex items-center gap-[2rem]">
-            <h1 className="title3 text-gray-900">사용자 관리</h1>
-            <button
-              type="button"
-              onClick={() => setIsCreateDrawerOpen(true)}
-              aria-label="사용자 등록"
-              title="사용자 등록"
-              className="flex-row-center h-[4rem] w-[4rem] cursor-pointer rounded-full bg-[#f5f5f5] transition-colors hover:bg-[#E3E3E3]"
-            >
-              <FiPlus className="text-[2rem] text-gray-600" />
-            </button>
-          </div>
+          <h1 className="title3 text-gray-900">사용자 관리</h1>
           <span className="text-[1.6rem] text-[#7A7A7A]">
             총 {totalCount.toLocaleString()}명
           </span>
+          <button
+            type="button"
+            onClick={() => setIsCreateDrawerOpen(true)}
+            aria-label="?ъ슜???깅줉"
+            title="?ъ슜???깅줉"
+            className="flex-row-center h-[4rem] w-[4rem] cursor-pointer rounded-full bg-[#f5f5f5] transition-colors hover:bg-[#E3E3E3]"
+          >
+            <FiPlus className="text-[2rem] text-gray-600" />
+          </button>
         </div>
 
         <div ref={filterRef} className="relative">
@@ -209,7 +210,7 @@ const AdminUsers = () => {
           <LoadingPanel />
         ) : isError ? (
           <div className="rounded-[1.6rem] bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-red-500">
-            유저 목록을 불러오지 못했습니다.
+            사용자 목록을 불러오지 못했습니다.
           </div>
         ) : (
           <UserListTable
