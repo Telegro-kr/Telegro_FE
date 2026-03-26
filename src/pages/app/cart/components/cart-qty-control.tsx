@@ -12,23 +12,23 @@ export function CartQtyControl({
   onIncrease,
 }: CartQtyControlProps) {
   return (
-    <div className="inline-flex items-center overflow-hidden border border-neutral-200 bg-white text-sm">
+    <div className="inline-flex items-center overflow-hidden border border-neutral-200 bg-white text-[15px]">
       <button
         type="button"
         onClick={onDecrease}
-        className="flex h-9 w-9 items-center justify-center border-r border-neutral-200 text-neutral-500 hover:bg-neutral-50"
+        className="flex h-11 w-11 items-center justify-center border-r border-neutral-200 text-neutral-500 hover:bg-neutral-50"
       >
-        <FiMinus className="h-3.5 w-3.5" />
+        <FiMinus className="h-4 w-4" />
       </button>
-      <div className="flex h-9 min-w-10 items-center justify-center px-3 text-neutral-700">
+      <div className="flex h-11 min-w-12 items-center justify-center px-4 text-neutral-700">
         {value}
       </div>
       <button
         type="button"
         onClick={onIncrease}
-        className="flex h-9 w-9 items-center justify-center border-l border-neutral-200 text-neutral-500 hover:bg-neutral-50"
+        className="flex h-11 w-11 items-center justify-center border-l border-neutral-200 text-neutral-500 hover:bg-neutral-50"
       >
-        <FiPlus className="h-3.5 w-3.5" />
+        <FiPlus className="h-4 w-4" />
       </button>
     </div>
   );
