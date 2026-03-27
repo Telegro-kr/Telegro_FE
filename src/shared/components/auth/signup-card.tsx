@@ -15,7 +15,9 @@ type SignupCardProps = {
   step: number;
   isPostcodeReady: boolean;
   isSignupPending: boolean;
-  onFieldChange: (key: keyof SignupForm) => (event: ChangeEvent<HTMLInputElement>) => void;
+  onFieldChange: (
+    key: keyof SignupForm,
+  ) => (event: ChangeEvent<HTMLInputElement>) => void;
   onAddressSearch: () => void;
   onBack: () => void;
   onNext: () => void;
@@ -73,10 +75,23 @@ export const SignupCard = ({
       <AuthCardShell
         className={className}
         header={
-          <div className="flex items-center justify-between">
-            <img src={signupLogo} alt={COPY.altSignup} className="size-[5.6rem]" />
-            <button type="button" onClick={onBackToLogin} aria-label={COPY.backToLogin}>
-              <Icon name="signup-back" className="text-gray-200" size={4.8} rotate={180} />
+          <div className="flex items-center justify-between pt-[1rem]">
+            <img
+              src={signupLogo}
+              alt={COPY.altSignup}
+              className="size-[5.6rem]"
+            />
+            <button
+              type="button"
+              onClick={onBackToLogin}
+              aria-label={COPY.backToLogin}
+            >
+              <Icon
+                name="signup-back"
+                className="text-gray-200"
+                size={4.8}
+                rotate={180}
+              />
             </button>
           </div>
         }
@@ -165,7 +180,7 @@ export const SignupCard = ({
                     onChange={onFieldChange('zipCode')}
                     placeholder={COPY.searchZipCode}
                     autoComplete="postal-code"
-                    className="h-[4.2rem] rounded-[0.7rem] border border-[#E9E9E9] px-4 font-['Pretendard',sans-serif] text-[1.25rem] text-[#2B2B2B] outline-none transition placeholder:text-[#B7B7B7] focus:border-[#FFC633]"
+                    className="h-[4.2rem] rounded-[0.7rem] border border-[#E9E9E9] px-4 font-['Pretendard',sans-serif] text-[1.25rem] text-[#2B2B2B] transition outline-none placeholder:text-[#B7B7B7] focus:border-[#FFC633]"
                     readOnly
                   />
                   <AuthActionButton

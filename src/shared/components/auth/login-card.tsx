@@ -1,4 +1,9 @@
-﻿import { AuthActionButton, AuthCardShell, AuthField } from '@components/auth/auth-card';
+﻿import {
+  AuthActionButton,
+  AuthCardShell,
+  AuthField,
+} from '@components/auth/auth-card';
+import { IoClose } from 'react-icons/io5';
 import { type FormEvent } from 'react';
 
 type LoginCardProps = {
@@ -10,6 +15,7 @@ type LoginCardProps = {
   onPasswordChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onSignupClick: () => void;
+  onClose?: () => void;
 };
 
 const COPY = {
@@ -38,14 +44,28 @@ export const LoginCard = ({
   onPasswordChange,
   onSubmit,
   onSignupClick,
+  onClose,
 }: LoginCardProps) => {
   return (
     <form onSubmit={onSubmit} className="w-full">
       <AuthCardShell
         className={className}
+        topAction={
+          onClose ? (
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="로그인 폼 닫기"
+              className="inline-flex h-[3.6rem] w-[3.6rem] cursor-pointer items-center justify-center rounded-full text-[#666666] transition hover:bg-[#F5F5F5] hover:text-[#121212]"
+            >
+              <IoClose size={24} />
+            </button>
+          ) : null
+        }
         title={
           <>
-            <span className="title3 text-primary">Telegro</span> {COPY.titleSuffix}
+            <span className="title3 text-primary">Telegro</span>{' '}
+            {COPY.titleSuffix}
           </>
         }
         description={
@@ -58,10 +78,12 @@ export const LoginCard = ({
         footer={
           <div className="flex-col-center caption5 gap-1 text-center whitespace-nowrap text-gray-500">
             <p>
-              {COPY.termsLine1} <span className="underline">{COPY.termsService}</span>에
+              {COPY.termsLine1}{' '}
+              <span className="underline">{COPY.termsService}</span>에
             </p>
             <p>
-              <span className="underline">{COPY.termsPrivacy}</span> {COPY.termsLine2}
+              <span className="underline">{COPY.termsPrivacy}</span>{' '}
+              {COPY.termsLine2}
             </p>
           </div>
         }

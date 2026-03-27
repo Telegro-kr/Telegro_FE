@@ -38,8 +38,8 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f6f6] px-5 py-10 text-[#111] sm:px-8 lg:px-12">
-      <div className="mx-auto w-full max-w-[1100px] bg-white px-5 py-8 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:px-8 lg:px-12 lg:py-12">
+    <div className="min-h-screen px-5 py-10 text-[#111] sm:px-8 lg:px-12">
+      <div className="mx-auto w-full max-w-[1100px] bg-white px-5 py-8 sm:px-8 lg:px-12 lg:py-12">
         <header className="mb-12 flex flex-col items-center">
           <h1 className="title1 mb-8">장바구니</h1>
           <CartStepIndicator />
