@@ -76,7 +76,7 @@ const MyPage = () => {
     <section className="min-h-screen px-6 py-8 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-[120rem]">
         <div className="grid gap-6 lg:grid-cols-[28rem_minmax(0,1fr)]">
-          <aside className="h-fit overflow-hidden rounded-[1.6rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(249,245,238,0.98)_100%)] p-6 shadow-[0_24px_60px_rgba(22,22,22,0.07)]">
+          <aside className="h-fit overflow-hidden rounded-[1.6rem] border border-white/70 bg-white p-6">
             <div className="border-b border-[#EEE7DD] pb-6">
               <img
                 src="/my-profile.svg"
@@ -107,10 +107,10 @@ const MyPage = () => {
                     setActiveMenu(item);
                   }}
                   className={[
-                    'rounded-[0.9rem] px-5 py-4 text-left text-[1.5rem] font-semibold',
+                    'cursor-pointer rounded-[0.9rem] px-5 py-4 text-left text-[1.5rem] font-semibold transition-colors',
                     activeMenu === item
-                      ? 'bg-[#202020] text-white shadow-[0_14px_24px_rgba(22,22,22,0.18)]'
-                      : 'text-[#535353]',
+                      ? 'bg-primary/10 text-gray-900'
+                      : 'hover:bg-primary/15 text-gray-700 hover:text-gray-900',
                   ].join(' ')}
                 >
                   {item}
