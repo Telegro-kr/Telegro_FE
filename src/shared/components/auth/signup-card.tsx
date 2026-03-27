@@ -168,6 +168,7 @@ export const SignupCard = ({
                 onChange={onFieldChange('phone')}
                 placeholder={COPY.enterPhone}
                 autoComplete="tel"
+                inputMode="numeric"
               />
 
               <label className="flex flex-col gap-2">

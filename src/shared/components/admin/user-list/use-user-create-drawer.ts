@@ -9,6 +9,7 @@ import {
 } from '@apis/telegro';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
 import { useQueryClient } from '@tanstack/react-query';
+import { formatPhoneNumber } from '@utils/format';
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import {
   INITIAL_FORM,
@@ -75,7 +76,13 @@ export const useUserCreateDrawer = ({
   const handleFieldChange =
     (key: keyof CreateCompanyForm) =>
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setForm((prev) => ({ ...prev, [key]: event.target.value }));
+      setForm((prev) => ({
+        ...prev,
+        [key]:
+          key === 'phone' || key === 'managerPhone'
+            ? formatPhoneNumber(event.target.value)
+            : event.target.value,
+      }));
     };
 
   const handleAddressSearch = () => {
@@ -254,7 +261,11 @@ export const useUserCreateDrawer = ({
       setCurrentStep(1);
       setEditingUserId(initialData.userId ?? null);
       setSelectedRole(initialData.role);
-      setForm(initialData.form);
+      setForm({
+        ...initialData.form,
+        phone: formatPhoneNumber(initialData.form.phone),
+        managerPhone: formatPhoneNumber(initialData.form.managerPhone),
+      });
       return;
     }
 

@@ -146,7 +146,7 @@ const MyPage = () => {
             </div>
 
             {activeMenu === '프로필' ? (
-              <section className="rounded-[10px] border border-white/70 bg-white/85 px-8 py-8">
+              <section className="relative rounded-[10px] border border-white/70 bg-white/85 px-8 py-8">
                 <SectionHeader
                   title="계정 정보"
                   description="가입한 기본 정보를 확인할 수 있습니다."

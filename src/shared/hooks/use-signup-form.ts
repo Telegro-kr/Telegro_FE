@@ -1,5 +1,6 @@
 ﻿import { toastError, toastSuccess } from '@components/common/toast/toast';
 import { useAuth } from '@hooks/use-auth';
+import { formatPhoneNumber } from '@utils/format';
 import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
 
 export type SignupForm = {
@@ -138,7 +139,10 @@ export const useSignupForm = ({ onSignupSuccess }: UseSignupFormOptions) => {
   const canSubmit = Boolean(firstStepValid && secondStepValid);
 
   const handleFieldChange = (key: keyof SignupForm) => (event: ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({ ...prev, [key]: event.target.value }));
+    setForm((prev) => ({
+      ...prev,
+      [key]: key === 'phone' ? formatPhoneNumber(event.target.value) : event.target.value,
+    }));
   };
 
   const handleStepNext = () => {

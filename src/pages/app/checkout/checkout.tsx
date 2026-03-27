@@ -11,7 +11,7 @@ import {
 } from '@apis/telegro';
 import { verifyPayment } from '@apis/verifyPayment';
 import { getStoredUserRole } from '@state/session';
-import { getTodayDate } from '@utils/format';
+import { formatPhoneNumber, getTodayDate } from '@utils/format';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -222,7 +222,7 @@ const Checkout = () => {
   const addressList = myPageQuery.data?.data?.addressList ?? [];
   const point = myPageQuery.data?.data?.point ?? 0;
   const userName = myPageQuery.data?.data?.userName?.trim() ?? '';
-  const userPhone = myPageQuery.data?.data?.phone?.trim() ?? '';
+  const userPhone = formatPhoneNumber(myPageQuery.data?.data?.phone?.trim() ?? '');
   const userEmail = myPageQuery.data?.data?.email?.trim() ?? '';
 
   useEffect(() => {
@@ -261,7 +261,9 @@ const Checkout = () => {
     setFormData((prev) => ({
       ...prev,
       userName: address.recipientName?.trim() || prev.userName || userName,
-      phoneNumber: address.phoneNumber?.trim() || prev.phoneNumber || userPhone,
+      phoneNumber: formatPhoneNumber(
+        address.phoneNumber?.trim() || prev.phoneNumber || userPhone,
+      ),
       address: address.address?.trim() || '',
       postalCode: address.zipcode?.trim() || '',
       detailedAddress: address.addressDetail?.trim() || '',
@@ -688,8 +690,12 @@ const Checkout = () => {
                 <input
                   value={formData.phoneNumber}
                   onChange={(event) =>
-                    setFormData((prev) => ({ ...prev, phoneNumber: event.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      phoneNumber: formatPhoneNumber(event.target.value),
+                    }))
                   }
+                  inputMode="numeric"
                   placeholder="연락처"
                   className="rounded-[1.2rem] border border-neutral-300 px-4 py-4 text-[1.5rem]"
                 />

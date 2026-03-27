@@ -7,6 +7,7 @@ import {
 import LoadingPage from '@components/common/loading-page';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
 import { useQueryClient } from '@tanstack/react-query';
+import { formatPhoneNumber } from '@utils/format';
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
@@ -52,6 +53,7 @@ function Field({
         name={name}
         value={value}
         onChange={onChange}
+        inputMode={name === 'phone' ? 'numeric' : undefined}
         placeholder={placeholder}
         className="focus:border-primary mt-3 h-[5.6rem] w-full rounded-[1.2rem] border border-gray-300 px-5 text-[1.5rem] text-[#1F1F1F] transition-colors outline-none placeholder:text-gray-500"
       />
@@ -81,7 +83,7 @@ const MyEditPage = () => {
       username: user.userName?.trim() ?? '',
       userId: user.userId?.trim() ?? '',
       email: user.email?.trim() ?? '',
-      phone: user.phone?.trim() ?? '',
+      phone: formatPhoneNumber(user.phone?.trim() ?? ''),
       password: '',
     });
   }, [myPageQuery.data]);
@@ -91,7 +93,7 @@ const MyEditPage = () => {
 
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === 'phone' ? formatPhoneNumber(value) : value,
     }));
   };
 

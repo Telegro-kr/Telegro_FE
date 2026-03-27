@@ -13,6 +13,36 @@ const parseNumericValue = (value: number | string | null | undefined): number =>
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
+const PHONE_DIGITS_MAX_LENGTH = 11;
+
+export const getPhoneDigits = (value: string | null | undefined): string => {
+  return (value ?? '').replace(/\D/g, '').slice(0, PHONE_DIGITS_MAX_LENGTH);
+};
+
+export const formatPhoneNumber = (value: string | null | undefined): string => {
+  const digits = getPhoneDigits(value);
+
+  if (!digits) return '';
+
+  if (digits.startsWith('02')) {
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 5) return `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    if (digits.length <= 9) {
+      return `${digits.slice(0, 2)}-${digits.slice(2, digits.length - 4)}-${digits.slice(-4)}`;
+    }
+
+    return `${digits.slice(0, 2)}-${digits.slice(2, 6)}-${digits.slice(6)}`;
+  }
+
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  if (digits.length <= 10) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, digits.length - 4)}-${digits.slice(-4)}`;
+  }
+
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+};
+
 export const normalizePriceValue = (
   value: number | string | null | undefined,
 ): number => {
