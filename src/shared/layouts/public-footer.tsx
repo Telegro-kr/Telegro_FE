@@ -1,73 +1,121 @@
 import logoImage from '@/assets/images/Landing/logo.svg';
 
+const sectionTitleClass =
+  "font-['Pretendard',sans-serif] text-[1.3rem] font-semibold tracking-[0.08em] text-[#6b7280] uppercase";
+
+const sectionBodyClass =
+  "font-['Pretendard',sans-serif] text-[1.45rem] leading-[1.8] text-[#374151]";
+
 const PublicFooter = () => {
   return (
-    <footer className="relative z-10 bg-[rgba(9,9,9,0.8)] px-6 py-12 text-white md:px-12 lg:px-16">
-      <div className="mx-auto max-w-[1440px] space-y-8">
-        <div className="flex items-start justify-between gap-8 lg:flex-row lg:items-center">
-          <div className="flex items-center gap-3">
-            <div className="flex h-[4.2rem] w-[4.2rem] items-center justify-center rounded-full bg-[#c1c7cd]">
-              <img src={logoImage} alt="Telegro logo" className="h-[3.4rem] w-[3.4rem]" />
-            </div>
-            <span className="font-['Roboto',sans-serif] text-[2.4rem] font-bold text-[#c1c7cd]">
-              Telegro
-            </span>
-          </div>
-
-          <div className="flex w-full gap-4 sm:flex-row lg:ml-12 lg:w-auto lg:max-w-[60rem] lg:flex-1">
-            <div className="flex flex-1 items-center gap-2 border-b border-[#c1c7cd] bg-[#f2f4f8] px-4 py-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z"
-                  stroke="rgba(9,9,9,0.8)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M22 6L12 13L2 6"
-                  stroke="rgba(9,9,9,0.8)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <input
-                type="email"
-                placeholder="Enter your email to get the latest news..."
-                className="flex-1 bg-transparent font-['Roboto',sans-serif] text-[1.5rem] text-[rgba(9,9,9,0.8)] outline-none placeholder:text-[rgba(9,9,9,0.45)]"
+    <footer className="border-t border-[#e5e7eb] bg-[#f7f8fa] px-6 py-10 text-[#121212] md:px-12 lg:px-16">
+      <div className="mx-auto max-w-[1440px]">
+        <div className="flex gap-8 border-b border-[#e5e7eb] pb-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <img
+                src={logoImage}
+                alt="Telegro logo"
+                className="h-[3.5rem] w-[3.5rem] rounded-full border border-[#e5e7eb]"
               />
+              <div>
+                <p className="font-['Pretendard',sans-serif] text-[2rem] font-semibold tracking-[-0.02em]">
+                  Telegro
+                </p>
+                <p className="font-['Pretendard',sans-serif] text-[1.35rem] text-[#6b7280]">
+                  텔레그로 공식 스토어
+                </p>
+              </div>
             </div>
-            <button
-              type="button"
-              className="border-2 border-[#ffc633] bg-[#ffc633] px-6 py-3 font-['Roboto',sans-serif] text-[1.6rem] font-medium whitespace-nowrap text-[#121212] transition-colors hover:bg-[#ffb700]"
-            >
-              Subscribe
-            </button>
+          </div>
+
+          <div className="w-full max-w-[44rem]">
+            <div className="flex gap-3 sm:flex-row">
+              <a
+                href="mailto:ykjroom@naver.com"
+                className="flex min-h-[5.2rem] flex-1 items-center gap-3 rounded-[10px] border border-[#d1d5db] bg-white px-4"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="shrink-0 text-[#6b7280]"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 5H20C20.5523 5 21 5.44772 21 6V18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M21 7L12.5657 13.1195C12.215 13.3741 11.785 13.3741 11.4343 13.1195L3 7"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <div className="min-w-0">
+                  <p className="font-['Pretendard',sans-serif] text-[1.2rem] text-[#9ca3af]">
+                    메일 문의
+                  </p>
+                  <p className="truncate font-['Pretendard',sans-serif] text-[1.45rem] text-[#111827]">
+                    ykjroom@naver.com
+                  </p>
+                </div>
+              </a>
+              <a
+                href="mailto:ykjroom@naver.com"
+                className="inline-flex min-h-[5.2rem] items-center justify-center rounded-[10px] border border-[#e5e7eb] bg-white px-5 font-['Pretendard',sans-serif] text-[1.45rem] font-medium text-[#111827] transition-colors hover:bg-[#f3f4f6]"
+              >
+                메일 보내기
+              </a>
+            </div>
           </div>
         </div>
 
-        <div className="h-px bg-[#c1c7cd]" />
+        <div className="grid gap-8 py-8 md:grid-cols-2 xl:grid-cols-[1fr_1.5fr_1fr]">
+          <section className="space-y-3">
+            <p className={sectionTitleClass}>Company</p>
+            <div className={sectionBodyClass}>
+              <p>텔레그로(서연전자)</p>
+              <p>대표자명: 연경진</p>
+              <p>사업자 등록번호: 215-18-12286</p>
+              <p>통신판매업: 제 2024-서울광진-1511호</p>
+              <p>고객센터: 070-4111-5733</p>
+            </div>
+          </section>
 
-        <div className="space-y-4">
-          <p className="font-['Noto_Sans_KR',sans-serif] text-[1.6rem] font-bold">
-            텔레그로(서연전자)
-          </p>
-          <div className="space-y-2 font-['Noto_Sans_KR',sans-serif] text-[1.5rem] font-medium text-[#e8e8e8]">
-            <p>주소: 서울특별시 광진구 광나루로56길 85 테크노마트 21 8층 A30, 31호</p>
-            <p>고객센터: 070-4111-5733</p>
-            <p>
-              A/S 물류배송지: 경기도 남양주시 오남읍 양지로281번길 101로젠택배 평내영업소(서연전자)
-            </p>
-            <p>사업자 등록번호: 215-18-12286</p>
-          </div>
+          <section className="space-y-3">
+            <p className={sectionTitleClass}>Address</p>
+            <div className={sectionBodyClass}>
+              <p>
+                주소: 서울특별시 광진구 광나루로56길 85 테크노마트 21 8층 A30,
+                31호
+              </p>
+              <p>
+                A/S 물류배송지: 경기도 남양주시 오남읍 양지로281번길 101
+                로젠택배 평내영업소(서연전자)
+              </p>
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <p className={sectionTitleClass}>Notice</p>
+            <div className={sectionBodyClass}>
+              <p>문의 및 고객 응대는 운영 시간 내 순차적으로 안내드립니다.</p>
+              <p>A/S 및 물류 관련 발송은 상기 배송지 정보를 확인해 주세요.</p>
+            </div>
+          </section>
         </div>
 
-        <div className="h-px bg-[#c1c7cd]" />
-
-        <p className="font-['Roboto',sans-serif] text-[1.3rem] text-[#e8e8e8]">
-          Telegro @ 2024. All rights reserved.
-        </p>
+        <div className="flex flex-col gap-2 border-t border-[#e5e7eb] pt-5 font-['Pretendard',sans-serif] text-[1.3rem] text-[#9ca3af] md:flex-row md:items-center md:justify-between">
+          <p>Telegro © 2024. All rights reserved.</p>
+          <p>Telegro 공식 스토어</p>
+        </div>
       </div>
     </footer>
   );
