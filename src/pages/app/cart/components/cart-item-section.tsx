@@ -16,6 +16,8 @@ type CartItemSectionProps = {
   onUpdateQuantity: (optionId: string, delta: number) => void;
   onRemoveOption: (optionId: string) => void;
   onRemoveItem: (itemId: string) => void;
+  onAddOption: (itemId: string) => void;
+  onPurchaseItem: (itemId: string) => void;
 };
 
 export function CartItemSection({
@@ -26,6 +28,8 @@ export function CartItemSection({
   onUpdateQuantity,
   onRemoveOption,
   onRemoveItem,
+  onAddOption,
+  onPurchaseItem,
 }: CartItemSectionProps) {
   const itemTotal = getItemTotalPrice(item);
   const itemSelected = isItemFullySelected(item, selectedOptionIds);
@@ -87,12 +91,14 @@ export function CartItemSection({
         <div className="flex gap-2 lg:flex-col lg:items-stretch lg:justify-start lg:px-4 lg:pt-1">
           <button
             type="button"
+            onClick={() => onAddOption(item.id)}
             className="caption4 h-10 border border-neutral-300 px-4 hover:bg-neutral-50"
           >
             옵션추가
           </button>
           <button
             type="button"
+            onClick={() => onPurchaseItem(item.id)}
             className="caption4 h-10 bg-black px-4 text-white hover:bg-neutral-800"
           >
             바로 구매

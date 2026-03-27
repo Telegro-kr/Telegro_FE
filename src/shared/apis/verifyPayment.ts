@@ -8,11 +8,14 @@ interface VerifiedPayment {
   buyer_name: string;
 }
 
-export const verifyPayment = async (imp_uid: string): Promise<VerifiedPayment | null> => {
+export const verifyPayment = async (
+  imp_uid: string,
+): Promise<VerifiedPayment | null> => {
   try {
     const paymentData = await getPaymentInfo(imp_uid);
 
-    const { vbank_name, vbank_num, vbank_holder, vbank_date, buyer_name } = paymentData;
+    const { vbank_name, vbank_num, vbank_holder, vbank_date, buyer_name } =
+      paymentData;
 
     return {
       vbank_name,
@@ -22,7 +25,7 @@ export const verifyPayment = async (imp_uid: string): Promise<VerifiedPayment | 
       buyer_name,
     };
   } catch (error) {
-    console.error('결제 정보 조회 실패:', error);
+    console.error('결제 정보 조회에 실패했습니다:', error);
     return null;
   }
 };

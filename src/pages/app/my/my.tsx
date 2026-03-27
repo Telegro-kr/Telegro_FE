@@ -1,6 +1,7 @@
 import type { DeliveryAddressDetailDTO, OrderDetailDTO } from '@apis/telegro';
 import { useGetMyPage, useGetOrders } from '@apis/telegro';
 import LoadingPage from '@components/common/loading-page';
+import { getOrderStatusLabel } from '@constants/orderStatus';
 import { formatNumber } from '@utils/format';
 import { FiChevronRight, FiEdit2 } from 'react-icons/fi';
 import { useState } from 'react';
@@ -131,7 +132,7 @@ function SummaryCard({
 
 function OrderRow({ order }: { order: OrderDetailDTO }) {
   const statusLabel = order.orderStatus
-    ? (orderStatusLabels[order.orderStatus] ?? order.orderStatus)
+    ? getOrderStatusLabel(order.orderStatus)
     : '상태 확인 중';
 
   return (

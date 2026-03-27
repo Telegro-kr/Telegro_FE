@@ -1,5 +1,6 @@
-import { useGetOrders } from '@apis/telegro';
 import type { OrderDetailDTO } from '@apis/telegro';
+import { useGetOrders } from '@apis/telegro';
+import { getOrderStatusLabel } from '@constants/orderStatus';
 import type { OrderRow, OrderStatusValue } from '@components/order/order-list-table';
 import { formatNumber } from '@utils/format';
 import { useMemo } from 'react';
@@ -13,15 +14,6 @@ type UseOrderListParams = {
 };
 
 const DEFAULT_PAGE_SIZE = 10000;
-
-const ORDER_STATUS_LABELS: Record<string, string> = {
-  ORDER_CREATED: '주문 생성',
-  ORDER_COMPLETED: '주문 완료',
-  PAYMENT_COMPLETED: '결제 완료',
-  ORDER_CANCELLED: '주문 취소',
-  SHIPPING: '배송 중',
-  DELIVERY_COMPLETED: '배송 완료',
-};
 
 const formatPrice = (value?: number | null) => {
   if (value === undefined || value === null) {
@@ -90,14 +82,6 @@ const getCustomerInfo = (order: OrderDetailDTO) => {
   return order.userInfo?.username?.trim() || '-';
 };
 
-const getStatusLabel = (order: OrderDetailDTO) => {
-  if (!order.orderStatus) {
-    return '-';
-  }
-
-  return ORDER_STATUS_LABELS[order.orderStatus] ?? order.orderStatus;
-};
-
 const getStatusValue = (order: OrderDetailDTO): OrderStatusValue => {
   return (order.orderStatus as OrderStatusValue | undefined) ?? 'ORDER_CREATED';
 };
@@ -140,7 +124,7 @@ export const useOrderList = ({
             : undefined,
       orderInfo: getOrderInfo(order),
       customerInfo: getCustomerInfo(order),
-      statusLabel: getStatusLabel(order),
+      statusLabel: getOrderStatusLabel(order.orderStatus),
       statusValue: getStatusValue(order),
     }));
   }, [orderQuery.data?.data?.orders]);

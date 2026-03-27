@@ -1,13 +1,17 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
 import { cn } from '@utils/cn';
+
 import NotificationCard, { type NotificationItem } from './notification-card';
 
 type NotificationDrawerProps = {
   open: boolean;
   onClose: () => void;
+  notifications?: NotificationItem[];
+  onNotificationsChange?: (items: NotificationItem[]) => void;
 };
 
-const INITIAL_NOTIFICATIONS: NotificationItem[] = [
+export const DEFAULT_NOTIFICATION_ITEMS: NotificationItem[] = [
   {
     id: 1,
     category: 'notice',
@@ -61,14 +65,21 @@ const ChevronRightIcon = ({ className = '' }: { className?: string }) => {
   );
 };
 
-const NotificationDrawer = ({ open, onClose }: NotificationDrawerProps) => {
-  const [notifications, setNotifications] = useState<NotificationItem[]>(
-    INITIAL_NOTIFICATIONS,
-  );
+const NotificationDrawer = ({
+  open,
+  onClose,
+  notifications,
+  onNotificationsChange,
+}: NotificationDrawerProps) => {
+  const [internalNotifications, setInternalNotifications] = useState<
+    NotificationItem[]
+  >(DEFAULT_NOTIFICATION_ITEMS);
+
+  const resolvedNotifications = notifications ?? internalNotifications;
 
   const unreadCount = useMemo(
-    () => notifications.filter((item) => !item.isRead).length,
-    [notifications],
+    () => resolvedNotifications.filter((item) => !item.isRead).length,
+    [resolvedNotifications],
   );
 
   useEffect(() => {
@@ -92,8 +103,18 @@ const NotificationDrawer = ({ open, onClose }: NotificationDrawerProps) => {
     };
   }, [open, onClose]);
 
+  const handleNotificationsChange = (nextItems: NotificationItem[]) => {
+    if (notifications === undefined) {
+      setInternalNotifications(nextItems);
+    }
+
+    onNotificationsChange?.(nextItems);
+  };
+
   const handleRemove = (id: number) => {
-    setNotifications((prev) => prev.filter((item) => item.id !== id));
+    handleNotificationsChange(
+      resolvedNotifications.filter((item) => item.id !== id),
+    );
   };
 
   return (
@@ -103,7 +124,7 @@ const NotificationDrawer = ({ open, onClose }: NotificationDrawerProps) => {
         aria-label="알림 패널 닫기"
         onClick={onClose}
         className={cn(
-          'fixed inset-0 z-40 bg-black/10 backdrop-blur-[1px] transition-opacity duration-300',
+          'fixed inset-0 z-50 bg-black/10 backdrop-blur-[1px] transition-opacity duration-300',
           open ? 'opacity-100' : 'pointer-events-none opacity-0',
         )}
       />
@@ -137,8 +158,8 @@ const NotificationDrawer = ({ open, onClose }: NotificationDrawerProps) => {
 
           <div className="flex-1 overflow-y-auto px-9 pb-10">
             <div className="space-y-5">
-              {notifications.length > 0 ? (
-                notifications.map((item) => (
+              {resolvedNotifications.length > 0 ? (
+                resolvedNotifications.map((item) => (
                   <NotificationCard
                     key={item.id}
                     item={item}

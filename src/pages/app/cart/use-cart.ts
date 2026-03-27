@@ -220,6 +220,17 @@ export const useCart = (initialItems: CartItem[]) => {
     }
   };
 
+  const addOption = (itemId: string) => {
+    const targetItem = items.find((item) => item.id === itemId);
+
+    if (!targetItem?.productId) {
+      toastError('상품 상세 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    navigate(`/products/${targetItem.productId}`);
+  };
+
   const purchase = async (optionIds: string[]) => {
     if (!optionIds.length) {
       toastError('구매할 상품을 선택해주세요.');
@@ -253,6 +264,11 @@ export const useCart = (initialItems: CartItem[]) => {
     removeOption,
     removeItem,
     removeSelected,
+    addOption,
+    purchaseItem: (itemId: string) => {
+      const targetItem = items.find((item) => item.id === itemId);
+      return purchase(targetItem?.options.map((option) => option.id) ?? []);
+    },
     purchaseSelected: () => purchase(selectedOptionIds),
     purchaseAll: () => purchase(getAllOptionIds(items)),
   };

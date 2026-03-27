@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export interface PaymentInfo {
@@ -10,10 +11,11 @@ export interface PaymentInfo {
 }
 
 export const getPaymentInfo = async (impUid: string): Promise<PaymentInfo> => {
-  const token = localStorage.getItem('token');
+  const token =
+    localStorage.getItem('accessToken') || localStorage.getItem('token');
 
   if (!token) {
-    throw new Error('토큰이 존재하지 않습니다');
+    throw new Error('액세스 토큰이 없습니다.');
   }
 
   const { data } = await axios.post<{ data: PaymentInfo }>(

@@ -1,6 +1,33 @@
-// 숫자를 천 단위로 포맷 (예: 1000 -> 1,000)
+const parseNumericValue = (value: number | string | null | undefined): number => {
+  if (value === undefined || value === null) {
+    return 0;
+  }
+
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  const normalized = value.replace(/[,\s원]/g, '');
+  const parsed = Number(normalized);
+
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+export const normalizePriceValue = (
+  value: number | string | null | undefined,
+): number => {
+  const parsed = parseNumericValue(value);
+
+  return Number.isInteger(parsed) ? parsed : parsed;
+};
+
+// 숫자를 천 단위로 포맷
 export const formatNumber = (value: number | string | null | undefined): string => {
-  return value !== undefined && value !== null ? Number(value).toLocaleString() : '0';
+  return parseNumericValue(value).toLocaleString('ko-KR');
+};
+
+export const formatPrice = (value: number | string | null | undefined): string => {
+  return `${formatNumber(normalizePriceValue(value))}원`;
 };
 
 // 날짜를 YYYY-MM-DD hh:mm:ss 형태로 포맷

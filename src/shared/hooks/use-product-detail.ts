@@ -1,5 +1,6 @@
 import { type ProductDetailResponseDTO } from '@apis/telegro';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
+import { formatNumber, formatPrice, normalizePriceValue } from '@utils/format';
 import { useEffect, useMemo, useState } from 'react';
 
 export type RecommendationItem = {
@@ -22,7 +23,7 @@ const DEFAULT_PRODUCT: ProductDetailResponseDTO = {
   options: ['기본 구성', '1개'],
   category: 'ACCESSORY',
   content:
-    '휴대가 간편한 샘플 상품 설명입니다. 실제 응답이 없을 때도 화면 구조를 확인할 수 있도록 기본 텍스트를 제공합니다.',
+    '대표 상품 설명입니다. 실제 응답이 없을 때도 화면 구조를 확인할 수 있도록 기본 텍스트를 제공합니다.',
   price: '24,000',
   priceBussiness: '22,000',
   priceBest: '21,000',
@@ -55,16 +56,15 @@ export const useProductDetail = ({
   const [selectedImage, setSelectedImage] = useState(product.coverImage ?? '');
 
   const basePrice = useMemo(() => {
-    const numeric = (product.price ?? '24,000').replace(/[,\s원]/g, '');
-    return Number(numeric) || 24000;
+    return normalizePriceValue(product.price ?? '24,000') || 24000;
   }, [product.price]);
 
   const totalPriceLabel = useMemo(
-    () => `${(basePrice * quantity).toLocaleString()}원`,
+    () => formatPrice(basePrice * quantity),
     [basePrice, quantity],
   );
   const rewardPointLabel = useMemo(
-    () => `${(1000 * quantity).toLocaleString()} 포인트 적립 예정`,
+    () => `${formatNumber(1000 * quantity)} 포인트 적립 예정`,
     [quantity],
   );
 
@@ -102,7 +102,7 @@ export const useProductDetail = ({
       }
 
       setIsShareCopied(true);
-      toastSuccess('복사되었습니다.');
+      toastSuccess('복사되었습니다');
     } catch {
       toastError('복사에 실패했습니다.');
     }

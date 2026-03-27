@@ -8,6 +8,7 @@ import {
   type ProductTab,
   type RecommendationItem,
 } from '@hooks/use-product-detail';
+import { formatPrice } from '@utils/format';
 import { useRef } from 'react';
 
 type ProductDetailViewProps = {
@@ -35,6 +36,7 @@ type ProductDetailViewProps = {
   onSelectOption: (option: string) => void;
   onInputOptionChange: (value: string) => void;
   onAddCart?: () => void;
+  onPurchase?: () => void;
   onToggleDetail: () => void;
   onToggleLike: () => void;
   onShare: () => void;
@@ -67,6 +69,7 @@ const ProductDetailView = ({
   onSelectOption,
   onInputOptionChange,
   onAddCart,
+  onPurchase,
   onToggleDetail,
   onToggleLike,
   onShare,
@@ -77,9 +80,9 @@ const ProductDetailView = ({
 
   return (
     <div ref={pageRef} className="min-h-screen bg-[#FBFBF8] text-gray-900">
-      <main className="mx-auto flex w-full max-w-[124rem] flex-col px-6 pb-24 pt-10">
+      <main className="mx-auto flex w-full max-w-[124rem] flex-col px-6 pt-10 pb-24">
         <div className="mb-8 flex items-center gap-3 text-[1.05rem] text-[#9CA3AF]">
-          <span>Product</span>
+          <span>상품</span>
           <span>/</span>
           <span className="text-gray-500">{product.productName}</span>
         </div>
@@ -93,7 +96,7 @@ const ProductDetailView = ({
           />
           <ProductDetailPurchasePanel
             productName={product.productName}
-            price={product.price}
+            price={formatPrice(product.price)}
             rewardPointLabel={rewardPointLabel}
             quantity={quantity}
             category={product.category}
@@ -109,6 +112,7 @@ const ProductDetailView = ({
             onSelectOption={onSelectOption}
             onInputOptionChange={onInputOptionChange}
             onAddCart={onAddCart}
+            onPurchase={onPurchase}
             onToggleLike={onToggleLike}
             onShare={onShare}
             isAdminMode={isAdminMode}
@@ -128,7 +132,9 @@ const ProductDetailView = ({
                 onClick={onToggleDetail}
                 className="flex-row-center h-[4.8rem] w-full cursor-pointer gap-2 border-[2px] border-gray-600 bg-white text-[1.5rem] font-semibold text-[#263238] shadow-[0_8px_16px_rgba(38,50,56,0.08)] transition-colors hover:bg-gray-100"
               >
-                <span>{isDetailOpen ? '상품 상세 접기' : '상품 상세 보기'}</span>
+                <span>
+                  {isDetailOpen ? '상품 상세 접기' : '상품 상세 보기'}
+                </span>
                 <span className={isDetailOpen ? 'rotate-0' : 'rotate-180'}>
                   <ChevronUpIcon />
                 </span>
@@ -141,25 +147,29 @@ const ProductDetailView = ({
                     dangerouslySetInnerHTML={{ __html: product.content }}
                   />
                 ) : (
-                  <div className="whitespace-pre-line text-[1.18rem] leading-[2] text-gray-700">
+                  <div className="text-[1.18rem] leading-[2] whitespace-pre-line text-gray-700">
                     {product.content}
                   </div>
                 )
               ) : null}
             </>
           )}
-          {activeTab === 'review' ? <EmptyPanel title="No reviews yet." /> : null}
+          {activeTab === 'review' ? (
+            <EmptyPanel title="아직 등록된 리뷰가 없습니다." />
+          ) : null}
           {activeTab === 'return' ? (
             <InfoPanel
-              title="Returns and exchanges"
+              title="반품 및 교환 안내"
               lines={[
-                'Requests can be submitted within 7 days after delivery for simple change-of-mind cases.',
-                'Items with signs of use or damaged packaging may be rejected depending on inspection results.',
-                'Please check the purchase policy for category-specific details.',
+                '단순 변심에 의한 반품 및 교환은 배송 완료 후 7일 이내에 접수할 수 있습니다.',
+                '사용 흔적이 있거나 포장이 훼손된 상품은 검수 결과에 따라 반품 및 교환이 제한될 수 있습니다.',
+                '카테고리별 상세 기준은 구매 정책을 확인해 주세요.',
               ]}
             />
           ) : null}
-          {activeTab === 'qna' ? <EmptyPanel title="No questions yet." /> : null}
+          {activeTab === 'qna' ? (
+            <EmptyPanel title="아직 등록된 문의가 없습니다." />
+          ) : null}
         </section>
 
         <ProductDetailRecommendationSection

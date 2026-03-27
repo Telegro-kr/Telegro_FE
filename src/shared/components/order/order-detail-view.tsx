@@ -6,11 +6,15 @@ import type {
   OrderDetailResponseDTOOrderStatus,
   UserOrderDetailDTO,
 } from '@apis/telegro';
-import { orderStatusMap } from '@constants/orderStatus';
-import { formatNumber } from '@utils/format';
+import {
+  ORDER_PROGRESS_STEPS,
+  getOrderStatusLabel,
+} from '@constants/orderStatus';
+import { formatPrice as formatWon } from '@utils/format';
 import type { ReactNode } from 'react';
 import {
   FiCheckCircle,
+  FiClock,
   FiExternalLink,
   FiMapPin,
   FiUser,
@@ -22,15 +26,10 @@ const paymentMethodMap: Record<OrderDetailResponseDTOPaymentMethod, string> = {
   V_BANK: 'Virtual Account',
 };
 
-const orderSteps: OrderDetailResponseDTOOrderStatus[] = [
-  'ORDER_CREATED',
-  'PAYMENT_COMPLETED',
-  'SHIPPING',
-  'DELIVERY_COMPLETED',
-];
+const orderSteps: OrderDetailResponseDTOOrderStatus[] = ORDER_PROGRESS_STEPS;
 
 function formatPrice(value?: number) {
-  return `${formatNumber(value ?? 0)} KRW`;
+  return formatWon(value ?? 0);
 }
 
 function formatDate(value?: string) {
@@ -49,18 +48,14 @@ function formatDate(value?: string) {
 }
 
 function getStatusLabel(status?: OrderDetailResponseDTOOrderStatus) {
-  if (!status) return 'Pending';
-  return orderStatusMap[status] ?? status;
+  return getOrderStatusLabel(status);
 }
 
 function getStepIndex(status?: OrderDetailResponseDTOOrderStatus) {
   if (!status) return 0;
 
   const index = orderSteps.indexOf(status);
-  if (index >= 0) return index;
-
-  if (status === 'ORDER_COMPLETED') return orderSteps.length - 1;
-  return 0;
+  return index >= 0 ? index : 0;
 }
 
 function getOptionLabel(product: CartProductDTO) {
@@ -93,10 +88,25 @@ function StepIndicator({
   currentStatus?: OrderDetailResponseDTOOrderStatus;
 }) {
   const activeIndex = getStepIndex(currentStatus);
+  const isCancelled = currentStatus === 'ORDER_CANCELLED';
 
   return (
     <div className="overflow-hidden rounded-[1.8rem] border border-neutral-200 bg-white">
-      <div className="grid gap-px bg-neutral-200 md:grid-cols-4">
+      {isCancelled ? (
+        <div className="flex items-center gap-4 border-b border-neutral-200 bg-[#171717] px-6 py-5 text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+            <FiClock className="text-lg" />
+          </div>
+          <div>
+            <p className="caption2 text-white/70 uppercase">Order Status</p>
+            <p className="caption4 mt-1 text-white">
+              {getStatusLabel(currentStatus)}
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="grid gap-px bg-neutral-200 md:grid-cols-5">
         {orderSteps.map((step, index) => {
           const isActive = index === activeIndex;
 
@@ -179,20 +189,20 @@ function ProductCard({ product }: { product: CartProductDTO }) {
           </p>
           <div className="mt-4 grid gap-3 rounded-xl bg-neutral-50 px-4 py-3 md:grid-cols-3">
             <div className="min-w-0">
-              <p className="caption4 text-gray-700">옵션</p>
-              <p className="mt-2 truncate text-base font-semibold text-neutral-900">
+              <p className="caption3 text-gray-700">옵션</p>
+              <p className="caption4 mt-2 truncate text-neutral-900">
                 {optionLabel || '-'}
               </p>
             </div>
             <div className="min-w-0 md:border-l md:border-neutral-200 md:pl-4">
-              <p className="caption4 text-gray-700">단가</p>
-              <p className="mt-2 text-base font-semibold text-neutral-900">
+              <p className="caption3 text-gray-700">단가</p>
+              <p className="caption4 mt-2 text-neutral-900">
                 {formatPrice(product.productPrice)}
               </p>
             </div>
             <div className="min-w-0 md:border-l md:border-neutral-200 md:pl-4">
-              <p className="caption4 text-gray-700">수량</p>
-              <p className="mt-2 text-base font-semibold text-neutral-900">
+              <p className="caption3 text-gray-700">수량</p>
+              <p className="caption4 mt-2 text-neutral-900">
                 {product.quantity ?? 0}
               </p>
             </div>
@@ -333,7 +343,7 @@ const OrderDetailView = ({ order }: OrderDetailViewProps) => {
               <InfoRow label="상품 금액" value={formatPrice(order.price)} />
               <InfoRow
                 label="할인 금액"
-                value={`${formatPrice(order.discountPrice)}`}
+                value={formatPrice(order.discountPrice)}
               />
               <InfoRow label="배송비" value={formatPrice(order.shippingCost)} />
               <InfoRow
