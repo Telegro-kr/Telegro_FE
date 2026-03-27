@@ -1,5 +1,7 @@
+import { useGetOrderDetail } from '@apis/telegro';
 import { toKoreanTime } from '@utils/format';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 type CheckoutCompleteState = {
   orderId?: string;
@@ -54,12 +56,86 @@ const formatOrderDate = (value?: string) => {
   return date.toLocaleDateString('ko-KR');
 };
 
+const extractOrderIdFromMerchantUid = (merchantUid?: string | null) => {
+  if (!merchantUid) {
+    return null;
+  }
+
+  const match = merchantUid.match(/^order-(\d+)-/);
+  if (!match) {
+    return null;
+  }
+
+  const orderId = Number(match[1]);
+  return Number.isFinite(orderId) ? orderId : null;
+};
+
 const CheckoutComplete = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const state = (location.state as CheckoutCompleteState | null) ?? null;
+  const impUid = searchParams.get('imp_uid');
+  const merchantUid = searchParams.get('merchant_uid');
+  const recoveredOrderId = extractOrderIdFromMerchantUid(merchantUid);
 
-  if (!state) {
+  const orderDetailQuery = useGetOrderDetail(recoveredOrderId ?? 0, {
+    query: {
+      enabled: !state && recoveredOrderId != null,
+      staleTime: 60_000,
+    },
+  });
+
+  const resolvedState = useMemo<CheckoutCompleteState | null>(() => {
+    if (state) {
+      return state;
+    }
+
+    const detail = orderDetailQuery.data?.data;
+    if (!detail) {
+      return null;
+    }
+
+    return {
+      orderId: detail.imp_uid || impUid || merchantUid || String(detail.orderId ?? '-'),
+      orderDate: detail.orderDate,
+      orderDetails: {
+        products: (detail.products ?? []).map((product) => ({
+          name: product.productName?.trim() || '상품',
+          quantity: product.quantity ?? 0,
+          coverImage: product.coverImage?.trim() || '/cart-empty.svg',
+          totalPrice: product.totalPrice ?? 0,
+        })),
+        total: detail.price ?? 0,
+      },
+      userDetails: {
+        name: detail.user?.name?.trim() || '-',
+        phone: detail.user?.phone?.trim() || '-',
+        email: detail.user?.email?.trim() || '-',
+      },
+      shippingInfo: {
+        postalCode: detail.deliveryAddress?.zipcode?.trim() || '-',
+        address: detail.deliveryAddress?.address?.trim() || '-',
+        detailedAddress: detail.deliveryAddress?.addressDetail?.trim() || '',
+        request: detail.request?.trim() || '',
+      },
+      pointsToUse: detail.discountPrice ?? 0,
+      pointsToEarn: 0,
+      shippingCost: detail.shippingCost ?? 0,
+    };
+  }, [impUid, merchantUid, orderDetailQuery.data?.data, state]);
+
+  if (!state && orderDetailQuery.isLoading) {
+    return (
+      <section className="min-h-screen bg-[#f6f6f6] px-5 py-10">
+        <div className="mx-auto max-w-[900px] rounded-[2rem] bg-white px-8 py-16 text-center shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+          <p className="text-[1.6rem] text-neutral-600">주문 정보를 확인하는 중입니다...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!resolvedState) {
     return (
       <section className="min-h-screen bg-[#f6f6f6] px-5 py-10">
         <div className="mx-auto max-w-[900px] rounded-[2rem] bg-white px-8 py-16 text-center shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
@@ -81,11 +157,11 @@ const CheckoutComplete = () => {
     );
   }
 
-  const products = state.orderDetails?.products ?? [];
-  const total = state.orderDetails?.total ?? 0;
-  const pointsToUse = state.pointsToUse ?? 0;
-  const pointsToEarn = state.pointsToEarn ?? 0;
-  const shippingCost = state.shippingCost ?? 0;
+  const products = resolvedState.orderDetails?.products ?? [];
+  const total = resolvedState.orderDetails?.total ?? 0;
+  const pointsToUse = resolvedState.pointsToUse ?? 0;
+  const pointsToEarn = resolvedState.pointsToEarn ?? 0;
+  const shippingCost = resolvedState.shippingCost ?? 0;
   const finalPrice = total - pointsToUse + shippingCost;
   const heroImage = products[0]?.coverImage || '/cart-empty.svg';
 
@@ -102,8 +178,8 @@ const CheckoutComplete = () => {
             주문이 완료되었습니다
           </h1>
           <p className="mt-3 text-[1.5rem] text-neutral-500">
-            주문일 {formatOrderDate(state.orderDate)} · 주문번호{' '}
-            <span className="font-semibold text-[#171717]">{state.orderId ?? '-'}</span>
+            주문일 {formatOrderDate(resolvedState.orderDate)} / 주문번호{' '}
+            <span className="font-semibold text-[#171717]">{resolvedState.orderId ?? '-'}</span>
           </p>
         </div>
 
@@ -143,45 +219,46 @@ const CheckoutComplete = () => {
               <div className="mt-5 space-y-3 text-[1.45rem] text-neutral-700">
                 <p>
                   <span className="mr-3 text-neutral-500">이름</span>
-                  {state.userDetails?.name || '-'}
+                  {resolvedState.userDetails?.name || '-'}
                 </p>
                 <p>
                   <span className="mr-3 text-neutral-500">연락처</span>
-                  {state.userDetails?.phone || '-'}
+                  {resolvedState.userDetails?.phone || '-'}
                 </p>
                 <p>
                   <span className="mr-3 text-neutral-500">주소</span>(
-                  {state.shippingInfo?.postalCode || '-'}) {state.shippingInfo?.address || '-'}{' '}
-                  {state.shippingInfo?.detailedAddress || ''}
+                  {resolvedState.shippingInfo?.postalCode || '-'}){' '}
+                  {resolvedState.shippingInfo?.address || '-'}{' '}
+                  {resolvedState.shippingInfo?.detailedAddress || ''}
                 </p>
-                {state.shippingInfo?.request ? (
+                {resolvedState.shippingInfo?.request ? (
                   <p>
                     <span className="mr-3 text-neutral-500">요청사항</span>
-                    {state.shippingInfo.request}
+                    {resolvedState.shippingInfo.request}
                   </p>
                 ) : null}
               </div>
             </section>
 
-            {state.vbankInfo ? (
+            {resolvedState.vbankInfo ? (
               <section className="rounded-[1.6rem] bg-[#eef5ff] p-6">
                 <h2 className="text-[1.9rem] font-semibold text-[#171717]">가상계좌 정보</h2>
                 <div className="mt-5 space-y-3 text-[1.45rem] text-neutral-700">
                   <p>
                     <span className="mr-3 text-neutral-500">은행</span>
-                    {state.vbankInfo.vbank_name}
+                    {resolvedState.vbankInfo.vbank_name}
                   </p>
                   <p>
                     <span className="mr-3 text-neutral-500">계좌번호</span>
-                    {state.vbankInfo.vbank_num}
+                    {resolvedState.vbankInfo.vbank_num}
                   </p>
                   <p>
                     <span className="mr-3 text-neutral-500">예금주</span>
-                    {state.vbankInfo.vbank_holder || '-'}
+                    {resolvedState.vbankInfo.vbank_holder || '-'}
                   </p>
                   <p>
                     <span className="mr-3 text-neutral-500">입금 기한</span>
-                    {toKoreanTime(String(state.vbankInfo.vbank_date))}
+                    {toKoreanTime(String(resolvedState.vbankInfo.vbank_date))}
                   </p>
                 </div>
               </section>
