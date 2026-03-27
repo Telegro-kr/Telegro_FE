@@ -56,8 +56,6 @@ export function getAddressForm(address?: DeliveryAddressDetailDTO): AddressForm 
 
   return {
     name: address.name?.trim() ?? '',
-    recipientName: address.recipientName?.trim() ?? '',
-    phoneNumber: address.phoneNumber?.trim() ?? '',
     zipcode: address.zipcode?.trim() ?? '',
     address: address.address?.trim() ?? '',
     addressDetail: address.addressDetail?.trim() ?? '',
@@ -68,8 +66,6 @@ export function getAddressForm(address?: DeliveryAddressDetailDTO): AddressForm 
 export function toAddressPayload(form: AddressForm): DeliveryAddress {
   return {
     name: form.name.trim(),
-    recipientName: form.recipientName.trim(),
-    phoneNumber: form.phoneNumber.trim(),
     zipcode: form.zipcode.trim(),
     address: form.address.trim(),
     addressDetail: form.addressDetail.trim(),

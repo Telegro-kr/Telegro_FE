@@ -132,8 +132,6 @@ export function useMyPage() {
     event.preventDefault();
 
     if (!addressForm.name.trim()) return toastError('배송지명을 입력해 주세요.');
-    if (!addressForm.recipientName.trim()) return toastError('받는 분 이름을 입력해 주세요.');
-    if (!addressForm.phoneNumber.trim()) return toastError('연락처를 입력해 주세요.');
     if (!addressForm.zipcode.trim() || !addressForm.address.trim()) {
       return toastError('주소 검색을 통해 주소를 입력해 주세요.');
     }

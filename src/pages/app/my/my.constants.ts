@@ -8,8 +8,6 @@ export const POSTCODE_SCRIPT_SRC =
 
 export const INITIAL_ADDRESS_FORM: AddressForm = {
   name: '',
-  recipientName: '',
-  phoneNumber: '',
   zipcode: '',
   address: '',
   addressDetail: '',

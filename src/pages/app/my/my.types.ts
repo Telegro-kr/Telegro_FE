@@ -4,8 +4,6 @@ export type MenuItem = '프로필' | '주문' | '배송지' | '로그아웃';
 
 export type AddressForm = {
   name: string;
-  recipientName: string;
-  phoneNumber: string;
   zipcode: string;
   address: string;
   addressDetail: string;

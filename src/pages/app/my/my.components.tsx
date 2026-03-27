@@ -15,7 +15,6 @@ import type { AddressForm } from './my.types';
 import {
   formatOrderDate,
   formatOrderPrice,
-  formatPhoneNumber,
   getAddressLine,
   getOrderProductName,
 } from './my.utils';
@@ -185,13 +184,7 @@ export function AddressRow({
               </span>
             ) : null}
           </div>
-          <p className="mt-3 text-[1.4rem] font-medium text-[#444444]">
-            {[
-              address.recipientName?.trim() || '-',
-              formatPhoneNumber(address.phoneNumber),
-            ].join(' / ')}
-          </p>
-          <p className="mt-2 text-[1.4rem] leading-[1.7] text-[#6D6D6D]">
+          <p className="mt-3 text-[1.4rem] leading-[1.7] text-[#6D6D6D]">
             {getAddressLine(address) || '-'}
           </p>
           {address.zipcode ? (
@@ -290,20 +283,6 @@ export function AddressModal({
               value={form.name}
               onChange={onChange}
               placeholder="집, 회사"
-            />
-            <InputField
-              label="받는 분"
-              name="recipientName"
-              value={form.recipientName}
-              onChange={onChange}
-              placeholder="받는 분 이름"
-            />
-            <InputField
-              label="연락처"
-              name="phoneNumber"
-              value={form.phoneNumber}
-              onChange={onChange}
-              placeholder="연락처"
             />
             <label className="block">
               <span className="text-[1.3rem] font-semibold text-[#5D5D5D]">
