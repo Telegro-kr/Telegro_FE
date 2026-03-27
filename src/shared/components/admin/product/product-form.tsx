@@ -2,6 +2,7 @@ import {
   ProductRequestDTOCategory,
   type ProductRequestDTOCategory as ProductCategory,
 } from '@apis/telegro';
+import FormActionButtons from '@components/admin/common/form-action-buttons';
 import type { ChangeEvent, FormEvent, ReactNode } from 'react';
 
 export type ProductFormValues = {
@@ -202,6 +203,17 @@ const ProductForm = ({
                   삭제
                 </button>
               ) : null}
+
+              <label className="inline-flex h-[4rem] w-fit cursor-pointer items-center justify-center rounded-[10px] border border-[#FFD8B0] bg-[#FFF5EA] px-[1.6rem] text-[1.4rem] font-semibold text-[#D86B00] transition hover:bg-[#FFEBD4]">
+                {isUploadingCover ? '업로드 중...' : '대표 이미지 업로드'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={onUploadCover}
+                  disabled={isSubmitting || isUploadingCover}
+                  className="hidden"
+                />
+              </label>
             </div>
 
             <div className="overflow-hidden rounded-[2rem] border border-[#F0F0F0] bg-[#FCFCFC]">
@@ -217,17 +229,6 @@ const ProductForm = ({
                 </div>
               )}
             </div>
-
-            <label className="inline-flex h-[4.4rem] w-fit cursor-pointer items-center justify-center rounded-[1.4rem] border border-[#FFD8B0] bg-[#FFF5EA] px-[1.6rem] text-[1.4rem] font-semibold text-[#D86B00] transition hover:bg-[#FFEBD4]">
-              {isUploadingCover ? '업로드 중...' : '대표 이미지 업로드'}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={onUploadCover}
-                disabled={isSubmitting || isUploadingCover}
-                className="hidden"
-              />
-            </label>
           </div>
 
           <div className="flex flex-col gap-[1.2rem]">
@@ -235,7 +236,7 @@ const ProductForm = ({
               <span className="text-[1.5rem] font-semibold tracking-[-0.03em] text-gray-900">
                 상세 이미지
               </span>
-              <label className="inline-flex h-[4.4rem] cursor-pointer items-center justify-center rounded-[1.4rem] border border-[#FFD8B0] bg-[#FFF5EA] px-[1.6rem] text-[1.4rem] font-semibold text-[#D86B00] transition hover:bg-[#FFEBD4]">
+              <label className="inline-flex h-[4rem] cursor-pointer items-center justify-center rounded-[10px] border border-[#FFD8B0] bg-[#FFF5EA] px-[1.6rem] text-[1.4rem] font-semibold text-[#D86B00] transition hover:bg-[#FFEBD4]">
                 {isUploadingPictures ? '업로드 중...' : '이미지 추가'}
                 <input
                   type="file"
@@ -290,7 +291,18 @@ const ProductForm = ({
           </div>
         ) : null}
 
-        <div className="flex flex-col-reverse gap-[1rem] pt-[0.8rem] sm:flex-row sm:justify-end">
+        <FormActionButtons
+          isSubmitting={isSubmitting}
+          isSubmitDisabled={
+            isSubmitting || isUploadingCover || isUploadingPictures
+          }
+          onCancel={onCancel}
+          submitType="submit"
+          submitLabel={mode === 'edit' ? '수정' : '등록'}
+          submittingLabel={mode === 'edit' ? '수정 중...' : '등록 중...'}
+        />
+
+        <div className="hidden">
           <button
             type="button"
             onClick={onCancel}

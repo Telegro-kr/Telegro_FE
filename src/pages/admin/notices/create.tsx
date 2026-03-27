@@ -14,8 +14,8 @@ import {
   useRef,
   useState,
   type ChangeEvent,
-  type MouseEvent,
 } from 'react';
+import FormActionButtons from '@components/admin/common/form-action-buttons';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -182,9 +182,7 @@ const AdminNoticeCreate = () => {
     }
   };
 
-  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-
+  const handleSubmit = async () => {
     const editorInstance = editorRef.current?.getInstance();
     const htmlContent = editorInstance?.getHTML() ?? content;
 
@@ -365,7 +363,26 @@ const AdminNoticeCreate = () => {
             </div>
           ) : null}
 
-          <div className="flex flex-col-reverse gap-[1rem] pt-[0.8rem] sm:flex-row sm:justify-end">
+          <FormActionButtons
+            isSubmitting={isSubmitting}
+            isSubmitDisabled={
+              isSubmitting ||
+              isUploadingFiles ||
+              (isEditMode && noticeDetailQuery.isLoading)
+            }
+            onCancel={() =>
+              navigate(
+                isEditMode
+                  ? `/admin/notices/${resolvedNoticeId}`
+                  : '/admin/notices',
+              )
+            }
+            onSubmit={handleSubmit}
+            submitLabel={isEditMode ? '수정' : '등록'}
+            submittingLabel={isEditMode ? '수정 중...' : '등록 중...'}
+          />
+
+          <div className="hidden">
             <button
               type="button"
               onClick={() =>
