@@ -58,7 +58,9 @@ const ProductDetailPurchasePanel = ({
   onDelete,
 }: ProductDetailPurchasePanelProps) => {
   const requiresInputOption =
-    category === 'HEADSET' || category === 'LINE_CORD' || category === 'RECORDER';
+    category === 'HEADSET' ||
+    category === 'LINE_CORD' ||
+    category === 'RECORDER';
 
   return (
     <aside className="flex flex-col gap-6 pt-1">
@@ -91,11 +93,11 @@ const ProductDetailPurchasePanel = ({
       <div className="h-px w-full bg-[#DFE4E8]" />
 
       <div className="flex flex-col gap-3">
-        <label className="text-[1rem] font-medium text-[#263238]">옵션</label>
+        <label className="caption2 text-[#263238]">옵션</label>
         <select
           value={selectedOption}
           onChange={(event) => onSelectOption(event.target.value)}
-          className="h-[4.4rem] border border-[#D9E0E6] bg-white px-4 text-[1rem] text-[#263238] outline-none focus:border-[#1F3138]"
+          className="body5 h-[4.4rem] border border-[#D9E0E6] bg-white px-4 text-[#263238] outline-none focus:border-[#1F3138]"
         >
           {options.length ? (
             options.map((option) => (
@@ -114,14 +116,14 @@ const ProductDetailPurchasePanel = ({
             value={inputOption}
             onChange={(event) => onInputOptionChange(event.target.value)}
             placeholder="기타 옵션 기재"
-            className="h-[4.4rem] border border-[#D9E0E6] bg-white px-4 text-[1rem] text-[#263238] outline-none placeholder:text-[#9CA3AF] focus:border-[#1F3138]"
+            className="body5 h-[4.4rem] border border-[#D9E0E6] bg-white px-4 text-[#263238] outline-none placeholder:text-[#9CA3AF] focus:border-[#1F3138]"
           />
         ) : null}
       </div>
 
-      <div className="flex items-center gap-2 text-[1rem] text-[#637381]">
-        <span className="font-semibold text-[#263238]">구매 적립</span>
-        <span>{rewardPointLabel}</span>
+      <div className="body5 flex items-center gap-2 text-[#637381]">
+        <span className="caption2 text-[#263238]">구매 적립</span>
+        <span className="body5">{rewardPointLabel}</span>
         <span className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-[#AEB7C0] text-[0.75rem] leading-none text-[#7B8794]">
           ?
         </span>
@@ -129,7 +131,7 @@ const ProductDetailPurchasePanel = ({
 
       <div className="border border-[#E7EBEF] bg-[#F8FAFB] px-5 py-5">
         <div className="mb-4 flex items-center justify-between border-b border-[#E3E7EB] pb-4">
-          <span className="text-[1rem] font-medium text-[#263238]">수량</span>
+          <span className="caption2 text-[#263238]">수량</span>
         </div>
 
         <div className="flex items-center justify-between gap-6">
@@ -152,7 +154,9 @@ const ProductDetailPurchasePanel = ({
       </div>
 
       <div className="flex items-end justify-between pt-5">
-        <span className="text-[1.6rem] text-[#637381]">총 상품 금액({quantity}개)</span>
+        <span className="text-[1.6rem] text-[#637381]">
+          총 상품 금액({quantity}개)
+        </span>
         <strong className="text-[2.3rem] leading-none font-medium text-[#263238]">
           {totalPriceLabel}
         </strong>
@@ -168,7 +172,7 @@ const ProductDetailPurchasePanel = ({
             onClick={onDelete}
             disabled={isDeletePending}
           >
-            {isDeletePending ? '삭제 중...' : '삭제하기'}
+            {isDeletePending ? '삭제 중..' : '삭제하기'}
           </ActionButton>
         </div>
       ) : (
