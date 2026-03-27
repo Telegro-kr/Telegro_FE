@@ -1,253 +1,50 @@
-import type { DeliveryAddressDetailDTO, OrderDetailDTO } from '@apis/telegro';
-import { useGetMyPage, useGetOrders } from '@apis/telegro';
-import LoadingPage from '@components/common/loading-page';
-import { getOrderStatusLabel } from '@constants/orderStatus';
-import { formatNumber } from '@utils/format';
-import { FiChevronRight, FiEdit2 } from 'react-icons/fi';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import ConfirmModal from '@components/common/confirm-modal';
-
-const menuItems = ['프로필', '주문', '배송지', '로그아웃'] as const;
-
-const orderStatusLabels: Record<string, string> = {
-  ORDER_CREATED: '주문 생성',
-  PAYMENT_COMPLETED: '결제 완료',
-  ORDER_COMPLETED: '주문 완료',
-  ORDER_CANCELLED: '주문 취소',
-  SHIPPING: '배송 중',
-  DELIVERY_COMPLETED: '배송 완료',
-};
-
-function formatPhoneNumber(value?: string) {
-  if (!value) return '-';
-  return value;
-}
-
-function formatPoint(value?: number) {
-  return `${formatNumber(value ?? 0)}P`;
-}
-
-function formatOrderDate(value?: string) {
-  if (!value) return '-';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '-';
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}.${month}.${day}`;
-}
-
-function formatOrderPrice(value?: number) {
-  if (value === undefined || value === null) return '-';
-  return `${formatNumber(value)}`;
-}
-
-function getOrderProductName(order: OrderDetailDTO) {
-  const products = order.products ?? [];
-  const firstProductName = products[0]?.productName?.trim();
-
-  if (!firstProductName) {
-    return '상품 정보 없음';
-  }
-
-  return products.length > 1
-    ? `${firstProductName} 외 ${products.length - 1}건`
-    : firstProductName;
-}
-
-function getAddressLine(address: DeliveryAddressDetailDTO) {
-  return [address.address, address.addressDetail].filter(Boolean).join(' ');
-}
-
-function getDefaultAddress(addresses: DeliveryAddressDetailDTO[]) {
-  return addresses.find((address) => address.isDefault) ?? addresses[0];
-}
-
-function StatusBadge({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center rounded-[999px] border border-[#E8EDE3] bg-[#F4F8EF] px-3 py-1 text-[1.1rem] font-semibold text-[#5F7A35]">
-      {label}
-    </span>
-  );
-}
-
-function SectionHeader({
-  title,
-  description,
-  action,
-  actionTo,
-}: {
-  title: string;
-  description?: string;
-  action?: string;
-  actionTo?: string;
-}) {
-  return (
-    <div className="flex items-end justify-between gap-6">
-      <div>
-        <h2 className="text-[2.2rem] font-semibold tracking-[-0.03em] text-[#1F1F1F]">
-          {title}
-        </h2>
-        {description ? (
-          <p className="mt-2 text-[1.3rem] text-[#6D6D6D]">{description}</p>
-        ) : null}
-      </div>
-
-      {action && actionTo ? (
-        <Link
-          to={actionTo}
-          className="shrink-0 text-[1.3rem] font-semibold text-[#5F7A35]"
-        >
-          {action}
-        </Link>
-      ) : null}
-    </div>
-  );
-}
-
-function SummaryCard({
-  label,
-  value,
-  sub,
-}: {
-  label: string;
-  value: string;
-  sub: string;
-}) {
-  return (
-    <article className="rounded-[1.3rem] border border-white/70 px-8 py-7 shadow-[0_20px_50px_rgba(35,35,35,0.06)] backdrop-blur">
-      <p className="text-[1.2rem] font-semibold tracking-[0.08em] text-[#8B8B8B] uppercase">
-        {label}
-      </p>
-      <p className="mt-4 text-[3rem] font-semibold tracking-[-0.04em] text-[#161616]">
-        {value}
-      </p>
-      <p className="mt-2 text-[1.3rem] text-[#6D6D6D]">{sub}</p>
-    </article>
-  );
-}
-
-function OrderRow({ order }: { order: OrderDetailDTO }) {
-  const statusLabel = order.orderStatus
-    ? getOrderStatusLabel(order.orderStatus)
-    : '상태 확인 중';
-
-  return (
-    <Link
-      to={order.orderId ? `/app/orders/${order.orderId}` : '/app/orders'}
-      className="flex items-center justify-between gap-6 rounded-[1.2rem] border border-[#ECE8E1] bg-white px-6 py-5 transition hover:border-[#D9D2C7] hover:bg-[#FCFAF6]"
-    >
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-3">
-          <p className="truncate text-[1.6rem] font-semibold text-[#202020]">
-            {getOrderProductName(order)}
-          </p>
-          <StatusBadge label={statusLabel} />
-        </div>
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[1.3rem] text-[#6D6D6D]">
-          <span>{formatOrderDate(order.createdAt)}</span>
-          <span>{order.orderNumber ?? '주문번호 없음'}</span>
-        </div>
-      </div>
-
-      <div className="flex shrink-0 items-center gap-3">
-        <p className="text-[1.5rem] font-semibold text-[#303030]">
-          {formatOrderPrice(order.amount)}
-        </p>
-        <FiChevronRight className="text-[1.8rem] text-[#A69A89]" />
-      </div>
-    </Link>
-  );
-}
-
-function AddressRow({ address }: { address: DeliveryAddressDetailDTO }) {
-  const accentClass = address.isDefault ? 'bg-[#5F7A35]' : 'bg-[#C9B89D]';
-  const surfaceClass = address.isDefault ? 'bg-[#F7FAF2]' : 'bg-[#FCF8F3]';
-
-  return (
-    <article
-      className={[
-        'relative overflow-hidden rounded-[1.2rem] border border-[#ECE8E1] px-6 py-5 pl-9 shadow-[0_12px_24px_rgba(20,20,20,0.03)]',
-        surfaceClass,
-      ].join(' ')}
-    >
-      <div
-        className={`absolute top-0 bottom-0 left-0 w-[0.6rem] ${accentClass}`}
-      />
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[1.6rem] font-semibold text-[#1F1F1F]">
-              {address.name?.trim() || '배송지'}
-            </p>
-            {address.isDefault ? (
-              <span className="rounded-[999px] bg-[#202020] px-3 py-1 text-[1.1rem] font-semibold text-white">
-                기본 배송지
-              </span>
-            ) : null}
-          </div>
-
-          <p className="mt-3 text-[1.4rem] font-medium text-[#444444]">
-            {(address.recipientName?.trim() || '-') +
-              formatPhoneNumber(address.phoneNumber)}
-          </p>
-          <p className="mt-2 text-[1.4rem] leading-[1.7] text-[#6D6D6D]">
-            {getAddressLine(address) || '-'}
-          </p>
-          {address.zipcode ? (
-            <p className="mt-1 text-[1.2rem] text-[#9A9A9A]">
-              {address.zipcode}
-            </p>
-          ) : null}
-        </div>
-      </div>
-    </article>
-  );
-}
+import LoadingPage from '@components/common/loading-page';
+import { FiEdit2, FiPlus } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
+import { MENU_ITEMS } from './my.constants';
+import {
+  AddressModal,
+  AddressRow,
+  InfoBox,
+  OrderRow,
+  SectionHeader,
+  SummaryCard,
+} from './my.components';
+import { useMyPage } from './use-my-page';
+import { formatPhoneNumber, formatPoint, getAddressLine } from './my.utils';
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] =
-    useState<(typeof menuItems)[number]>('프로필');
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-
-  const handleMenuClick = (item: (typeof menuItems)[number]) => {
-    if (item === menuItems[3]) {
-      setIsLogoutModalOpen(true);
-      return;
-    }
-
-    setActiveMenu(item);
-  };
-
-  const handleLogoutCancel = () => {
-    setIsLogoutModalOpen(false);
-  };
-
-  const handleLogoutConfirm = () => {
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('accessToken');
-    setIsLogoutModalOpen(false);
-    navigate('/');
-  };
-
-  const myPageQuery = useGetMyPage({
-    query: {
-      staleTime: 60_000,
-    },
-  });
-
-  const ordersQuery = useGetOrders(
-    { page: 0, size: 4 },
-    {
-      query: {
-        staleTime: 60_000,
-      },
-    },
-  );
+  const {
+    activeMenu,
+    addressForm,
+    addressModalState,
+    addressToDelete,
+    addresses,
+    closeAddressModal,
+    defaultAddress,
+    handleAddressChange,
+    handleAddressSearch,
+    handleAddressSubmit,
+    handleDeleteAddress,
+    handleSetDefaultAddress,
+    handleToggleDefault,
+    isAddressMutationPending,
+    isLogoutModalOpen,
+    isPostcodeReady,
+    myPageQuery,
+    openCreateAddress,
+    openEditAddress,
+    ordersQuery,
+    recentOrders,
+    setActiveMenu,
+    setAddressToDelete,
+    setIsLogoutModalOpen,
+    user,
+    addAddressMutation,
+    updateAddressMutation,
+  } = useMyPage();
 
   if (myPageQuery.isLoading) {
     return <LoadingPage />;
@@ -268,26 +65,19 @@ const MyPage = () => {
             onClick={() => myPageQuery.refetch()}
             className="mt-8 rounded-[999px] bg-[#202020] px-8 py-3 text-[1.4rem] font-semibold text-white"
           >
-            다시 불러오기
+            다시 시도
           </button>
         </div>
       </section>
     );
   }
 
-  const user = myPageQuery.data?.data;
-  const addresses = [...(user?.addressList ?? [])].sort(
-    (a, b) => Number(b.isDefault) - Number(a.isDefault),
-  );
-  const recentOrders = ordersQuery.data?.data?.orders ?? [];
-  const defaultAddress = getDefaultAddress(addresses);
-
   return (
     <section className="min-h-screen px-6 py-8 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-[120rem]">
         <div className="grid gap-6 lg:grid-cols-[28rem_minmax(0,1fr)]">
-          <aside className="h-fit overflow-hidden rounded-[1.6rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(249,245,238,0.98)_100%)] p-6 shadow-[0_24px_60px_rgba(22,22,22,0.07)]">
-            <div className="border-b border-[#EEE7DD]">
+          <aside className="h-fit overflow-hidden rounded-[1.6rem] border border-white/70 bg-white p-6">
+            <div className="border-b border-[#EEE7DD] pb-6">
               <img
                 src="/my-profile.svg"
                 alt="사용자 프로필"
@@ -304,16 +94,23 @@ const MyPage = () => {
             </div>
 
             <nav className="mt-6 flex flex-col gap-2">
-              {menuItems.map((item) => (
+              {MENU_ITEMS.map((item) => (
                 <button
                   key={item}
                   type="button"
-                  onClick={() => handleMenuClick(item)}
+                  onClick={() => {
+                    if (item === '로그아웃') {
+                      setIsLogoutModalOpen(true);
+                      return;
+                    }
+
+                    setActiveMenu(item);
+                  }}
                   className={[
-                    'rounded-[0.9rem] px-5 py-4 text-left text-[1.5rem] font-semibold',
+                    'cursor-pointer rounded-[0.9rem] px-5 py-4 text-left text-[1.5rem] font-semibold transition-colors',
                     activeMenu === item
-                      ? 'bg-[#202020] text-white shadow-[0_14px_24px_rgba(22,22,22,0.18)]'
-                      : 'text-[#535353]',
+                      ? 'bg-primary/10 text-gray-900'
+                      : 'hover:bg-primary/15 text-gray-700 hover:text-gray-900',
                   ].join(' ')}
                 >
                   {item}
@@ -343,73 +140,48 @@ const MyPage = () => {
               />
               <SummaryCard
                 label="Orders"
-                value={`${ordersQuery.data?.data?.totalElement ?? 0}건`}
+                value={`${ordersQuery.data?.data?.totalElement ?? 0}`}
                 sub="전체 주문 내역"
               />
             </div>
 
-            {activeMenu === '프로필' && (
-              <section className="relative rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+            {activeMenu === '프로필' ? (
+              <section className="relative rounded-[10px] border border-white/70 bg-white/85 px-8 py-8">
                 <SectionHeader
                   title="계정 정보"
                   description="가입한 기본 정보를 확인할 수 있습니다."
                 />
-
                 <button
                   type="button"
-                  aria-label="계정정보 수정"
                   onClick={() => navigate('/app/my/edit')}
-                  className="absolute top-8 right-8 inline-flex h-12 w-12 items-center justify-center rounded-[1rem] border border-[#E7E1D7] bg-[#F8F5EF] text-[#5F7A35] transition-colors hover:bg-[#F1ECE3]"
+                  aria-label="계정 정보 수정"
+                  className="absolute top-8 right-8 inline-flex h-12 w-12 items-center justify-center rounded-[1rem] border border-[#E7E1D7] bg-[#F8F5EF] text-[#5F7A35]"
                 >
                   <FiEdit2 className="text-[1.8rem]" />
                 </button>
-
                 <div className="mt-8 grid gap-4 md:grid-cols-2">
-                  <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">
-                    <p className="text-[1.2rem] font-semibold text-[#8B8B8B]">
-                      이름
-                    </p>
-                    <p className="mt-3 text-[2rem] font-semibold text-[#1D1D1D]">
-                      {user?.userName?.trim() || '-'}
-                    </p>
-                  </div>
-                  <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">
-                    <p className="text-[1.2rem] font-semibold text-[#8B8B8B]">
-                      아이디
-                    </p>
-                    <p className="mt-3 text-[2rem] font-semibold text-[#1D1D1D]">
-                      {user?.userId?.trim() || '-'}
-                    </p>
-                  </div>
-                  <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">
-                    <p className="text-[1.2rem] font-semibold text-[#8B8B8B]">
-                      이메일
-                    </p>
-                    <p className="mt-3 text-[1.7rem] font-semibold text-[#1D1D1D]">
-                      {user?.email?.trim() || '-'}
-                    </p>
-                  </div>
-                  <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-5">
-                    <p className="text-[1.2rem] font-semibold text-[#8B8B8B]">
-                      연락처
-                    </p>
-                    <p className="mt-3 text-[2rem] font-semibold text-[#1D1D1D]">
-                      {formatPhoneNumber(user?.phone)}
-                    </p>
-                  </div>
+                  <InfoBox label="이름" value={user?.userName?.trim() || '-'} />
+                  <InfoBox label="아이디" value={user?.userId?.trim() || '-'} />
+                  <InfoBox label="이메일" value={user?.email?.trim() || '-'} />
+                  <InfoBox
+                    label="연락처"
+                    value={formatPhoneNumber(user?.phone)}
+                  />
                 </div>
               </section>
-            )}
+            ) : null}
 
             {(activeMenu === '프로필' || activeMenu === '주문') && (
-              <section className="rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="rounded-[10px] border border-white/70 bg-white/85 px-8 py-8">
                 <SectionHeader
                   title="최근 주문"
                   description="최근 주문 상태를 빠르게 확인할 수 있습니다."
-                  action="전체 주문 보기"
-                  actionTo="/app/orders"
+                  action={
+                    <Link to="/app/orders" className="text-primary caption2">
+                      전체 주문 보기
+                    </Link>
+                  }
                 />
-
                 <div className="mt-8 space-y-4">
                   {ordersQuery.isLoading ? (
                     <div className="rounded-[1rem] bg-[#F8F5EF] px-6 py-8 text-[1.5rem] text-[#6D6D6D]">
@@ -434,22 +206,37 @@ const MyPage = () => {
             )}
 
             {(activeMenu === '프로필' || activeMenu === '배송지') && (
-              <section className="rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="rounded-[10px] border border-white/70 bg-white/85 px-8 py-8">
                 <SectionHeader
                   title="배송지 관리"
-                  description="기본 배송지를 우선으로 정렬해 보여줍니다."
+                  description="배송지를 추가, 수정, 삭제하고 기본 배송지를 설정할 수 있습니다."
+                  action={
+                    <button
+                      type="button"
+                      onClick={openCreateAddress}
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-[999px] bg-[#202020] px-5 py-3 text-[1.3rem] font-semibold text-white"
+                    >
+                      <FiPlus className="text-[1.6rem]" />
+                      배송지 추가
+                    </button>
+                  }
                 />
 
                 <div className="mt-8 space-y-4">
                   {addresses.length ? (
-                    addresses.map((address) => (
+                    addresses.map((address, index) => (
                       <AddressRow
-                        key={
+                        key={String(
                           address.deliveryAddressId ??
-                          address.name ??
-                          address.address
-                        }
+                            address.name ??
+                            address.address ??
+                            index,
+                        )}
                         address={address}
+                        isMutating={isAddressMutationPending}
+                        onEdit={openEditAddress}
+                        onDelete={setAddressToDelete}
+                        onSetDefault={handleSetDefaultAddress}
                       />
                     ))
                   ) : (
@@ -466,9 +253,39 @@ const MyPage = () => {
 
       {isLogoutModalOpen ? (
         <ConfirmModal
-          message="로그아웃하시겠습니까?"
-          onCancel={handleLogoutCancel}
-          onConfirm={handleLogoutConfirm}
+          message="로그아웃 하시겠습니까?"
+          onCancel={() => setIsLogoutModalOpen(false)}
+          onConfirm={() => {
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('accessToken');
+            setIsLogoutModalOpen(false);
+            navigate('/');
+          }}
+        />
+      ) : null}
+
+      {addressModalState ? (
+        <AddressModal
+          mode={addressModalState.mode}
+          form={addressForm}
+          isPending={
+            addAddressMutation.isPending || updateAddressMutation.isPending
+          }
+          isPostcodeReady={isPostcodeReady}
+          onChange={handleAddressChange}
+          onClose={closeAddressModal}
+          onSearchAddress={handleAddressSearch}
+          onSubmit={handleAddressSubmit}
+          onToggleDefault={handleToggleDefault}
+        />
+      ) : null}
+
+      {addressToDelete ? (
+        <ConfirmModal
+          message={`"${addressToDelete.name?.trim() || '배송지'}"를 삭제하시겠습니까?`}
+          onCancel={() => setAddressToDelete(null)}
+          onConfirm={handleDeleteAddress}
+          confirmText="삭제"
         />
       ) : null}
     </section>

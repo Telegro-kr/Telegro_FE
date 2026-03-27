@@ -174,6 +174,7 @@ const UserCreateDrawer = ({
                             type={field.type ?? 'text'}
                             value={form[field.key]}
                             onChange={handleFieldChange(field.key)}
+                            inputMode={field.type === 'tel' ? 'numeric' : undefined}
                             placeholder={
                               isEditMode && field.key === 'password'
                                 ? '변경 시에만 입력해 주세요.'
