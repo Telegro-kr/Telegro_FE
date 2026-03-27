@@ -250,11 +250,8 @@ const AdminNoticeCreate = () => {
   return (
     <div className="flex flex-col gap-[4rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]">
       <section className="overflow-hidden rounded-[3rem] border border-[#EAEAEA] bg-white shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
-        <div className="border-b border-[#F1F1F1] bg-[linear-gradient(135deg,#FFF7ED_0%,#FFFFFF_58%)] px-[2.4rem] py-[2.4rem] md:px-[3.2rem]">
-          <p className="text-[1.3rem] font-semibold tracking-[0.24em] text-[#FF8A1F] uppercase">
-            공지사항 관리
-          </p>
-          <h1 className="mt-[0.8rem] text-[3rem] font-semibold tracking-[-0.04em] text-gray-900">
+        <div className="border-b border-[#F1F1F1] bg-[#FFFAF5] px-[3rem] py-[1.8rem]">
+          <h1 className="title5 mt-[0.8rem] text-gray-900">
             {isEditMode ? '공지사항 수정' : '공지사항 등록'}
           </h1>
         </div>
@@ -391,7 +388,7 @@ const AdminNoticeCreate = () => {
                 isUploadingFiles ||
                 (isEditMode && noticeDetailQuery.isLoading)
               }
-              className="inline-flex h-[5.2rem] items-center justify-center rounded-[1.6rem] border border-[#FFE2C0] bg-[linear-gradient(135deg,#FF9B2F_0%,#FFB652_100%)] px-[2rem] text-[1.5rem] font-semibold text-white shadow-[0_16px_34px_rgba(255,155,47,0.24)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
+              className="inline-flex h-[5.2rem] items-center justify-center rounded-[1.6rem] border border-[#FFB86B] bg-[#FF9B2F] px-[2rem] text-[1.5rem] font-semibold text-white shadow-[0_16px_34px_rgba(255,155,47,0.18)] transition hover:bg-[#F08D22] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting
                 ? isEditMode
