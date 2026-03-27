@@ -78,6 +78,8 @@ type CheckoutCompleteState = {
 const POSTCODE_SCRIPT_ID = 'daum-postcode-script';
 const POSTCODE_SCRIPT_SRC =
   'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+const IMP_SCRIPT_ID = 'iamport-script';
+const IMP_SCRIPT_SRC = 'https://cdn.iamport.kr/v1/iamport.js';
 const IMP_MERCHANT_CODE = 'imp06338577';
 const SHIPPING_FEE = 3000;
 const CHANNEL_KEY = 'channel-key-0c462650-5c1a-4f74-86d5-80a67cb512c2';
@@ -101,13 +103,48 @@ const buildRoadAddress = (data: DaumPostcodeData) => {
   return extras.length ? `${data.address} (${extras.join(', ')})` : data.address;
 };
 
-const isMobilePaymentEnvironment = () => {
-  const userAgent = navigator.userAgent || navigator.vendor || '';
+const ensureImpLoaded = () =>
+  new Promise<void>((resolve, reject) => {
+    if (window.IMP) {
+      resolve();
+      return;
+    }
 
-  return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
-    userAgent,
-  );
-};
+    const existingScript =
+      (document.getElementById(IMP_SCRIPT_ID) as HTMLScriptElement | null) ??
+      (document.querySelector(`script[src="${IMP_SCRIPT_SRC}"]`) as HTMLScriptElement | null);
+
+    const handleLoad = () => {
+      if (window.IMP) {
+        resolve();
+        return;
+      }
+
+      reject(new Error('결제 모듈을 불러오지 못했습니다.'));
+    };
+    const handleError = () => reject(new Error('결제 모듈 스크립트 로드에 실패했습니다.'));
+
+    if (existingScript) {
+      existingScript.id = IMP_SCRIPT_ID;
+
+      if (window.IMP) {
+        resolve();
+        return;
+      }
+
+      existingScript.addEventListener('load', handleLoad, { once: true });
+      existingScript.addEventListener('error', handleError, { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = IMP_SCRIPT_ID;
+    script.src = IMP_SCRIPT_SRC;
+    script.async = true;
+    script.addEventListener('load', handleLoad, { once: true });
+    script.addEventListener('error', handleError, { once: true });
+    document.body.appendChild(script);
+  });
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -124,6 +161,7 @@ const Checkout = () => {
   const [isAgreementChecked, setIsAgreementChecked] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
   const [isPostcodeReady, setIsPostcodeReady] = useState(false);
+  const [isImpReady, setIsImpReady] = useState(() => Boolean(window.IMP));
   const [formData, setFormData] = useState({
     userName: '',
     phoneNumber: '',
@@ -173,6 +211,12 @@ const Checkout = () => {
     document.body.appendChild(script);
 
     return () => script.removeEventListener('load', handleLoad);
+  }, []);
+
+  useEffect(() => {
+    void ensureImpLoaded()
+      .then(() => setIsImpReady(true))
+      .catch(() => setIsImpReady(false));
   }, []);
 
   const addressList = myPageQuery.data?.data?.addressList ?? [];
@@ -378,6 +422,11 @@ const Checkout = () => {
 
   const requestPayment = async (orderId: number) => {
     if (!window.IMP) {
+      await ensureImpLoaded();
+      setIsImpReady(true);
+    }
+
+    if (!window.IMP) {
       throw new Error('결제 모듈을 불러오지 못했습니다.');
     }
 
@@ -392,10 +441,10 @@ const Checkout = () => {
         : selectedPaymentMethod === 'trans'
           ? 'trans'
           : 'card';
-    const isMobile = isMobilePaymentEnvironment();
-
     const paymentOptions: Record<string, unknown> = {
       pg: 'nice_v2',
+      channelKey: CHANNEL_KEY,
+      storeId: STORE_ID,
       pay_method: payMethod,
       merchant_uid: merchantUid,
       amount: totalPayable,
@@ -405,12 +454,11 @@ const Checkout = () => {
       buyer_email: userEmail || 'no-reply@telegro.co.kr',
       buyer_addr: formData.address,
       buyer_postcode: formData.postalCode,
+      m_redirect_url: `${window.location.origin}/app/checkout/complete`,
+      vbank_due: getTodayDate(),
       escrow: true,
       digital: false,
       custom_data: { orderId },
-      channelKey: CHANNEL_KEY,
-      storeId: STORE_ID,
-      vbank_due: getTodayDate(),
     };
 
     if (payMethod === 'card') {
@@ -421,11 +469,10 @@ const Checkout = () => {
       };
     }
 
-    if (isMobile) {
-      paymentOptions.m_redirect_url = `${window.location.origin}/app/checkout/complete`;
-      paymentOptions.popup = false;
-    } else {
-      paymentOptions.popup = true;
+    if (payMethod === 'vbank') {
+      paymentOptions.virtualAccount = {
+        vbank_due: getTodayDate(),
+      };
     }
 
     return new Promise<{ imp_uid: string }>((resolve, reject) => {
