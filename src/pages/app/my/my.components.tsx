@@ -31,9 +31,7 @@ export function SectionHeader({
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h2 className="text-[2.2rem] font-semibold tracking-[-0.03em] text-[#1F1F1F]">
-          {title}
-        </h2>
+        <h2 className="title4 text-[#1F1F1F]">{title}</h2>
         {description ? (
           <p className="mt-2 text-[1.3rem] text-[#6D6D6D]">{description}</p>
         ) : null}
@@ -53,7 +51,7 @@ export function SummaryCard({
   sub: string;
 }) {
   return (
-    <article className="rounded-[1.3rem] border border-white/70 px-8 py-7 shadow-[0_20px_50px_rgba(35,35,35,0.06)] backdrop-blur">
+    <article className="rounded-[10px] border border-white/70 bg-white px-8 py-7">
       <p className="text-[1.2rem] font-semibold tracking-[0.08em] text-[#8B8B8B] uppercase">
         {label}
       </p>
@@ -159,8 +157,8 @@ export function AddressRow({
   onDelete: (address: DeliveryAddressDetailDTO) => void;
   onSetDefault: (address: DeliveryAddressDetailDTO) => void;
 }) {
-  const accentClass = address.isDefault ? 'bg-primary' : 'bg-primary/20';
-  const surfaceClass = address.isDefault ? 'bg-[#F7FAF2]' : 'bg-[#FCF8F3]';
+  const accentClass = address.isDefault ? 'bg-primary' : 'bg-primary/30';
+  const surfaceClass = address.isDefault ? 'bg-primary/10' : 'bg-white';
 
   return (
     <article

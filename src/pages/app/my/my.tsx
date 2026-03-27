@@ -146,7 +146,7 @@ const MyPage = () => {
             </div>
 
             {activeMenu === '프로필' ? (
-              <section className="relative rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="rounded-[10px] border border-white/70 bg-white/85 px-8 py-8">
                 <SectionHeader
                   title="계정 정보"
                   description="가입한 기본 정보를 확인할 수 있습니다."
@@ -172,15 +172,12 @@ const MyPage = () => {
             ) : null}
 
             {(activeMenu === '프로필' || activeMenu === '주문') && (
-              <section className="rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="rounded-[10px] border border-white/70 bg-white/85 px-8 py-8">
                 <SectionHeader
                   title="최근 주문"
                   description="최근 주문 상태를 빠르게 확인할 수 있습니다."
                   action={
-                    <Link
-                      to="/app/orders"
-                      className="text-[1.3rem] font-semibold text-[#5F7A35]"
-                    >
+                    <Link to="/app/orders" className="text-primary caption2">
                       전체 주문 보기
                     </Link>
                   }
@@ -209,7 +206,7 @@ const MyPage = () => {
             )}
 
             {(activeMenu === '프로필' || activeMenu === '배송지') && (
-              <section className="rounded-[1.6rem] border border-white/70 bg-white/85 px-8 py-8 shadow-[0_20px_50px_rgba(20,20,20,0.05)] backdrop-blur">
+              <section className="rounded-[10px] border border-white/70 bg-white/85 px-8 py-8">
                 <SectionHeader
                   title="배송지 관리"
                   description="배송지를 추가, 수정, 삭제하고 기본 배송지를 설정할 수 있습니다."
