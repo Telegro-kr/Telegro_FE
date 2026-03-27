@@ -1,16 +1,14 @@
 import { useUpdateOrderStatus } from '@apis/telegro';
+import {
+  ORDER_STATUS_OPTIONS,
+  type OrderStatusCode,
+} from '@constants/orderStatus';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
-export type OrderStatusValue =
-  | 'ORDER_CREATED'
-  | 'ORDER_COMPLETED'
-  | 'PAYMENT_COMPLETED'
-  | 'ORDER_CANCELLED'
-  | 'SHIPPING'
-  | 'DELIVERY_COMPLETED';
+export type OrderStatusValue = OrderStatusCode;
 
 export type OrderRow = {
   id: number;
@@ -32,14 +30,8 @@ type Props = {
   detailBasePath?: string;
 };
 
-const STATUS_OPTIONS: Array<{ label: string; value: OrderStatusValue }> = [
-  { label: '주문 생성', value: 'ORDER_CREATED' },
-  { label: '결제 완료', value: 'PAYMENT_COMPLETED' },
-  { label: '주문 완료', value: 'ORDER_COMPLETED' },
-  { label: '배송 중', value: 'SHIPPING' },
-  { label: '배송 완료', value: 'DELIVERY_COMPLETED' },
-  { label: '주문 취소', value: 'ORDER_CANCELLED' },
-];
+const STATUS_OPTIONS: Array<{ label: string; value: OrderStatusValue }> =
+  ORDER_STATUS_OPTIONS;
 
 const useOutsideClose = (
   isOpen: boolean,
