@@ -15,7 +15,9 @@ const PublicHeader = () => {
     <>
       <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem]">
         <nav className="flex items-center gap-[3rem] px-[2rem]">
-          <h1 className="title3_bold text-primary pr-1">Telegro</h1>
+          <h1 className="title3_bold text-primary cursor-default pr-1">
+            Telegro
+          </h1>
           <Link to="/" className={linkClass}>
             Home
           </Link>
