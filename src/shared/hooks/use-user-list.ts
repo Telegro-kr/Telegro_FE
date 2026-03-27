@@ -5,7 +5,7 @@ import {
   type UserDTORole,
 } from '@apis/telegro';
 import type { UserRole, UserRow } from '@components/admin/user-list/user-list-table';
-import { formatNumber } from '@utils/format';
+import { formatPrice } from '@utils/format';
 import { useMemo } from 'react';
 
 type UseUserListParams = {
@@ -17,14 +17,6 @@ type UseUserListParams = {
 
 const DEFAULT_PAGE_SIZE = 9;
 const FETCH_ALL_SIZE = 10000;
-
-const formatPrice = (value?: number | null) => {
-  if (value === undefined || value === null) {
-    return '-';
-  }
-
-  return `${formatNumber(value)}원`;
-};
 
 const formatJoinedAt = (value?: string) => {
   if (!value) {

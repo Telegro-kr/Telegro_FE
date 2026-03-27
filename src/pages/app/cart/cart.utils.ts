@@ -1,6 +1,8 @@
+import { formatPrice, normalizePriceValue } from '@utils/format';
+
 import type { CartItem, CartSummary } from './cart.types';
 
-export const formatWon = (value: number) => `${value.toLocaleString('ko-KR')}원`;
+export const formatWon = (value: number | string) => formatPrice(value);
 
 export const getAllOptionIds = (items: CartItem[]) =>
   items.reduce<string[]>(
@@ -25,7 +27,7 @@ export const calculateCartSummary = (selectedItems: CartItem[]): CartSummary => 
   selectedItems.forEach((item) => {
     item.options.forEach((option) => {
       itemCount += option.quantity;
-      orderPrice += option.price * option.quantity;
+      orderPrice += normalizePriceValue(option.price) * option.quantity;
       point += item.point * option.quantity;
       discount += item.discount * option.quantity;
     });
@@ -42,7 +44,10 @@ export const calculateCartSummary = (selectedItems: CartItem[]): CartSummary => 
 };
 
 export const getItemTotalPrice = (item: CartItem) =>
-  item.options.reduce((sum, option) => sum + option.price * option.quantity, 0);
+  item.options.reduce(
+    (sum, option) => sum + normalizePriceValue(option.price) * option.quantity,
+    0,
+  );
 
 export const isItemFullySelected = (item: CartItem, selectedOptionIds: string[]) =>
   item.options.every((option) => selectedOptionIds.includes(option.id));

@@ -6,6 +6,7 @@ import {
   type GetProductsCategory,
   type ProductDetailResponseDTO,
 } from '@apis/telegro';
+import { CART_ITEMS_QUERY_PARAMS } from '@pages/app/cart/use-cart-items-query';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
 import ProductDetailView from '@components/product-detail/product-detail-view';
 import {
@@ -13,10 +14,8 @@ import {
   type RecommendationItem,
 } from '@hooks/use-product-detail';
 import { useQueryClient } from '@tanstack/react-query';
-import { formatNumber } from '@utils/format';
+import { formatPrice } from '@utils/format';
 import { useNavigate } from 'react-router-dom';
-
-import { CART_ITEMS_QUERY_PARAMS } from '@pages/app/cart/use-cart-items-query';
 
 type ProductDetailContainerProps = {
   productId?: number;
@@ -67,7 +66,7 @@ const ProductDetailContainer = ({
         (item): RecommendationItem => ({
           id: item.id ?? 0,
           title: item.productName?.trim() || '상품명 없음',
-          price: `${formatNumber(item.price)}원`,
+          price: formatPrice(item.price),
           image: item.coverImage?.trim() || '/product1.png',
         }),
       ) ?? [];

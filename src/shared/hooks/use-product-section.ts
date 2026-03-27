@@ -1,5 +1,5 @@
 import { telegroPrefetch, useGetProducts, type GetProductsCategory } from '@apis/telegro';
-import { formatNumber } from '@utils/format';
+import { formatPrice } from '@utils/format';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -67,7 +67,7 @@ const toProductItem = (
   subtitle:
     product.productModel?.trim() ||
     '\uBAA8\uB378 \uC815\uBCF4 \uC5C6\uC74C',
-  priceLabel: `${formatNumber(product.price)}\uC6D0`,
+  priceLabel: formatPrice(product.price),
   imageSrc: product.coverImage?.trim() || '/product1.png',
 });
 

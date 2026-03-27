@@ -10,7 +10,7 @@ import {
   ORDER_PROGRESS_STEPS,
   getOrderStatusLabel,
 } from '@constants/orderStatus';
-import { formatNumber } from '@utils/format';
+import { formatPrice as formatWon } from '@utils/format';
 import type { ReactNode } from 'react';
 import {
   FiCheckCircle,
@@ -29,7 +29,7 @@ const paymentMethodMap: Record<OrderDetailResponseDTOPaymentMethod, string> = {
 const orderSteps: OrderDetailResponseDTOOrderStatus[] = ORDER_PROGRESS_STEPS;
 
 function formatPrice(value?: number) {
-  return `${formatNumber(value ?? 0)} KRW`;
+  return formatWon(value ?? 0);
 }
 
 function formatDate(value?: string) {

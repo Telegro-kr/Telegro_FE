@@ -8,6 +8,7 @@ import {
   type ProductTab,
   type RecommendationItem,
 } from '@hooks/use-product-detail';
+import { formatPrice } from '@utils/format';
 import { useRef } from 'react';
 
 type ProductDetailViewProps = {
@@ -95,7 +96,7 @@ const ProductDetailView = ({
           />
           <ProductDetailPurchasePanel
             productName={product.productName}
-            price={product.price}
+            price={formatPrice(product.price)}
             rewardPointLabel={rewardPointLabel}
             quantity={quantity}
             category={product.category}
