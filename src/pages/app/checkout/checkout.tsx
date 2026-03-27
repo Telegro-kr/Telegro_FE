@@ -28,26 +28,20 @@ declare global {
         }) => void,
       ) => void;
     };
-    daum?: {
-      Postcode: new (options: {
-        oncomplete: (data: {
-          zonecode: string;
-          roadAddress: string;
-          jibunAddress: string;
-          userSelectedType: 'R' | 'J';
-          bname: string;
-          buildingName: string;
-          apartment: 'Y' | 'N';
-        }) => void;
-      }) => {
-        open: () => void;
-      };
-    };
   }
 }
 
 type CheckoutLocationState = {
   orderData?: TemporaryOrderDTO;
+};
+
+type DaumPostcodeData = {
+  zonecode: string;
+  address: string;
+  addressType: 'R' | 'J';
+  bname: string;
+  buildingName: string;
+  apartment: 'Y' | 'N';
 };
 
 type PaymentMethodKey = 'card' | 'vbank' | 'trans' | null;
@@ -95,26 +89,24 @@ const formatPrice = (price: number) =>
     currency: 'KRW',
   }).format(price);
 
-const buildRoadAddress = (data: {
-  roadAddress: string;
-  jibunAddress: string;
-  userSelectedType: 'R' | 'J';
-  bname: string;
-  buildingName: string;
-  apartment: 'Y' | 'N';
-}) => {
-  const baseAddress =
-    data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
-
-  if (data.userSelectedType !== 'R') {
-    return baseAddress;
+const buildRoadAddress = (data: DaumPostcodeData) => {
+  if (data.addressType !== 'R') {
+    return data.address;
   }
 
   const extras = [data.bname, data.apartment === 'Y' ? data.buildingName : ''].filter(
     Boolean,
   );
 
-  return extras.length ? `${baseAddress} (${extras.join(', ')})` : baseAddress;
+  return extras.length ? `${data.address} (${extras.join(', ')})` : data.address;
+};
+
+const isMobilePaymentEnvironment = () => {
+  const userAgent = navigator.userAgent || navigator.vendor || '';
+
+  return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+    userAgent,
+  );
 };
 
 const Checkout = () => {
@@ -400,6 +392,7 @@ const Checkout = () => {
         : selectedPaymentMethod === 'trans'
           ? 'trans'
           : 'card';
+    const isMobile = isMobilePaymentEnvironment();
 
     const paymentOptions: Record<string, unknown> = {
       pg: 'nice_v2',
@@ -412,7 +405,6 @@ const Checkout = () => {
       buyer_email: userEmail || 'no-reply@telegro.co.kr',
       buyer_addr: formData.address,
       buyer_postcode: formData.postalCode,
-      m_redirect_url: `${window.location.origin}/app/checkout/complete`,
       escrow: true,
       digital: false,
       custom_data: { orderId },
@@ -427,6 +419,13 @@ const Checkout = () => {
         useCardPoint: false,
         useFreeInterestFromMerchant: true,
       };
+    }
+
+    if (isMobile) {
+      paymentOptions.m_redirect_url = `${window.location.origin}/app/checkout/complete`;
+      paymentOptions.popup = false;
+    } else {
+      paymentOptions.popup = true;
     }
 
     return new Promise<{ imp_uid: string }>((resolve, reject) => {
@@ -452,13 +451,19 @@ const Checkout = () => {
 
     try {
       const createdOrder = await completeOrder();
-      createdOrderId = createdOrder.id ?? null;
+      const resolvedOrderId = createdOrder.id;
+
+      if (resolvedOrderId == null) {
+        throw new Error('주문 ID를 확인할 수 없습니다.');
+      }
+
+      createdOrderId = resolvedOrderId;
 
       if (!isOnlinePaymentRole) {
         navigate('/app/checkout/complete', {
           replace: true,
           state: buildCompleteState({
-            orderIdentifier: createdOrder.orderNumber || String(createdOrder.id),
+            orderIdentifier: createdOrder.orderNumber || String(resolvedOrderId),
             orderDate: createdOrder.createdAt,
             pointsToEarn: orderData?.pointToEarn ?? 0,
           }),
@@ -466,7 +471,7 @@ const Checkout = () => {
         return;
       }
 
-      const paymentResult = await requestPayment(createdOrder.id);
+      const paymentResult = await requestPayment(resolvedOrderId);
       await validatePaymentMutation.mutateAsync({ impUid: paymentResult.imp_uid });
 
       const vbankInfo =
