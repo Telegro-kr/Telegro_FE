@@ -1,5 +1,11 @@
-﻿import { AuthActionButton, AuthCardShell, AuthField } from '@components/auth/auth-card';
+﻿import {
+  AuthActionButton,
+  AuthCardShell,
+  AuthField,
+} from '@components/auth/auth-card';
 import { type FormEvent } from 'react';
+import { IoClose } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 
 type LoginCardProps = {
   className?: string;
@@ -10,6 +16,7 @@ type LoginCardProps = {
   onPasswordChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onSignupClick: () => void;
+  onClose?: () => void;
 };
 
 const COPY = {
@@ -27,6 +34,7 @@ const COPY = {
   login: '로그인',
   loginPending: '로그인 중...',
   signup: '회원가입',
+  guestOrderLookup: '비회원으로 주문 조회하기',
 } as const;
 
 export const LoginCard = ({
@@ -38,14 +46,28 @@ export const LoginCard = ({
   onPasswordChange,
   onSubmit,
   onSignupClick,
+  onClose,
 }: LoginCardProps) => {
   return (
     <form onSubmit={onSubmit} className="w-full">
       <AuthCardShell
         className={className}
+        topAction={
+          onClose ? (
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="로그인 폼 닫기"
+              className="inline-flex h-[3.6rem] w-[3.6rem] cursor-pointer items-center justify-center rounded-full text-[#666666] transition hover:bg-[#F5F5F5] hover:text-[#121212]"
+            >
+              <IoClose size={24} />
+            </button>
+          ) : null
+        }
         title={
           <>
-            <span className="title3 text-primary">Telegro</span> {COPY.titleSuffix}
+            <span className="title3 text-primary">Telegro</span>{' '}
+            {COPY.titleSuffix}
           </>
         }
         description={
@@ -58,10 +80,12 @@ export const LoginCard = ({
         footer={
           <div className="flex-col-center caption5 gap-1 text-center whitespace-nowrap text-gray-500">
             <p>
-              {COPY.termsLine1} <span className="underline">{COPY.termsService}</span>에
+              {COPY.termsLine1}{' '}
+              <span className="underline">{COPY.termsService}</span>에
             </p>
             <p>
-              <span className="underline">{COPY.termsPrivacy}</span> {COPY.termsLine2}
+              <span className="underline">{COPY.termsPrivacy}</span>{' '}
+              {COPY.termsLine2}
             </p>
           </div>
         }
@@ -92,6 +116,12 @@ export const LoginCard = ({
             <AuthActionButton tone="secondary" onClick={onSignupClick}>
               {COPY.signup}
             </AuthActionButton>
+            <Link
+              to="/guest/orders"
+              className="text-center font-['Pretendard',sans-serif] text-[1.35rem] font-medium text-[#666666] underline underline-offset-2 transition-colors hover:text-[#121212]"
+            >
+              {COPY.guestOrderLookup}
+            </Link>
           </div>
         </div>
       </AuthCardShell>

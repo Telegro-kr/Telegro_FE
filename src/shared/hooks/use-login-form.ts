@@ -19,6 +19,22 @@ const getDefaultPathByRole = (role: ServerRole) => {
   return role === 'ADMIN' ? '/admin' : '/';
 };
 
+const getNextPathByRole = (role: ServerRole, fromPath?: string) => {
+  if (!fromPath || fromPath === '/login') {
+    return getDefaultPathByRole(role);
+  }
+
+  if (role === 'ADMIN') {
+    return fromPath.startsWith('/admin') ? fromPath : '/admin';
+  }
+
+  if (fromPath.startsWith('/admin')) {
+    return '/';
+  }
+
+  return fromPath;
+};
+
 const getErrorMessage = (error: unknown) => {
   if (
     typeof error === 'object' &&
@@ -86,10 +102,7 @@ export const useLoginForm = () => {
     try {
       const result = await login({ id, password });
       const state = location.state as LocationState | null;
-      const nextPath =
-        state?.from?.pathname && state.from.pathname !== '/login'
-          ? state.from.pathname
-          : getDefaultPathByRole(result.role);
+      const nextPath = getNextPathByRole(result.role, state?.from?.pathname);
 
       toastSuccess(COPY.loginDone);
       navigate(nextPath, { replace: true });

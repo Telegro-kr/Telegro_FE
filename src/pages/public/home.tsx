@@ -14,6 +14,9 @@ import productImage4 from '../../assets/images/Landing/image4.png';
 
 const productPath = '/products';
 const noticePath = '/notices';
+const getProductCategoryPath = (
+  category: 'HEADSET' | 'ACCESSORY' | 'RECORDER' | 'LINE_CORD',
+) => `${productPath}?category=${category}`;
 const HOME_HIT_GUARD_KEY = 'public-home-hit-recorded-at';
 const HOME_HIT_GUARD_MS = 1500;
 const NOTICE_POPUP_DISMISS_KEY = 'public-home-notice-popup-dismiss-until';
@@ -59,7 +62,7 @@ const isNoticePopupDismissed = (noticeId: number) => {
 const floatingLinks = [
   {
     label: 'Accessory',
-    path: productPath,
+    path: getProductCategoryPath('ACCESSORY'),
     className: 'border-2 border-black bg-white text-[#474747]',
     delay: '0ms',
     left: '3.4rem',
@@ -77,7 +80,7 @@ const floatingLinks = [
   },
   {
     label: 'Headset',
-    path: productPath,
+    path: getProductCategoryPath('HEADSET'),
     className: 'border-2 border-black bg-white text-[#474747]',
     delay: '180ms',
     left: '0rem',
@@ -86,7 +89,7 @@ const floatingLinks = [
   },
   {
     label: 'Recorder',
-    path: productPath,
+    path: getProductCategoryPath('RECORDER'),
     className: 'border-2 border-black bg-white text-[#474747]',
     delay: '270ms',
     left: '17.5rem',
@@ -95,7 +98,7 @@ const floatingLinks = [
   },
   {
     label: 'Linecord',
-    path: productPath,
+    path: getProductCategoryPath('LINE_CORD'),
     className: 'border-2 border-black bg-white text-[#474747]',
     delay: '360ms',
     left: '27.2rem',
@@ -107,7 +110,7 @@ const floatingLinks = [
 const mobileLinks = [
   {
     label: 'Accessory',
-    path: productPath,
+    path: getProductCategoryPath('ACCESSORY'),
     dark: false,
     delay: '0ms',
     rotate: '-10deg',
@@ -121,21 +124,21 @@ const mobileLinks = [
   },
   {
     label: 'Headset',
-    path: productPath,
+    path: getProductCategoryPath('HEADSET'),
     dark: false,
     delay: '180ms',
     rotate: '8deg',
   },
   {
     label: 'Recorder',
-    path: productPath,
+    path: getProductCategoryPath('RECORDER'),
     dark: false,
     delay: '270ms',
     rotate: '-8deg',
   },
   {
     label: 'Linecord',
-    path: productPath,
+    path: getProductCategoryPath('LINE_CORD'),
     dark: false,
     delay: '360ms',
     rotate: '0deg',
@@ -143,10 +146,26 @@ const mobileLinks = [
 ];
 
 const productCards = [
-  { title: 'headset', image: productImage1, path: productPath },
-  { title: 'recording', image: productImage2, path: productPath },
-  { title: 'accessory', image: productImage3, path: productPath },
-  { title: 'linecord', image: productImage4, path: productPath },
+  {
+    title: 'headset',
+    image: productImage1,
+    path: getProductCategoryPath('HEADSET'),
+  },
+  {
+    title: 'recording',
+    image: productImage2,
+    path: getProductCategoryPath('RECORDER'),
+  },
+  {
+    title: 'accessory',
+    image: productImage3,
+    path: getProductCategoryPath('ACCESSORY'),
+  },
+  {
+    title: 'linecord',
+    image: productImage4,
+    path: getProductCategoryPath('LINE_CORD'),
+  },
 ];
 
 const marqueeCards = [...productCards, ...productCards];
@@ -244,7 +263,7 @@ const PublicHome = () => {
             </h2>
           </div>
 
-          <div className="relative z-10 flex items-center justify-center">
+          <div className="pointer-events-none relative z-10 flex items-center justify-center">
             <div className="relative h-[25rem] w-[25rem] sm:h-[30rem] sm:w-[30rem] md:h-[40rem] md:w-[40rem] lg:h-[50rem] lg:w-[50rem]">
               <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.9)_0%,_rgba(244,227,194,0.45)_42%,_rgba(250,250,250,0)_70%)] blur-3xl" />
               <img
@@ -255,13 +274,13 @@ const PublicHome = () => {
             </div>
           </div>
 
-          <div className="absolute top-1/2 right-0 hidden translate-y-[20rem] lg:block">
+          <div className="absolute top-1/2 right-0 z-30 hidden translate-y-[20rem] lg:block">
             <div className="relative h-[34rem] w-[50rem] overflow-visible pb-8">
               {floatingLinks.map((item) => (
                 <Link
                   key={item.label}
                   to={item.path}
-                  className="absolute motion-safe:animate-[desktop-link-drop_980ms_cubic-bezier(0.2,0.9,0.2,1)_both]"
+                  className="group absolute z-20 block cursor-pointer motion-safe:animate-[desktop-link-drop_980ms_cubic-bezier(0.2,0.9,0.2,1)_both]"
                   style={{
                     left: item.left,
                     top: item.top,
@@ -269,10 +288,14 @@ const PublicHome = () => {
                   }}
                 >
                   <div
-                    className={`rounded-[2rem] px-8 py-3 font-['Pretendard',sans-serif] text-[2.4rem] font-medium whitespace-nowrap shadow-[0_18px_36px_rgba(0,0,0,0.12)] transition-transform duration-300 hover:scale-105 ${item.className}`}
-                    style={{ transform: `rotate(${item.rotate})` }}
+                    className="transition-transform duration-300 group-hover:scale-105"
                   >
-                    {item.label}
+                    <div
+                      className={`rounded-[2rem] px-8 py-3 font-['Pretendard',sans-serif] text-[2.4rem] font-medium whitespace-nowrap shadow-[0_18px_36px_rgba(0,0,0,0.12)] ${item.className}`}
+                      style={{ transform: `rotate(${item.rotate})` }}
+                    >
+                      {item.label}
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -287,20 +310,24 @@ const PublicHome = () => {
             <Link
               key={item.label}
               to={item.path}
-              className="block motion-safe:animate-[mobile-link-drop_900ms_cubic-bezier(0.2,0.9,0.2,1)_both]"
+              className="group block cursor-pointer motion-safe:animate-[mobile-link-drop_900ms_cubic-bezier(0.2,0.9,0.2,1)_both]"
               style={{
                 animationDelay: item.delay,
               }}
             >
               <div
-                className={`rounded-[1.4rem] px-6 py-2 font-['Pretendard',sans-serif] text-[1.8rem] font-medium shadow-[0_14px_28px_rgba(0,0,0,0.12)] transition-transform duration-300 hover:scale-105 ${
-                  item.dark
-                    ? 'bg-black text-white'
-                    : 'border-2 border-black bg-white text-[#474747]'
-                }`}
-                style={{ transform: `rotate(${item.rotate})` }}
+                className="transition-transform duration-300 group-hover:scale-105"
               >
-                {item.label}
+                <div
+                  className={`rounded-[1.4rem] px-6 py-2 font-['Pretendard',sans-serif] text-[1.8rem] font-medium shadow-[0_14px_28px_rgba(0,0,0,0.12)] ${
+                    item.dark
+                      ? 'bg-black text-white'
+                      : 'border-2 border-black bg-white text-[#474747]'
+                  }`}
+                  style={{ transform: `rotate(${item.rotate})` }}
+                >
+                  {item.label}
+                </div>
               </div>
             </Link>
           ))}
@@ -352,7 +379,7 @@ const PublicHome = () => {
               <Link
                 key={`${card.title}-${index}`}
                 to={card.path}
-                className="group block shrink-0"
+                className="group block shrink-0 cursor-pointer"
               >
                 <article className="relative h-[42rem] w-[28rem] overflow-hidden rounded-[4rem] bg-gradient-to-b from-[#f5f2ec] to-[#fff3d5] md:h-[50rem] md:w-[34rem] lg:h-[59.1rem] lg:w-[40rem]">
                   <div className="absolute top-8 left-8 z-10">

@@ -9,9 +9,14 @@ export type AuthMode = 'login' | 'signup';
 type AuthFlowProps = {
   className?: string;
   initialMode?: AuthMode;
+  onDismiss?: () => void;
 };
 
-const AuthFlow = ({ className, initialMode = 'login' }: AuthFlowProps) => {
+const AuthFlow = ({
+  className,
+  initialMode = 'login',
+  onDismiss,
+}: AuthFlowProps) => {
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const loginForm = useLoginForm();
   const signupForm = useSignupForm({ onSignupSuccess: () => setMode('login') });
@@ -44,6 +49,7 @@ const AuthFlow = ({ className, initialMode = 'login' }: AuthFlowProps) => {
       onPasswordChange={loginForm.setPassword}
       onSubmit={loginForm.handleSubmit}
       onSignupClick={() => setMode('signup')}
+      onClose={onDismiss}
     />
   );
 };

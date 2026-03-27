@@ -9,6 +9,7 @@ type AuthCardShellProps = {
   children: ReactNode;
   footer?: ReactNode;
   header?: ReactNode;
+  topAction?: ReactNode;
 };
 
 type AuthFieldProps = ComponentProps<'input'> & {
@@ -32,15 +33,17 @@ export function AuthCardShell({
   children,
   footer,
   header,
+  topAction,
 }: AuthCardShellProps) {
   return (
     <section
       className={cn(
-        'flex w-full max-w-[45rem] flex-col rounded-t-[2rem] bg-white px-[4rem] py-[5rem] shadow-[0_4px_21px_rgba(85,128,20,0.2)]',
+        'flex w-full max-w-[45rem] flex-col rounded-t-[2rem] bg-white px-[4rem] pt-[2rem] pb-[3rem] shadow-[0_4px_21px_rgba(85,128,20,0.2)]',
         className,
       )}
     >
-      <div className="flex h-full flex-col gap-8">
+      <div className="h-full flex-col gap-8">
+        {topAction ? <div className="flex justify-end">{topAction}</div> : null}
         {header ? (
           <div>{header}</div>
         ) : (
@@ -54,9 +57,13 @@ export function AuthCardShell({
             <div className="flex-col-center w-full gap-4">
               <div className="flex-col-center gap-2 text-center">
                 {title ? (
-                  <h1 className="text-[2rem] font-semibold text-gray-900">{title}</h1>
+                  <h1 className="text-[2rem] font-semibold text-gray-900">
+                    {title}
+                  </h1>
                 ) : null}
-                {description ? <div className="body4 text-gray-700">{description}</div> : null}
+                {description ? (
+                  <div className="body4 text-gray-700">{description}</div>
+                ) : null}
               </div>
 
               <div className="h-px w-full bg-[#E9E9E9]" />
@@ -73,7 +80,12 @@ export function AuthCardShell({
   );
 }
 
-export function AuthField({ label, hint, className, ...props }: AuthFieldProps) {
+export function AuthField({
+  label,
+  hint,
+  className,
+  ...props
+}: AuthFieldProps) {
   return (
     <label className="flex flex-col gap-2">
       <span className="font-['Pretendard',sans-serif] text-[1.25rem] font-semibold text-[#2B2B2B]">
@@ -86,7 +98,11 @@ export function AuthField({ label, hint, className, ...props }: AuthFieldProps) 
         )}
         {...props}
       />
-      {hint ? <span className="text-[1.2rem] leading-[1.5] text-[#8B8B8B]">{hint}</span> : null}
+      {hint ? (
+        <span className="text-[1.2rem] leading-[1.5] text-[#8B8B8B]">
+          {hint}
+        </span>
+      ) : null}
     </label>
   );
 }
@@ -104,7 +120,8 @@ export function AuthActionButton({
         "h-[4.8rem] rounded-[0.5rem] font-['Pretendard',sans-serif] text-[1.5rem] font-bold tracking-[-0.01em] transition disabled:cursor-not-allowed disabled:opacity-60",
         tone === 'primary' &&
           'bg-[#FFC633] text-white hover:brightness-95 disabled:hover:brightness-100',
-        tone === 'secondary' && 'bg-[#FFF4D8] text-[#2B2B2B] hover:bg-[#FFEAB5]',
+        tone === 'secondary' &&
+          'bg-[#FFF4D8] text-[#2B2B2B] hover:bg-[#FFEAB5]',
         tone === 'ghost' &&
           'border border-[#E9E9E9] bg-white text-[1.2rem] text-[#2B2B2B] hover:border-[#FFC633]',
         className,
