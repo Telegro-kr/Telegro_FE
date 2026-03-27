@@ -1,6 +1,6 @@
 import ConfirmModal from '@components/common/confirm-modal';
 import LoadingPage from '@components/common/loading-page';
-import { FiEdit2, FiMapPin, FiPlus } from 'react-icons/fi';
+import { FiEdit2, FiPlus } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import { MENU_ITEMS } from './my.constants';
 import {
