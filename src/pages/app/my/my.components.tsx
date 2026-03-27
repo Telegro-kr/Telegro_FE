@@ -3,7 +3,14 @@ import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import type { DeliveryAddressDetailDTO, OrderDetailDTO } from '@apis/telegro';
 import { getOrderStatusLabel } from '@constants/orderStatus';
-import { FiChevronRight, FiEdit2, FiMapPin, FiStar, FiTrash2, FiX } from 'react-icons/fi';
+import {
+  FiChevronRight,
+  FiEdit2,
+  FiMapPin,
+  FiStar,
+  FiTrash2,
+  FiX,
+} from 'react-icons/fi';
 import type { AddressForm } from './my.types';
 import {
   formatOrderDate,
@@ -25,19 +32,35 @@ export function SectionHeader({
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h2 className="text-[2.2rem] font-semibold tracking-[-0.03em] text-[#1F1F1F]">{title}</h2>
-        {description ? <p className="mt-2 text-[1.3rem] text-[#6D6D6D]">{description}</p> : null}
+        <h2 className="text-[2.2rem] font-semibold tracking-[-0.03em] text-[#1F1F1F]">
+          {title}
+        </h2>
+        {description ? (
+          <p className="mt-2 text-[1.3rem] text-[#6D6D6D]">{description}</p>
+        ) : null}
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }
 
-export function SummaryCard({ label, value, sub }: { label: string; value: string; sub: string }) {
+export function SummaryCard({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: string;
+  sub: string;
+}) {
   return (
     <article className="rounded-[1.3rem] border border-white/70 px-8 py-7 shadow-[0_20px_50px_rgba(35,35,35,0.06)] backdrop-blur">
-      <p className="text-[1.2rem] font-semibold tracking-[0.08em] text-[#8B8B8B] uppercase">{label}</p>
-      <p className="mt-4 text-[3rem] font-semibold tracking-[-0.04em] text-[#161616]">{value}</p>
+      <p className="text-[1.2rem] font-semibold tracking-[0.08em] text-[#8B8B8B] uppercase">
+        {label}
+      </p>
+      <p className="mt-4 text-[3rem] font-semibold tracking-[-0.04em] text-[#161616]">
+        {value}
+      </p>
       <p className="mt-2 text-[1.3rem] text-[#6D6D6D]">{sub}</p>
     </article>
   );
@@ -68,7 +91,9 @@ function InputField({
 }) {
   return (
     <label className="block">
-      <span className="text-[1.3rem] font-semibold text-[#5D5D5D]">{label}</span>
+      <span className="text-[1.3rem] font-semibold text-[#5D5D5D]">
+        {label}
+      </span>
       <input
         type="text"
         name={name}
@@ -78,7 +103,9 @@ function InputField({
         readOnly={readOnly}
         className={[
           'mt-3 h-[5.4rem] w-full rounded-[1.2rem] border border-gray-300 px-5 text-[1.5rem] text-[#1F1F1F] outline-none',
-          readOnly ? 'bg-[#FAFAFA]' : 'transition-colors placeholder:text-gray-500 focus:border-[#5F7A35]',
+          readOnly
+            ? 'bg-[#FAFAFA]'
+            : 'transition-colors placeholder:text-gray-500 focus:border-[#5F7A35]',
         ].join(' ')}
       />
     </label>
@@ -93,8 +120,16 @@ export function OrderRow({ order }: { order: OrderDetailDTO }) {
     >
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-3">
-          <p className="truncate text-[1.6rem] font-semibold text-[#202020]">{getOrderProductName(order)}</p>
-          <StatusBadge label={order.orderStatus ? getOrderStatusLabel(order.orderStatus) : '상태 확인 중'} />
+          <p className="truncate text-[1.6rem] font-semibold text-[#202020]">
+            {getOrderProductName(order)}
+          </p>
+          <StatusBadge
+            label={
+              order.orderStatus
+                ? getOrderStatusLabel(order.orderStatus)
+                : '상태 확인 중'
+            }
+          />
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[1.3rem] text-[#6D6D6D]">
           <span>{formatOrderDate(order.createdAt)}</span>
@@ -103,7 +138,9 @@ export function OrderRow({ order }: { order: OrderDetailDTO }) {
       </div>
 
       <div className="flex shrink-0 items-center gap-3">
-        <p className="text-[1.5rem] font-semibold text-[#303030]">{formatOrderPrice(order.amount)}</p>
+        <p className="text-[1.5rem] font-semibold text-[#303030]">
+          {formatOrderPrice(order.amount)}
+        </p>
         <FiChevronRight className="text-[1.8rem] text-[#A69A89]" />
       </div>
     </Link>
@@ -123,7 +160,7 @@ export function AddressRow({
   onDelete: (address: DeliveryAddressDetailDTO) => void;
   onSetDefault: (address: DeliveryAddressDetailDTO) => void;
 }) {
-  const accentClass = address.isDefault ? 'bg-[#5F7A35]' : 'bg-[#C9B89D]';
+  const accentClass = address.isDefault ? 'bg-primary' : 'bg-primary/20';
   const surfaceClass = address.isDefault ? 'bg-[#F7FAF2]' : 'bg-[#FCF8F3]';
 
   return (
@@ -133,11 +170,15 @@ export function AddressRow({
         surfaceClass,
       ].join(' ')}
     >
-      <div className={`absolute top-0 bottom-0 left-0 w-[0.6rem] ${accentClass}`} />
+      <div
+        className={`absolute top-0 bottom-0 left-0 w-[0.6rem] ${accentClass}`}
+      />
       <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[1.6rem] font-semibold text-[#1F1F1F]">{address.name?.trim() || '배송지'}</p>
+            <p className="text-[1.6rem] font-semibold text-[#1F1F1F]">
+              {address.name?.trim() || '배송지'}
+            </p>
             {address.isDefault ? (
               <span className="rounded-[999px] bg-[#202020] px-3 py-1 text-[1.1rem] font-semibold text-white">
                 기본 배송지
@@ -145,10 +186,19 @@ export function AddressRow({
             ) : null}
           </div>
           <p className="mt-3 text-[1.4rem] font-medium text-[#444444]">
-            {[address.recipientName?.trim() || '-', formatPhoneNumber(address.phoneNumber)].join(' / ')}
+            {[
+              address.recipientName?.trim() || '-',
+              formatPhoneNumber(address.phoneNumber),
+            ].join(' / ')}
           </p>
-          <p className="mt-2 text-[1.4rem] leading-[1.7] text-[#6D6D6D]">{getAddressLine(address) || '-'}</p>
-          {address.zipcode ? <p className="mt-1 text-[1.2rem] text-[#9A9A9A]">{address.zipcode}</p> : null}
+          <p className="mt-2 text-[1.4rem] leading-[1.7] text-[#6D6D6D]">
+            {getAddressLine(address) || '-'}
+          </p>
+          {address.zipcode ? (
+            <p className="mt-1 text-[1.2rem] text-[#9A9A9A]">
+              {address.zipcode}
+            </p>
+          ) : null}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -218,7 +268,9 @@ export function AddressModal({
             <p className="text-[2.2rem] font-semibold tracking-[-0.03em] text-[#1D1D1D]">
               {mode === 'create' ? '배송지 추가' : '배송지 수정'}
             </p>
-            <p className="mt-2 text-[1.35rem] text-[#6B6B6B]">배송지 정보를 입력해 주세요.</p>
+            <p className="mt-2 text-[1.35rem] text-[#6B6B6B]">
+              배송지 정보를 입력해 주세요.
+            </p>
           </div>
           <button
             type="button"
@@ -232,11 +284,31 @@ export function AddressModal({
 
         <form onSubmit={onSubmit} className="mt-8 space-y-6">
           <div className="grid gap-5 md:grid-cols-2">
-            <InputField label="배송지명" name="name" value={form.name} onChange={onChange} placeholder="집, 회사" />
-            <InputField label="받는 분" name="recipientName" value={form.recipientName} onChange={onChange} placeholder="받는 분 이름" />
-            <InputField label="연락처" name="phoneNumber" value={form.phoneNumber} onChange={onChange} placeholder="연락처" />
+            <InputField
+              label="배송지명"
+              name="name"
+              value={form.name}
+              onChange={onChange}
+              placeholder="집, 회사"
+            />
+            <InputField
+              label="받는 분"
+              name="recipientName"
+              value={form.recipientName}
+              onChange={onChange}
+              placeholder="받는 분 이름"
+            />
+            <InputField
+              label="연락처"
+              name="phoneNumber"
+              value={form.phoneNumber}
+              onChange={onChange}
+              placeholder="연락처"
+            />
             <label className="block">
-              <span className="text-[1.3rem] font-semibold text-[#5D5D5D]">우편번호</span>
+              <span className="text-[1.3rem] font-semibold text-[#5D5D5D]">
+                우편번호
+              </span>
               <div className="mt-3 flex gap-3">
                 <input
                   type="text"
@@ -254,12 +326,20 @@ export function AddressModal({
                 </button>
               </div>
               {!isPostcodeReady ? (
-                <p className="mt-2 text-[1.2rem] text-[#8B8B8B]">주소 검색을 불러오는 중입니다.</p>
+                <p className="mt-2 text-[1.2rem] text-[#8B8B8B]">
+                  주소 검색을 불러오는 중입니다.
+                </p>
               ) : null}
             </label>
           </div>
 
-          <InputField label="주소" name="address" value={form.address} onChange={onChange} readOnly />
+          <InputField
+            label="주소"
+            name="address"
+            value={form.address}
+            onChange={onChange}
+            readOnly
+          />
           <InputField
             label="상세 주소"
             name="addressDetail"
@@ -275,7 +355,9 @@ export function AddressModal({
               onChange={() => onToggleDefault()}
               className="h-5 w-5 accent-[#5F7A35]"
             />
-            <span className="text-[1.4rem] font-medium text-[#363636]">기본 배송지로 설정</span>
+            <span className="text-[1.4rem] font-medium text-[#363636]">
+              기본 배송지로 설정
+            </span>
           </label>
 
           <div className="flex justify-end gap-3">
