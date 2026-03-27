@@ -15,6 +15,12 @@ const linkClass =
 const secondaryLinkClass =
   'font-[Pretendard,sans-serif] text-[1.4rem] font-medium text-[#666666] transition-colors hover:text-[#121212]';
 
+const brandLinkClass = 'group title3_bold pr-1 no-underline';
+const brandTextBaseClass =
+  'text-primary transition-opacity duration-300 group-hover:opacity-0';
+const brandTextGradientClass =
+  'pointer-events-none absolute inset-0 bg-gradient-to-r from-[#FFCF4D] via-[#FFC633] to-[#DFAF1A] bg-clip-text text-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100';
+
 const PublicHeader = () => {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
   const location = useLocation();
@@ -38,11 +44,17 @@ const PublicHeader = () => {
     <>
       <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem]">
         <nav className="flex items-center gap-[3rem] px-[2rem]">
-          <h1 className="title3_bold text-primary cursor-default pr-1">
-            Telegro
-          </h1>
-          <Link to="/" className={linkClass} onClick={handleClosePanels}>
-            Home
+          <Link
+            to="/"
+            className={brandLinkClass}
+            onClick={handleClosePanels}
+          >
+            <span className="relative inline-block">
+              <span className={brandTextBaseClass}>Telegro</span>
+              <span aria-hidden="true" className={brandTextGradientClass}>
+                Telegro
+              </span>
+            </span>
           </Link>
           <Link
             to="/products"
