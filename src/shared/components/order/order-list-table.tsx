@@ -133,15 +133,12 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
   );
 };
 
-const OrderListTable = ({
-  data,
-  detailBasePath = '/app/orders',
-}: Props) => {
+const OrderListTable = ({ data, detailBasePath = '/app/orders' }: Props) => {
   const navigate = useNavigate();
   const [isHeaderFilterOpen, setIsHeaderFilterOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<OrderStatusValue | 'ALL'>(
-    'ALL',
-  );
+  const [selectedStatus, setSelectedStatus] = useState<
+    OrderStatusValue | 'ALL'
+  >('ALL');
   const headerFilterRef = useRef<HTMLDivElement>(null);
 
   useOutsideClose(isHeaderFilterOpen, headerFilterRef, () =>
@@ -159,8 +156,8 @@ const OrderListTable = ({
   const selectedStatusLabel =
     selectedStatus === 'ALL'
       ? '주문 상태'
-      : STATUS_OPTIONS.find((option) => option.value === selectedStatus)?.label ??
-        '주문 상태';
+      : (STATUS_OPTIONS.find((option) => option.value === selectedStatus)
+          ?.label ?? '주문 상태');
 
   return (
     <div className="w-full rounded-[1.6rem] border border-slate-200 bg-white">
@@ -252,7 +249,7 @@ const OrderListTable = ({
             <tr
               key={row.id}
               onClick={() => navigate(`${detailBasePath}/${row.orderId}`)}
-              className="h-[9.2rem] cursor-pointer border-b border-slate-200 transition hover:bg-[#FAFAFA] last:border-b-0"
+              className="h-[8rem] cursor-pointer border-b border-slate-200 transition last:border-b-0 hover:bg-[#FAFAFA]"
             >
               <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.id}</span>
@@ -275,7 +272,7 @@ const OrderListTable = ({
                     {row.totalPrice}
                   </span>
                   {row.totalSubLabel ? (
-                    <span className="mt-1 block max-w-full truncate text-xs font-semibold text-slate-500">
+                    <span className="caption5 mt-1 block max-w-full truncate text-slate-500">
                       {row.totalSubLabel}
                     </span>
                   ) : null}
