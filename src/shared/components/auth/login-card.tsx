@@ -3,8 +3,9 @@
   AuthCardShell,
   AuthField,
 } from '@components/auth/auth-card';
-import { IoClose } from 'react-icons/io5';
 import { type FormEvent } from 'react';
+import { IoClose } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 
 type LoginCardProps = {
   className?: string;
@@ -33,6 +34,7 @@ const COPY = {
   login: '로그인',
   loginPending: '로그인 중...',
   signup: '회원가입',
+  guestOrderLookup: '비회원으로 주문 조회하기',
 } as const;
 
 export const LoginCard = ({
@@ -114,6 +116,12 @@ export const LoginCard = ({
             <AuthActionButton tone="secondary" onClick={onSignupClick}>
               {COPY.signup}
             </AuthActionButton>
+            <Link
+              to="/guest/orders"
+              className="text-center font-['Pretendard',sans-serif] text-[1.35rem] font-medium text-[#666666] underline underline-offset-2 transition-colors hover:text-[#121212]"
+            >
+              {COPY.guestOrderLookup}
+            </Link>
           </div>
         </div>
       </AuthCardShell>

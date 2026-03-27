@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom';
 const linkClass =
   'title6 text-gray-900 cursor-pointer no-underline transition-underline hover:underline';
 
+const secondaryLinkClass =
+  'font-[Pretendard,sans-serif] text-[1.4rem] font-medium text-[#666666] transition-colors hover:text-[#121212]';
+
 const PublicHeader = () => {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
   const [isLoginOverlayOpen, setIsLoginOverlayOpen] = useState(false);
@@ -35,13 +38,18 @@ const PublicHeader = () => {
               My
             </Link>
           ) : (
-            <button
-              type="button"
-              onClick={() => setIsLoginOverlayOpen(true)}
-              className={linkClass}
-            >
-              Login
-            </button>
+            <div className="ml-auto flex items-center gap-6">
+              <Link to="/guest/orders" className={secondaryLinkClass}>
+                비회원 주문조회
+              </Link>
+              <button
+                type="button"
+                onClick={() => setIsLoginOverlayOpen(true)}
+                className={linkClass}
+              >
+                Login
+              </button>
+            </div>
           )}
         </nav>
       </header>

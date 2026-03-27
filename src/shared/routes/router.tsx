@@ -14,6 +14,7 @@ const PublicProdDet = lazy(
 );
 const Notices = lazy(() => import('@pages/public/notices/notices'));
 const NoticeDetail = lazy(() => import('@pages/public/notices/notice-detail'));
+const GuestOrders = lazy(() => import('@pages/public/guest-orders'));
 const ErrorPage = lazy(() => import('@pages/errors/error'));
 const NotFound = lazy(() => import('@pages/errors/not-found'));
 
@@ -51,6 +52,7 @@ export const router = createBrowserRouter([
       { path: 'products/:productId', element: <PublicProdDet /> },
       { path: 'notices', element: <Notices /> },
       { path: 'notices/:noticeId', element: <NoticeDetail /> },
+      { path: 'guest/orders', element: <GuestOrders /> },
       { path: 'error', element: <ErrorPage /> },
     ],
   },
