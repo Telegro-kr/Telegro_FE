@@ -22,6 +22,7 @@ type ProductDetailPurchasePanelProps = {
   onSelectOption: (option: string) => void;
   onInputOptionChange: (value: string) => void;
   onAddCart?: () => void;
+  onPurchase?: () => void;
   onToggleLike: () => void;
   onShare: () => void;
   isAdminMode?: boolean;
@@ -48,6 +49,7 @@ const ProductDetailPurchasePanel = ({
   onSelectOption,
   onInputOptionChange,
   onAddCart,
+  onPurchase,
   onToggleLike,
   onShare,
   isAdminMode = false,
@@ -171,7 +173,9 @@ const ProductDetailPurchasePanel = ({
         </div>
       ) : (
         <div className="grid grid-cols-[1.15fr_1fr_0.8fr] gap-3 pt-3">
-          <ActionButton variant="primary">구매하기</ActionButton>
+          <ActionButton variant="primary" onClick={onPurchase}>
+            구매하기
+          </ActionButton>
           <ActionButton variant="secondary" onClick={onAddCart}>
             장바구니
           </ActionButton>

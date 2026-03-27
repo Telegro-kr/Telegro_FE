@@ -25,6 +25,8 @@ const Cart = () => {
     removeOption,
     removeItem,
     removeSelected,
+    addOption,
+    purchaseItem,
     purchaseSelected,
     purchaseAll,
   } = useCart(fetchedItems);
@@ -83,6 +85,8 @@ const Cart = () => {
                   onUpdateQuantity={updateQuantity}
                   onRemoveOption={removeOption}
                   onRemoveItem={removeItem}
+                  onAddOption={addOption}
+                  onPurchaseItem={purchaseItem}
                 />
               ))}
             </div>

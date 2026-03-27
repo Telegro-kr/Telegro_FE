@@ -2,6 +2,12 @@ import type { CartResponseDTO, CartResponseDTOProductCategory } from '@apis/tele
 
 import type { CartItem } from './cart.types';
 
+type CartResponseWithProduct = CartResponseDTO & {
+  product?: {
+    id?: number;
+  };
+};
+
 const CATEGORY_LABELS: Partial<Record<CartResponseDTOProductCategory, string>> = {
   HEADSET: '헤드셋',
   PHONE_AMP: '폰앰프',
@@ -33,7 +39,8 @@ export const mapCartResponseToCartItems = (carts?: CartResponseDTO[]): CartItem[
 
   const groupedItems = new Map<string, CartItem>();
 
-  carts.forEach((cart, index) => {
+  carts.forEach((rawCart, index) => {
+    const cart = rawCart as CartResponseWithProduct;
     const cartId = cart.id ?? index;
     const groupKey = [
       cart.productName?.trim() || '상품 정보 없음',
@@ -57,6 +64,7 @@ export const mapCartResponseToCartItems = (carts?: CartResponseDTO[]): CartItem[
 
     groupedItems.set(groupKey, {
       id: groupKey,
+      productId: cart.product?.id,
       name: cart.productName?.trim() || '상품 정보 없음',
       subtitle: cart.productModel?.trim() || '모델 정보 없음',
       imageSrc: cart.coverImage?.trim() || '/product1.png',

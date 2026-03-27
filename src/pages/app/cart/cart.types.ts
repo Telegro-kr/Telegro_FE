@@ -10,6 +10,7 @@ export type CartOption = {
 
 export type CartItem = {
   id: string;
+  productId?: number;
   name: string;
   subtitle: string;
   imageSrc: string;
