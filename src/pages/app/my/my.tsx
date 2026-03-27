@@ -217,7 +217,7 @@ const MyPage = () => {
                     <button
                       type="button"
                       onClick={openCreateAddress}
-                      className="inline-flex items-center gap-2 rounded-[999px] bg-[#202020] px-5 py-3 text-[1.3rem] font-semibold text-white"
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-[999px] bg-[#202020] px-5 py-3 text-[1.3rem] font-semibold text-white"
                     >
                       <FiPlus className="text-[1.6rem]" />
                       배송지 추가

@@ -160,7 +160,7 @@ export function useMyPage() {
           data: toAddressPayload(addressForm),
         });
 
-        const createdAddressId = response.data?.data?.id;
+        const createdAddressId = response.data?.id;
         if (addressForm.isDefault && createdAddressId) {
           await setDefaultAddressMutation.mutateAsync({ addressId: createdAddressId });
         }

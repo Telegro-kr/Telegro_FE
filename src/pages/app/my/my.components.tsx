@@ -207,7 +207,7 @@ export function AddressRow({
               type="button"
               onClick={() => onSetDefault(address)}
               disabled={isMutating}
-              className="inline-flex items-center gap-2 rounded-[999px] border border-[#D8D0C3] bg-white px-4 py-2 text-[1.25rem] font-semibold text-[#4E4E4E] disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-[999px] border border-[#D8D0C3] bg-white px-4 py-2 text-[1.25rem] font-semibold text-[#4E4E4E] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <FiStar className="text-[1.4rem]" />
               기본 배송지 설정
@@ -217,7 +217,7 @@ export function AddressRow({
             type="button"
             onClick={() => onEdit(address)}
             disabled={isMutating}
-            className="inline-flex items-center gap-2 rounded-[999px] border border-[#D8D0C3] bg-white px-4 py-2 text-[1.25rem] font-semibold text-[#4E4E4E] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-[999px] border border-[#D8D0C3] bg-white px-4 py-2 text-[1.25rem] font-semibold text-[#4E4E4E] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <FiEdit2 className="text-[1.35rem]" />
             수정
@@ -226,7 +226,7 @@ export function AddressRow({
             type="button"
             onClick={() => onDelete(address)}
             disabled={isMutating}
-            className="inline-flex items-center gap-2 rounded-[999px] border border-[#F1D4D4] bg-white px-4 py-2 text-[1.25rem] font-semibold text-[#BC4F4F] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-[999px] border border-[#F1D4D4] bg-white px-4 py-2 text-[1.25rem] font-semibold text-[#BC4F4F] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <FiTrash2 className="text-[1.35rem]" />
             삭제
