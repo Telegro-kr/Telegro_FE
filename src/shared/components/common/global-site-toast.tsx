@@ -16,7 +16,7 @@ const GlobalSiteToast = () => {
           <Icon name="global-toast" className="text-gray-300" size={2.0} />
         </div>
 
-        <p className="w-[33rem] max-w-[calc(100vw-12rem)] text-[14px] leading-[21px] font-medium break-words whitespace-pre-line text-white">
+        <p className="w-[35rem] max-w-[calc(100vw-12rem)] text-[14px] leading-[21px] font-medium break-words whitespace-pre-line text-white">
           텔레그로 사이트 방문해주셔서 감사합니다. {'\n'}
           제품에 대한 문의 주시면 자세하게 설명 드리겠습니다. {'\n'}
           제품출고마감 : 당일 오후 3시 접수마감 입니다.
