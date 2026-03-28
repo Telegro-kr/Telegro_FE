@@ -71,6 +71,7 @@ const HIT_FILTER_MAP: Record<ChartFilter, string> = {
 };
 
 export const MONTHS = MONTH_LABELS;
+const HITS_QUERY_STALE_TIME = 60_000;
 
 function clampPage(page: number, maxPage: number) {
   return Math.min(Math.max(page, 0), maxPage);
@@ -227,11 +228,44 @@ export function useAccessStatusChart() {
     company: 0,
   });
 
-  const hitsQuery = useGetHits(getHitsParams(filter, selectedYear, selectedMonth), {
+  const dailyHitsQuery = useGetHits(
+    getHitsParams('daily', selectedYear, selectedMonth),
+    {
+      query: {
+        staleTime: HITS_QUERY_STALE_TIME,
+      },
+    },
+  );
+  const monthlyHitsQuery = useGetHits(getHitsParams('monthly', selectedYear, selectedMonth), {
     query: {
-      staleTime: 60_000,
+      staleTime: HITS_QUERY_STALE_TIME,
     },
   });
+  const weekdayHitsQuery = useGetHits(
+    getHitsParams('weekday', selectedYear, selectedMonth),
+    {
+      query: {
+        staleTime: HITS_QUERY_STALE_TIME,
+      },
+    },
+  );
+  const companyHitsQuery = useGetHits(
+    getHitsParams('company', selectedYear, selectedMonth),
+    {
+      query: {
+        staleTime: HITS_QUERY_STALE_TIME,
+      },
+    },
+  );
+
+  const hitsQueryByFilter = {
+    daily: dailyHitsQuery,
+    monthly: monthlyHitsQuery,
+    weekday: weekdayHitsQuery,
+    company: companyHitsQuery,
+  } satisfies Record<ChartFilter, typeof dailyHitsQuery>;
+
+  const activeHitsQuery = hitsQueryByFilter[filter];
 
   useEffect(() => {
     const raf = window.requestAnimationFrame(() => setIsReady(true));
@@ -259,11 +293,11 @@ export function useAccessStatusChart() {
     () =>
       mapHitsToData(
         filter,
-        hitsQuery.data?.data?.hits ?? [],
+        activeHitsQuery.data?.data?.hits ?? [],
         selectedYear,
         selectedMonth,
       ),
-    [filter, hitsQuery.data?.data?.hits, selectedMonth, selectedYear],
+    [activeHitsQuery.data?.data?.hits, filter, selectedMonth, selectedYear],
   );
 
   const dataset = useMemo(
@@ -271,16 +305,16 @@ export function useAccessStatusChart() {
       buildDataset(
         chartData,
         pageByFilter[filter],
-        hitsQuery.data?.data?.totalHit ??
-          hitsQuery.data?.data?.overAllTotalHit ??
-          hitsQuery.data?.data?.averageHit,
+        activeHitsQuery.data?.data?.totalHit ??
+          activeHitsQuery.data?.data?.overAllTotalHit ??
+          activeHitsQuery.data?.data?.averageHit,
       ),
     [
+      activeHitsQuery.data?.data?.averageHit,
+      activeHitsQuery.data?.data?.overAllTotalHit,
+      activeHitsQuery.data?.data?.totalHit,
       chartData,
       filter,
-      hitsQuery.data?.data?.averageHit,
-      hitsQuery.data?.data?.overAllTotalHit,
-      hitsQuery.data?.data?.totalHit,
       pageByFilter,
     ],
   );
@@ -319,8 +353,8 @@ export function useAccessStatusChart() {
     activeFilterLabel,
     activeMonthLabel: `${selectedMonth}\uC6D4`,
     activeYearLabel: `${selectedYear}\uB144`,
-    isLoading: hitsQuery.isLoading,
-    isError: hitsQuery.isError,
+    isLoading: activeHitsQuery.isLoading,
+    isError: activeHitsQuery.isError,
     goToPrevPage: () => movePage('prev'),
     goToNextPage: () => movePage('next'),
   };
