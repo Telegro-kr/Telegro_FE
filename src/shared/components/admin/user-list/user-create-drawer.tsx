@@ -5,7 +5,6 @@ import {
   inputClass,
   labelClass,
   ROLE_OPTIONS,
-  STEP_FIELDS,
 } from './user-drawer.constants';
 import { useUserCreateDrawer } from './use-user-create-drawer';
 import type { UserDrawerInitialData } from './user-drawer.types';
@@ -40,6 +39,7 @@ const UserCreateDrawer = ({
     selectedRole,
     setCurrentStep,
     setSelectedRole,
+    stepFields,
   } = useUserCreateDrawer({
     open,
     mode,
@@ -101,7 +101,7 @@ const UserCreateDrawer = ({
 
             <div className="flex flex-col gap-[4rem] pt-[2rem]">
               <div className="flex gap-2">
-                {STEP_FIELDS.map((item) => (
+                {stepFields.map((item) => (
                   <div
                     key={item.step}
                     className={[
