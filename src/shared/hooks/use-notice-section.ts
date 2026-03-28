@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useGetNotices } from '@apis/telegro';
+import { stripHtmlToText } from '@utils/html';
 
 export type NoticeItem = {
   id: number;
@@ -17,9 +18,12 @@ type UseNoticeSectionParams = {
 };
 
 const DEFAULT_PAGE_SIZE = 2;
-
 const FALLBACK_PREVIEW =
-  '\uACF5\uC9C0 \uC0C1\uC138 \uD398\uC774\uC9C0\uC5D0\uC11C \uBCF8\uBB38\uC744 \uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.';
+  '공지 상세 페이지에서 자세한 내용을 확인할 수 있습니다.';
+
+type NoticeListItemWithContext = {
+  context?: string | null;
+};
 
 const formatNoticeDate = (value?: string) => {
   if (!value) return '-';
@@ -57,18 +61,21 @@ export function useNoticeSection({
       return notices;
     }
 
-    return (noticeQuery.data?.data?.notices ?? []).map((notice) => ({
-      id: notice.id ?? 0,
-      title:
-        notice.noticeTitle?.trim() ||
-        '\uC81C\uBAA9 \uC5C6\uB294 \uACF5\uC9C0\uC0AC\uD56D',
-      preview:
-        notice.noticeFileName?.trim() ||
-        notice.noticeAuthor?.trim() ||
-        FALLBACK_PREVIEW,
-      views: notice.viewCount ?? 0,
-      dateLabel: formatNoticeDate(notice.noticeCreateDate),
-    }));
+    return (noticeQuery.data?.data?.notices ?? []).map((notice) => {
+      const plainTextPreview = stripHtmlToText(
+        (notice as typeof notice & NoticeListItemWithContext).context ?? '',
+      );
+
+      return {
+        id: notice.id ?? 0,
+        title:
+          notice.noticeTitle?.trim() ||
+          '\uC81C\uBAA9 \uC5C6\uB294 \uACF5\uC9C0\uC0AC\uD56D',
+        preview: plainTextPreview || FALLBACK_PREVIEW,
+        views: notice.viewCount ?? 0,
+        dateLabel: formatNoticeDate(notice.noticeCreateDate),
+      };
+    });
   }, [noticeQuery.data?.data?.notices, notices]);
 
   const normalizedKeyword = searchKeyword.trim().toLowerCase();
