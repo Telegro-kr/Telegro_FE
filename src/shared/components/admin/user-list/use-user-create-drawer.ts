@@ -12,10 +12,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { formatPhoneNumber } from '@utils/format';
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import {
+  getStepFieldsByRole,
   INITIAL_FORM,
   POSTCODE_SCRIPT_ID,
   POSTCODE_SCRIPT_SRC,
-  STEP_FIELDS,
 } from './user-drawer.constants';
 import { buildRoadAddress, getDrawerErrorMessage } from './user-drawer.utils';
 import type {
@@ -57,14 +57,15 @@ export const useUserCreateDrawer = ({
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
   const [isPostcodeReady, setIsPostcodeReady] = useState(false);
   const [form, setForm] = useState<CreateCompanyForm>(INITIAL_FORM);
+  const stepFields = useMemo(() => getStepFieldsByRole(selectedRole), [selectedRole]);
 
   const isEditMode = mode === 'edit';
   const isSubmitting = createCompanyMutation.isPending || updateUserMutation.isPending;
   const activeStep = useMemo(
-    () => STEP_FIELDS.find((item) => item.step === currentStep) ?? STEP_FIELDS[0],
-    [currentStep],
+    () => stepFields.find((item) => item.step === currentStep) ?? stepFields[0],
+    [currentStep, stepFields],
   );
-  const isLastStep = currentStep === STEP_FIELDS.length;
+  const isLastStep = currentStep === stepFields.length;
 
   const resetDrawer = () => {
     setCurrentStep(1);
@@ -103,7 +104,7 @@ export const useUserCreateDrawer = ({
   };
 
   const validateStep = (step: number) => {
-    const stepConfig = STEP_FIELDS.find((item) => item.step === step);
+    const stepConfig = stepFields.find((item) => item.step === step);
 
     if (!stepConfig) {
       return true;
@@ -130,11 +131,13 @@ export const useUserCreateDrawer = ({
       return;
     }
 
-    setCurrentStep((step) => Math.min(STEP_FIELDS.length, step + 1));
+    setCurrentStep((step) => Math.min(stepFields.length, step + 1));
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
+    const hasInvalidStep = stepFields.some((step) => !validateStep(step.step));
+
+    if (hasInvalidStep) {
       return;
     }
 
@@ -157,15 +160,19 @@ export const useUserCreateDrawer = ({
             addressDetail: form.addressDetail.trim(),
             zipCode: form.zipCode.trim(),
           },
-          company: {
-            companyName: form.companyName.trim(),
-            managerName: form.managerName.trim(),
-            managerPhone: form.managerPhone.trim(),
-            companyNumber: form.companyNumber.trim(),
-            companyType: form.companyType.trim(),
-            companyItem: form.companyItem.trim(),
-            companyDescription: form.companyDescription.trim(),
-          },
+          ...(selectedRole === SignUpUserInfoDtoRole.MEMBER
+            ? {}
+            : {
+                company: {
+                  companyName: form.companyName.trim(),
+                  managerName: form.managerName.trim(),
+                  managerPhone: form.managerPhone.trim(),
+                  companyNumber: form.companyNumber.trim(),
+                  companyType: form.companyType.trim(),
+                  companyItem: form.companyItem.trim(),
+                  companyDescription: form.companyDescription.trim(),
+                },
+              }),
         };
 
         await updateUserMutation.mutateAsync({ userId: editingUserId, data: payload });
@@ -183,15 +190,19 @@ export const useUserCreateDrawer = ({
             addressDetail: form.addressDetail.trim(),
             zipCode: form.zipCode.trim(),
           },
-          company: {
-            managerName: form.managerName.trim(),
-            managerPhone: form.managerPhone.trim(),
-            companyName: form.companyName.trim(),
-            companyNumber: form.companyNumber.trim(),
-            companyType: form.companyType.trim(),
-            companyItem: form.companyItem.trim(),
-            companyDescription: form.companyDescription.trim(),
-          },
+          ...(selectedRole === SignUpUserInfoDtoRole.MEMBER
+            ? {}
+            : {
+                company: {
+                  managerName: form.managerName.trim(),
+                  managerPhone: form.managerPhone.trim(),
+                  companyName: form.companyName.trim(),
+                  companyNumber: form.companyNumber.trim(),
+                  companyType: form.companyType.trim(),
+                  companyItem: form.companyItem.trim(),
+                  companyDescription: form.companyDescription.trim(),
+                },
+              }),
         };
 
         await createCompanyMutation.mutateAsync({ data: payload });
@@ -205,6 +216,10 @@ export const useUserCreateDrawer = ({
       toastError(getDrawerErrorMessage(error, mode));
     }
   };
+
+  useEffect(() => {
+    setCurrentStep((step) => Math.min(step, stepFields.length));
+  }, [stepFields.length]);
 
   useEffect(() => {
     if (window.daum?.Postcode) {
@@ -281,6 +296,7 @@ export const useUserCreateDrawer = ({
     isPostcodeReady,
     isSubmitting,
     selectedRole,
+    stepFields,
     setCurrentStep,
     setSelectedRole,
     handleAddressSearch,

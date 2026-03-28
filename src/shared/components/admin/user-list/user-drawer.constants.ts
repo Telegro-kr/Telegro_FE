@@ -99,6 +99,31 @@ export const STEP_FIELDS: Array<{
   },
 ];
 
+const PICKED_MEMBER_FIELD_KEYS: Array<Array<keyof CreateCompanyForm>> = [
+  ['username', 'userid', 'password'],
+  ['phone', 'email'],
+  ['zipCode', 'address', 'addressDetail'],
+];
+
+export const getStepFieldsByRole = (role: DrawerRole) => {
+  if (role !== SignUpUserInfoDtoRole.MEMBER) {
+    return STEP_FIELDS;
+  }
+
+  return STEP_FIELDS.slice(0, 3).map((step, index) => {
+    const pickedKeys = PICKED_MEMBER_FIELD_KEYS[index] ?? [];
+    const pickedFields = pickedKeys
+      .map((key) => step.fields.find((field) => field.key === key))
+      .filter((field): field is StepField => field !== undefined);
+
+    return {
+      ...step,
+      title: index === 2 ? '주소 정보' : step.title,
+      fields: pickedFields,
+    };
+  });
+};
+
 export const labelClass =
   "font-['Pretendard',sans-serif] text-[1.25rem] font-semibold text-[#2B2B2B]";
 
