@@ -119,8 +119,7 @@ function parseDailyPoint(hit: HitDTO, selectedYear: number, selectedMonth: numbe
 
   return {
     id: `daily-${rawName || safeDay || 'unknown'}`,
-    label: safeDay ? String(safeDay) : rawName || '-',
-    subLabel: MONTH_LABELS[selectedMonth - 1],
+    label: safeDay ? `${safeDay}\uC77C` : rawName || '-',
     tooltipLabel: safeDay
       ? `${selectedYear}.${String(selectedMonth).padStart(2, '0')}.${String(safeDay).padStart(2, '0')}`
       : rawName || '-',
