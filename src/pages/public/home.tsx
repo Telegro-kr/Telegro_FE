@@ -6,7 +6,7 @@ import {
 } from '@apis/telegro';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import headsetImage from '../../assets/images/Landing/headset.svg';
+import headsetImage from '/headset.svg';
 import productImage1 from '../../assets/images/Landing/image1.png';
 import productImage2 from '../../assets/images/Landing/image2.png';
 import productImage3 from '../../assets/images/Landing/image3.png';
@@ -264,7 +264,7 @@ const PublicHome = () => {
           </div>
 
           <div className="pointer-events-none relative z-10 flex items-center justify-center">
-            <div className="relative h-[25rem] w-[25rem] sm:h-[30rem] sm:w-[30rem] md:h-[40rem] md:w-[40rem] lg:h-[50rem] lg:w-[50rem]">
+            <div className="relative h-[25rem] w-[25rem] sm:h-[30rem] sm:w-[30rem] md:h-[40rem] md:w-[40rem] lg:h-[55rem] lg:w-[55rem]">
               <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.9)_0%,_rgba(244,227,194,0.45)_42%,_rgba(250,250,250,0)_70%)] blur-3xl" />
               <img
                 src={headsetImage}
@@ -287,9 +287,7 @@ const PublicHome = () => {
                     animationDelay: item.delay,
                   }}
                 >
-                  <div
-                    className="transition-transform duration-300 group-hover:scale-105"
-                  >
+                  <div className="transition-transform duration-300 group-hover:scale-105">
                     <div
                       className={`rounded-[2rem] px-8 py-3 font-['Pretendard',sans-serif] text-[2.4rem] font-medium whitespace-nowrap shadow-[0_18px_36px_rgba(0,0,0,0.12)] ${item.className}`}
                       style={{ transform: `rotate(${item.rotate})` }}
@@ -315,9 +313,7 @@ const PublicHome = () => {
                 animationDelay: item.delay,
               }}
             >
-              <div
-                className="transition-transform duration-300 group-hover:scale-105"
-              >
+              <div className="transition-transform duration-300 group-hover:scale-105">
                 <div
                   className={`rounded-[1.4rem] px-6 py-2 font-['Pretendard',sans-serif] text-[1.8rem] font-medium shadow-[0_14px_28px_rgba(0,0,0,0.12)] ${
                     item.dark
