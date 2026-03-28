@@ -10,6 +10,7 @@ import {
 } from '@components/common/toast/toast';
 import queryClient from '@libs/query-client';
 import { useMemo, useState } from 'react';
+import { stripHtmlToText } from '@utils/html';
 
 export type AdminNoticeAttachment = {
   id: number;
@@ -72,15 +73,8 @@ const formatNoticeDate = (value?: string) => {
   return `${year}.${month}.${day}`;
 };
 
-const stripHtml = (value?: string) =>
-  (value ?? '')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
 const toSummary = (content?: string) => {
-  const plainText = stripHtml(content);
+  const plainText = stripHtmlToText(content);
 
   if (!plainText) {
     return FALLBACK_SUMMARY;
