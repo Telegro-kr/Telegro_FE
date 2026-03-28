@@ -72,6 +72,7 @@ const HIT_FILTER_MAP: Record<ChartFilter, string> = {
 
 export const MONTHS = MONTH_LABELS;
 const HITS_QUERY_STALE_TIME = 60_000;
+const COMPANY_LABEL_MAX_LENGTH = 8;
 
 function clampPage(page: number, maxPage: number) {
   return Math.min(Math.max(page, 0), maxPage);
@@ -79,6 +80,11 @@ function clampPage(page: number, maxPage: number) {
 
 function sumValues(data: DataPoint[]) {
   return data.reduce((total, item) => total + item.value, 0);
+}
+
+function truncateLabel(value: string, maxLength: number) {
+  if (value.length <= maxLength) return value;
+  return `${value.slice(0, maxLength)}...`;
 }
 
 function getHitsParams(
@@ -163,7 +169,7 @@ function parseCompanyPoint(hit: HitDTO, index: number) {
 
   return {
     id: `company-${index}-${name}`,
-    label: name,
+    label: truncateLabel(name, COMPANY_LABEL_MAX_LENGTH),
     tooltipLabel: name,
     value: hit.hit ?? 0,
     sort: index,
