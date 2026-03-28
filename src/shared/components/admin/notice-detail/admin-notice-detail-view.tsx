@@ -115,12 +115,6 @@ const AdminNoticeDetailView = ({
           <NoticeHeroGraphic />
 
           <article className="flex flex-col gap-8 text-[#202124]">
-            {notice.summary ? (
-              <p className="text-[1.2rem] leading-[1.95] font-medium tracking-[-0.02em] text-[#5B74F7] md:text-[1.35rem]">
-                {notice.summary}
-              </p>
-            ) : null}
-
             {isLoading ? (
               <LoadingPanel
                 className="min-h-[28rem] rounded-[1.6rem] bg-[#FBFBF8]"
