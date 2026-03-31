@@ -40,7 +40,7 @@ const ORDER_CREATED_TOOLTIP =
   '결제가 완료되지 않은 주문건입니다. 24시간 내로 삭제됩니다.';
 
 const OrderCreatedRowTooltip = () => (
-  <div className="pointer-events-none absolute top-1/2 right-3 z-30 flex max-w-[calc(100vw-6rem)] min-w-[39rem] -translate-y-1/2 gap-[0.4rem] rounded-[8px] bg-[#3A3A3B] px-[14px] py-[1rem] text-left text-[14px] leading-[21px] font-medium break-words whitespace-pre-line text-white opacity-0 shadow-[0_18px_40px_rgba(0,0,0,0.2)] transition-opacity duration-75 group-hover:opacity-100">
+  <div className="pointer-events-none absolute top-1/2 z-30 flex max-w-[calc(100vw-6rem)] min-w-[39rem] -translate-y-1/2 gap-[0.4rem] rounded-[8px] bg-[#3A3A3B] px-[14px] py-[1rem] text-left text-[14px] leading-[21px] font-medium break-words whitespace-pre-line text-white opacity-0 shadow-[0_18px_40px_rgba(0,0,0,0.2)] transition-opacity duration-75 group-hover:opacity-100 sm:right-[5rem] md:right-[10rem] lg:right-[15rem]">
     <Icon name="global-toast" className="text-primary" size={2.0} />
     {ORDER_CREATED_TOOLTIP}
   </div>
