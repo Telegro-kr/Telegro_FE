@@ -1,6 +1,7 @@
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
+import OrderExportButton from '@components/order/order-export-button';
 import OrderListTable from '@components/order/order-list-table';
 import { useInfiniteScrollTrigger } from '@hooks/use-infinite-scroll-trigger';
 import useOrderList, { type OrderFilterType } from '@hooks/use-order-list';
@@ -20,8 +21,10 @@ const Orders = () => {
   const [appliedFilterBy, setAppliedFilterBy] = useState<OrderFilterType>();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
+
   const {
     orders,
+    sourceOrders,
     isLoading,
     isError,
     hasNextPage,
@@ -80,9 +83,16 @@ const Orders = () => {
       className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
     >
       <div className="flex flex-col gap-[3.5rem]">
-        <h1 className="title3 text-gray-900">주문 목록</h1>
+        <div className="flex-row-between w-full">
+          <h1 className="title3 text-gray-900">주문 목록</h1>
 
-        <div ref={filterRef} className="relative">
+          <OrderExportButton
+            orders={sourceOrders}
+            isFiltered={Boolean(appliedSearchKeyword.trim())}
+          />
+        </div>
+
+        <div ref={filterRef} className="relative flex-1">
           <SearchBar
             value={keyword}
             onChange={setKeyword}
@@ -129,10 +139,13 @@ const Orders = () => {
       ) : orders.length ? (
         <div className="flex flex-col gap-4">
           <OrderListTable data={orders} />
-          {(hasNextPage || isFetchingNextPage) ? (
+          {hasNextPage || isFetchingNextPage ? (
             <div ref={loadMoreRef}>
               {isFetchingNextPage ? (
-                <LoadingPanel className="min-h-0 rounded-[1.6rem] py-[2rem]" size={72} />
+                <LoadingPanel
+                  className="min-h-0 rounded-[1.6rem] py-[2rem]"
+                  size={72}
+                />
               ) : (
                 <div className="h-[1px] w-full" />
               )}
