@@ -1,15 +1,14 @@
 import Icon from '@components/common/icon';
 import { cn } from '@utils/cn';
 import signupLogo from '/signup-logo.svg';
-import {
-  inputClass,
-  labelClass,
-  ROLE_OPTIONS,
-} from './user-drawer.constants';
+import { inputClass, labelClass, ROLE_OPTIONS } from './user-drawer.constants';
 import { useUserCreateDrawer } from './use-user-create-drawer';
 import type { UserDrawerInitialData } from './user-drawer.types';
 
-export type { CreateCompanyForm, UserDrawerInitialData } from './user-drawer.types';
+export type {
+  CreateCompanyForm,
+  UserDrawerInitialData,
+} from './user-drawer.types';
 
 type UserCreateDrawerProps = {
   open: boolean;
@@ -54,7 +53,7 @@ const UserCreateDrawer = ({
         onClick={onClose}
         aria-label={isEditMode ? '사용자 수정 닫기' : '사용자 등록 닫기'}
         className={cn(
-          'fixed inset-0 z-40 bg-black/10 backdrop-blur-[1px] transition-opacity duration-300',
+          'fixed inset-0 z-50 bg-black/10 backdrop-blur-[1px] transition-opacity duration-300',
           open ? 'opacity-100' : 'pointer-events-none opacity-0',
         )}
       />
@@ -106,7 +105,9 @@ const UserCreateDrawer = ({
                     key={item.step}
                     className={[
                       'h-[1rem] flex-1 rounded-[0.8rem]',
-                      item.step <= currentStep ? 'bg-[#FFC633]' : 'bg-[#F0F1F4]',
+                      item.step <= currentStep
+                        ? 'bg-[#FFC633]'
+                        : 'bg-[#F0F1F4]',
                     ].join(' ')}
                   />
                 ))}
@@ -130,7 +131,9 @@ const UserCreateDrawer = ({
                           <span
                             className={[
                               'h-[1.5rem] w-[1.5rem] rounded-full border border-[#979B9F]',
-                              selectedRole === role.value ? 'bg-[#FFC633]' : 'bg-white',
+                              selectedRole === role.value
+                                ? 'bg-[#FFC633]'
+                                : 'bg-white',
                             ].join(' ')}
                           />
                           <input
@@ -158,7 +161,10 @@ const UserCreateDrawer = ({
                   const isZipCode = field.key === 'zipCode';
 
                   return (
-                    <label key={field.key} className="flex flex-col gap-[2.4rem]">
+                    <label
+                      key={field.key}
+                      className="flex flex-col gap-[2.4rem]"
+                    >
                       <span className={labelClass}>{field.label}</span>
 
                       {isMemo ? (
@@ -174,7 +180,9 @@ const UserCreateDrawer = ({
                             type={field.type ?? 'text'}
                             value={form[field.key]}
                             onChange={handleFieldChange(field.key)}
-                            inputMode={field.type === 'tel' ? 'numeric' : undefined}
+                            inputMode={
+                              field.type === 'tel' ? 'numeric' : undefined
+                            }
                             placeholder={
                               isEditMode && field.key === 'password'
                                 ? '변경 시에만 입력해 주세요.'
@@ -224,7 +232,13 @@ const UserCreateDrawer = ({
               disabled={isSubmitting}
               className="flex-1 rounded-[0.8rem] border border-[#F2F2F7] bg-[#FFC633] px-[2.4rem] py-[1.4rem] font-['Pretendard',sans-serif] text-[1.8rem] font-bold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isLastStep ? (isSubmitting ? '처리 중...' : isEditMode ? '수정' : '등록') : '다음'}
+              {isLastStep
+                ? isSubmitting
+                  ? '처리 중...'
+                  : isEditMode
+                    ? '수정'
+                    : '등록'
+                : '다음'}
             </button>
           </div>
         </footer>
