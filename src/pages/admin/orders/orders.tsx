@@ -25,9 +25,9 @@ const AdminOrders = () => {
     useState<OrderFilterType>('product');
   const [appliedSearchKeyword, setAppliedSearchKeyword] = useState('');
   const [appliedFilterBy, setAppliedFilterBy] = useState<OrderFilterType>();
-  const [selectedStatus, setSelectedStatus] = useState<OrderStatusValue | 'ALL'>(
-    'ALL',
-  );
+  const [selectedStatus, setSelectedStatus] = useState<
+    OrderStatusValue | 'ALL'
+  >('ALL');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -103,28 +103,34 @@ const AdminOrders = () => {
 
       <div className="flex flex-col gap-[3.5rem]">
         <div className="flex-row-between w-full">
-          <div className="flex-row-start gap-2">
+          <div className="flex gap-[2rem]">
             <h1 className="title3 text-gray-900">주문 목록</h1>
-            <DateInputPopover
-              value={startDate}
-              onChange={setStartDate}
-              ariaLabel="시작일"
-              placeholder="시작일"
-              buttonClassName="h-[4.4rem] min-w-[16rem] rounded-[1.2rem] text-[1.4rem] text-[#2B2B2B]"
-            />
-            <span className="px-1 text-[1.6rem] font-medium text-[#8F8F95]">-</span>
-            <DateInputPopover
-              value={endDate}
-              onChange={setEndDate}
-              ariaLabel="종료일"
-              placeholder="종료일"
-              buttonClassName="h-[4.4rem] min-w-[16rem] rounded-[1.2rem] text-[1.4rem] text-[#2B2B2B]"
-            />
+            <div className="flex items-center gap-[0.8rem]">
+              <DateInputPopover
+                value={startDate}
+                onChange={setStartDate}
+                ariaLabel="시작일"
+                placeholder="시작일"
+                buttonClassName="h-[4.4rem] min-w-[16rem] rounded-[1.2rem] text-[1.4rem] text-[#2B2B2B]"
+              />
+              <span className="px-1 text-[1.6rem] font-medium text-[#8F8F95]">
+                -
+              </span>
+              <DateInputPopover
+                value={endDate}
+                onChange={setEndDate}
+                ariaLabel="종료일"
+                placeholder="종료일"
+                buttonClassName="h-[4.4rem] min-w-[16rem] rounded-[1.2rem] text-[1.4rem] text-[#2B2B2B]"
+              />
+            </div>
           </div>
 
           <OrderExportButton
             orders={sourceOrders}
-            isFiltered={Boolean(appliedSearchKeyword.trim() || startDate || endDate)}
+            isFiltered={Boolean(
+              appliedSearchKeyword.trim() || startDate || endDate,
+            )}
           />
         </div>
 

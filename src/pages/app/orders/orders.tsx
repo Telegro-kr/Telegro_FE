@@ -98,9 +98,9 @@ const Orders = () => {
     >
       <div className="flex flex-col gap-[3.5rem]">
         <div className="flex-row-between w-full">
-          <div className="flex-row gap-[2rem]">
+          <div className="flex gap-[2rem]">
             <h1 className="title3 text-gray-900">주문 목록</h1>
-            <div className="flex-row items-center gap-[0.8rem]">
+            <div className="flex items-center gap-[0.8rem]">
               <DateInputPopover
                 value={startDate}
                 onChange={setStartDate}
@@ -108,7 +108,9 @@ const Orders = () => {
                 placeholder="시작일"
                 buttonClassName="caption3 h-[4rem] min-w-[15rem] rounded-[10px] text-gray-900"
               />
-              <span className="text-[1.6rem] font-medium text-[#8F8F95]">-</span>
+              <span className="text-[1.6rem] font-medium text-[#8F8F95]">
+                -
+              </span>
               <DateInputPopover
                 value={endDate}
                 onChange={setEndDate}
