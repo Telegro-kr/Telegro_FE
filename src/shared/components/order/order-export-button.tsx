@@ -1,11 +1,15 @@
-import type { OrderDetailDTO } from '@apis/telegro';
+import {
+  getAllOrders,
+  type OrderDetailDTO,
+  type OrderListFilters,
+} from '@apis/telegro';
 import { toastError } from '@components/common/toast/toast';
 import { formatDate, formatNumber } from '@utils/format';
 import { useState } from 'react';
 import { FiDownload } from 'react-icons/fi';
 
 type OrderExportButtonProps = {
-  orders: OrderDetailDTO[];
+  filters: OrderListFilters;
   isFiltered?: boolean;
 };
 
@@ -68,27 +72,48 @@ const getWorksheetData = (orders: OrderDetailDTO[]): ExcelRow[] =>
 
 const getExportDate = () => new Date().toISOString().slice(0, 10);
 
+const getOrdersFromResponse = (
+  ordersResponse: Awaited<ReturnType<typeof getAllOrders>>,
+) => {
+  const data = ordersResponse.data;
+
+  if (Array.isArray(data?.orders)) {
+    return data.orders;
+  }
+
+  if (
+    Array.isArray((data as { content?: OrderDetailDTO[] } | undefined)?.content)
+  ) {
+    return (data as { content: OrderDetailDTO[] }).content;
+  }
+
+  return [];
+};
+
 const OrderExportButton = ({
-  orders,
+  filters,
   isFiltered = false,
 }: OrderExportButtonProps) => {
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = async () => {
-    if (!orders.length) {
-      toastError('No data to export.');
-      return;
-    }
-
-    const excelData = getWorksheetData(orders);
-    if (!excelData.length) {
-      toastError('No data to export.');
-      return;
-    }
-
     setIsExporting(true);
 
     try {
+      const ordersResponse = await getAllOrders(filters);
+      const orders = getOrdersFromResponse(ordersResponse);
+
+      if (!orders.length) {
+        toastError('No data to export.');
+        return;
+      }
+
+      const excelData = getWorksheetData(orders);
+      if (!excelData.length) {
+        toastError('No data to export.');
+        return;
+      }
+
       const XLSX = await import('xlsx');
       const worksheet = XLSX.utils.json_to_sheet(excelData);
       const workbook = XLSX.utils.book_new();
@@ -97,6 +122,8 @@ const OrderExportButton = ({
 
       XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
       XLSX.writeFile(workbook, fileName);
+    } catch {
+      toastError('Failed to export orders.');
     } finally {
       setIsExporting(false);
     }

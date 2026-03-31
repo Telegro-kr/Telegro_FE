@@ -32,7 +32,6 @@ const Orders = () => {
 
   const {
     orders,
-    sourceOrders,
     isLoading,
     isError,
     hasNextPage,
@@ -122,9 +121,19 @@ const Orders = () => {
           </div>
 
           <OrderExportButton
-            orders={sourceOrders}
+            filters={{
+              filterBy: appliedFilterBy,
+              q: appliedSearchKeyword.trim() || undefined,
+              startDate: startDate || undefined,
+              endDate: endDate || undefined,
+              orderStatus:
+                selectedStatus !== 'ALL' ? selectedStatus : undefined,
+            }}
             isFiltered={Boolean(
-              appliedSearchKeyword.trim() || startDate || endDate,
+              appliedSearchKeyword.trim() ||
+                startDate ||
+                endDate ||
+                selectedStatus !== 'ALL',
             )}
           />
         </div>

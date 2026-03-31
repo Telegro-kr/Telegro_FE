@@ -82,6 +82,14 @@ type OrderCursorParams = Omit<GetOrdersParams, 'page'> & {
   orderStatus?: string;
 };
 
+export type OrderListFilters = {
+  filterBy?: string;
+  q?: string;
+  startDate?: string;
+  endDate?: string;
+  orderStatus?: string;
+};
+
 type CartCursorParams = {
   size: number;
   cursor?: CursorValue;
@@ -388,6 +396,27 @@ export const getCursorOrders = (
         },
         params.cursor,
       ),
+      signal,
+    },
+    options,
+  );
+
+export const getAllOrders = (
+  params: OrderListFilters,
+  options?: AxiosRequestConfig,
+  signal?: AbortSignal,
+) =>
+  axiosInstance<SuccessResponseOrderListDTO>(
+    {
+      url: '/api/orders/all',
+      method: 'GET',
+      params: {
+        filterBy: params.filterBy,
+        q: params.q,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        orderStatus: params.orderStatus,
+      },
       signal,
     },
     options,
