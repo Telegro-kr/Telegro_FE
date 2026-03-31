@@ -3,6 +3,7 @@ import Icon from '@components/common/icon';
 import { toastSuccess } from '@components/common/toast/toast';
 import {
   ORDER_STATUS_OPTIONS,
+  canCancelOrder,
   type OrderStatusCode,
 } from '@constants/orderStatus';
 import { useQueryClient } from '@tanstack/react-query';
@@ -30,6 +31,7 @@ export type OrderRow = {
 type Props = {
   data: OrderRow[];
   detailBasePath?: string;
+  canManageStatuses?: boolean;
   selectedStatus?: OrderStatusValue | 'ALL';
   onStatusChange?: (status: OrderStatusValue | 'ALL') => void;
 };
@@ -70,7 +72,13 @@ const useOutsideClose = (
   }, [isOpen, onClose, ref]);
 };
 
-const OrderStatusControl = ({ row }: { row: OrderRow }) => {
+const OrderStatusControl = ({
+  row,
+  canManageStatuses,
+}: {
+  row: OrderRow;
+  canManageStatuses: boolean;
+}) => {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -96,12 +104,41 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
 
   const isCancelled = row.statusValue === 'ORDER_CANCELLED';
   const isMutating = updateOrderStatus.isPending || cancelPayment.isPending;
-  const availableOptions =
-    row.statusValue === 'ORDER_CREATED'
-      ? STATUS_OPTIONS.filter((option) => option.value === 'ORDER_CANCELLED')
-      : STATUS_OPTIONS.filter((option) => option.value !== 'ORDER_CANCELLED');
+  const availableOptions = STATUS_OPTIONS.filter((option) => {
+    if (option.value === 'ORDER_CANCELLED') {
+      return canCancelOrder(row.statusValue);
+    }
+
+    return true;
+  });
 
   if (isCancelled) {
+    return (
+      <div className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center rounded-[12px] bg-[#F5F5F5] px-3 text-[1.3rem] font-medium text-slate-500 md:text-[1.5rem]">
+        {row.statusLabel}
+      </div>
+    );
+  }
+
+  if (!canManageStatuses) {
+    if (canCancelOrder(row.statusValue)) {
+      return (
+        <div
+          className="relative flex justify-center"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <button
+            type="button"
+            disabled={isMutating}
+            onClick={() => cancelPayment.mutate({ orderId: row.orderId })}
+            className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center rounded-[12px] bg-[#FFF5F5] px-3 text-[1.3rem] font-medium text-[#D64545] transition hover:bg-[#FDECEC] disabled:cursor-not-allowed disabled:opacity-60 md:text-[1.5rem]"
+          >
+            주문 취소
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center rounded-[12px] bg-[#F5F5F5] px-3 text-[1.3rem] font-medium text-slate-500 md:text-[1.5rem]">
         {row.statusLabel}
@@ -162,6 +199,7 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
 const OrderListTable = ({
   data,
   detailBasePath = '/app/orders',
+  canManageStatuses = false,
   selectedStatus = 'ALL',
   onStatusChange,
 }: Props) => {
@@ -310,7 +348,10 @@ const OrderListTable = ({
                 <span className="block truncate">{row.customerInfo}</span>
               </td>
               <td className="px-2 text-center align-middle md:px-4">
-                <OrderStatusControl row={row} />
+                <OrderStatusControl
+                  row={row}
+                  canManageStatuses={canManageStatuses}
+                />
               </td>
             </tr>
           ))}

@@ -8,6 +8,7 @@ import type {
 } from '@apis/telegro';
 import {
   ORDER_PROGRESS_STEPS,
+  canCancelOrder,
   getOrderStatusLabel,
 } from '@constants/orderStatus';
 import { formatPrice as formatWon } from '@utils/format';
@@ -273,19 +274,38 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 type OrderDetailViewProps = {
   order: OrderDetailResponseDTO;
+  onCancel?: () => void;
+  isCancelPending?: boolean;
 };
 
-const OrderDetailView = ({ order }: OrderDetailViewProps) => {
+const OrderDetailView = ({
+  order,
+  onCancel,
+  isCancelPending = false,
+}: OrderDetailViewProps) => {
   const products = order.products ?? [];
   const user = order.user;
   const address = order.deliveryAddress;
   const receiptUrl = order.receipt_url || order.cash_receipt_url;
+  const canCancel = canCancelOrder(order.orderStatus);
 
   return (
     <div className="min-h-screen bg-[#f6f6f6] px-5 py-10 text-[#111] sm:px-8 lg:px-12">
       <div className="mx-auto w-full max-w-[1100px] bg-white px-5 py-8 shadow-[0_12px_40px_rgba(0,0,0,0.04)] sm:px-8 lg:px-12 lg:py-12">
         <header className="mb-12 flex flex-col gap-8">
           <StepIndicator currentStatus={order.orderStatus} />
+          {canCancel ? (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={onCancel}
+                disabled={isCancelPending}
+                className="rounded-full border border-[#D64545] px-6 py-3 text-[1.4rem] font-semibold text-[#D64545] transition hover:bg-[#FFF5F5] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isCancelPending ? '취소 처리 중...' : '주문 취소'}
+              </button>
+            </div>
+          ) : null}
         </header>
 
         <div className="space-y-8">

@@ -51,6 +51,7 @@ type DaumPostcodeData = {
 type PaymentMethodKey = 'card' | 'vbank' | 'trans' | null;
 
 type CheckoutCompleteState = {
+  orderPk: number;
   orderId: string;
   orderDate: string;
   orderDetails: {
@@ -377,11 +378,13 @@ const Checkout = () => {
   };
 
   const buildCompleteState = (params: {
+    orderPk: number;
     orderIdentifier: string;
     orderDate?: string;
     pointsToEarn?: number;
     vbankInfo?: Awaited<ReturnType<typeof verifyPayment>>;
   }): CheckoutCompleteState => ({
+    orderPk: params.orderPk,
     orderId: params.orderIdentifier,
     orderDate: params.orderDate ?? new Date().toISOString(),
     orderDetails: {
@@ -526,6 +529,7 @@ const Checkout = () => {
         navigate('/app/checkout/complete', {
           replace: true,
           state: buildCompleteState({
+            orderPk: resolvedOrderId,
             orderIdentifier:
               createdOrder.orderNumber || String(resolvedOrderId),
             orderDate: createdOrder.createdAt,
@@ -548,6 +552,7 @@ const Checkout = () => {
       navigate('/app/checkout/complete', {
         replace: true,
         state: buildCompleteState({
+          orderPk: resolvedOrderId,
           orderIdentifier: paymentResult.imp_uid,
           orderDate: createdOrder.createdAt,
           pointsToEarn: orderData?.pointToEarn ?? 0,

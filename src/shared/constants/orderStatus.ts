@@ -29,6 +29,15 @@ export const ORDER_PROGRESS_STEPS: OrderStatusCode[] = [
   'DELIVERY_COMPLETED',
 ];
 
+export const CANCELLABLE_ORDER_STATUSES: OrderStatusCode[] = [
+  'ORDER_CREATED',
+  'PAYMENT_COMPLETED',
+  'ORDER_COMPLETED',
+];
+
+export const canCancelOrder = (status?: string | null) =>
+  Boolean(status && CANCELLABLE_ORDER_STATUSES.includes(status as OrderStatusCode));
+
 export const getOrderStatusLabel = (status?: string | null) => {
   if (!status) {
     return '-';

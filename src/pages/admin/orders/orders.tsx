@@ -192,6 +192,7 @@ const AdminOrders = () => {
           <OrderListTable
             data={orders}
             detailBasePath="/admin/orders"
+            canManageStatuses
             selectedStatus={selectedStatus}
             onStatusChange={setSelectedStatus}
           />

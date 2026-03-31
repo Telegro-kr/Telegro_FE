@@ -1,7 +1,9 @@
 import type { OrderDetailResponseDTO } from '@apis/telegro';
-import { useGetOrderDetail } from '@apis/telegro';
+import { useCancelPayment, useGetOrderDetail } from '@apis/telegro';
 import LoadingPage from '@components/common/loading-page';
+import { toastSuccess } from '@components/common/toast/toast';
 import ErrorView from '@components/errors/error-view';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import OrderDetailView from './order-detail-view';
@@ -12,6 +14,7 @@ type OrderDetailPageProps = {
 
 const OrderDetailPage = ({ fallbackPath }: OrderDetailPageProps) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { orderId } = useParams<{ orderId: string }>();
   const parsedOrderId = Number(orderId);
   const hasValidOrderId = Number.isFinite(parsedOrderId) && parsedOrderId > 0;
@@ -20,6 +23,15 @@ const OrderDetailPage = ({ fallbackPath }: OrderDetailPageProps) => {
     query: {
       enabled: hasValidOrderId,
       staleTime: 60_000,
+    },
+  });
+  const cancelPaymentMutation = useCancelPayment({
+    mutation: {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
+        await orderDetailQuery.refetch();
+        toastSuccess('취소되었습니다.');
+      },
     },
   });
 
@@ -37,7 +49,13 @@ const OrderDetailPage = ({ fallbackPath }: OrderDetailPageProps) => {
 
   const order: OrderDetailResponseDTO = orderDetailQuery.data.data;
 
-  return <OrderDetailView order={order} />;
+  return (
+    <OrderDetailView
+      order={order}
+      onCancel={() => cancelPaymentMutation.mutate({ orderId: parsedOrderId })}
+      isCancelPending={cancelPaymentMutation.isPending}
+    />
+  );
 };
 
 export default OrderDetailPage;

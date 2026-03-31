@@ -175,7 +175,7 @@ export const useOrderList = ({
         totalPrice: formatPrice(order.amount ?? 0),
         totalSubLabel:
           order.shoppingCost === 0
-            ? '(Free shipping)'
+            ? ''
             : order.shoppingCost
               ? `배송비 ${formatPrice(order.shoppingCost)}`
               : undefined,

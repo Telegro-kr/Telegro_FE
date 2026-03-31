@@ -1,9 +1,13 @@
-import { useGetOrderDetail } from '@apis/telegro';
+import { useCancelPayment, useGetOrderDetail } from '@apis/telegro';
+import { toastSuccess } from '@components/common/toast/toast';
+import { canCancelOrder } from '@constants/orderStatus';
+import { useQueryClient } from '@tanstack/react-query';
 import { toKoreanTime } from '@utils/format';
 import { useMemo } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 type CheckoutCompleteState = {
+  orderPk?: number;
   orderId?: string;
   orderDate?: string;
   orderDetails?: {
@@ -69,17 +73,28 @@ const extractOrderIdFromMerchantUid = (merchantUid?: string | null) => {
 
 const CheckoutComplete = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const state = (location.state as CheckoutCompleteState | null) ?? null;
   const impUid = searchParams.get('imp_uid');
   const merchantUid = searchParams.get('merchant_uid');
   const recoveredOrderId = extractOrderIdFromMerchantUid(merchantUid);
+  const resolvedOrderPk = state?.orderPk ?? recoveredOrderId ?? null;
 
   const orderDetailQuery = useGetOrderDetail(recoveredOrderId ?? 0, {
     query: {
       enabled: !state && recoveredOrderId != null,
       staleTime: 60_000,
+    },
+  });
+  const cancelPaymentMutation = useCancelPayment({
+    mutation: {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
+        toastSuccess('취소되었습니다.');
+        navigate('/app/orders', { replace: true });
+      },
     },
   });
 
@@ -94,6 +109,7 @@ const CheckoutComplete = () => {
     }
 
     return {
+      orderPk: detail.orderId ?? recoveredOrderId ?? undefined,
       orderId: detail.imp_uid || impUid || merchantUid || String(detail.orderId ?? '-'),
       orderDate: detail.orderDate,
       orderDetails: {
@@ -161,6 +177,9 @@ const CheckoutComplete = () => {
   const shippingCost = resolvedState.shippingCost ?? 0;
   const finalPrice = total - pointsToUse + shippingCost;
   const heroImage = products[0]?.coverImage || '/cart-empty.svg';
+  const canCancel =
+    resolvedOrderPk != null &&
+    canCancelOrder(orderDetailQuery.data?.data?.orderStatus ?? 'ORDER_COMPLETED');
 
   return (
     <section className="min-h-screen bg-[#f6f6f6] px-5 py-10 text-[#111] sm:px-8 lg:px-12">
@@ -178,6 +197,20 @@ const CheckoutComplete = () => {
             주문일 {formatOrderDate(resolvedState.orderDate)} / 주문번호{' '}
             <span className="font-semibold text-[#171717]">{resolvedState.orderId ?? '-'}</span>
           </p>
+          {canCancel ? (
+            <button
+              type="button"
+              onClick={() => {
+                if (resolvedOrderPk != null) {
+                  cancelPaymentMutation.mutate({ orderId: resolvedOrderPk });
+                }
+              }}
+              disabled={cancelPaymentMutation.isPending}
+              className="mt-6 rounded-full border border-[#D64545] px-6 py-3 text-[1.4rem] font-semibold text-[#D64545] transition hover:bg-[#FFF5F5] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {cancelPaymentMutation.isPending ? '취소 처리 중...' : '주문 취소'}
+            </button>
+          ) : null}
         </div>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
