@@ -107,7 +107,7 @@ const OrderExportButton = ({
       type="button"
       onClick={handleExport}
       disabled={isExporting}
-      className="inline-flex h-[5.3rem] shrink-0 cursor-pointer items-center justify-center gap-3 rounded-[12px] bg-[#171717] px-8 text-[1.6rem] font-medium text-white transition hover:bg-[#2B2B2B] disabled:cursor-not-allowed disabled:bg-[#8C8C8C]"
+      className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-3 rounded-[10px] bg-green-600 px-8 py-4 text-[1.5rem] font-medium text-white transition hover:bg-[#2B2B2B] disabled:cursor-not-allowed disabled:bg-[#8C8C8C]"
     >
       <FiDownload className="h-5 w-5" />
       {isExporting ? 'Exporting...' : 'Excel Download'}
