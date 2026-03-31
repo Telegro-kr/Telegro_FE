@@ -1,20 +1,21 @@
 import {
-  telegroInvalidate,
   useAddCartItem,
   useCreateOrder,
-  useGetProducts,
   type GetProductsCategory,
+  type ProductResponseDTO,
+  type ProductListDTO,
   type ProductDetailResponseDTO,
 } from '@apis/telegro';
-import { CART_ITEMS_QUERY_PARAMS } from '@pages/app/cart/use-cart-items-query';
+import { getCursorProducts } from '@apis/telegro/cursor';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
 import ProductDetailView from '@components/product-detail/product-detail-view';
 import {
   useProductDetail,
   type RecommendationItem,
 } from '@hooks/use-product-detail';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatPrice } from '@utils/format';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 type ProductDetailContainerProps = {
@@ -44,32 +45,49 @@ const ProductDetailContainer = ({
   const createOrderMutation = useCreateOrder();
   const category = product?.category as GetProductsCategory | undefined;
 
-  const recommendationQuery = useGetProducts(
-    {
-      category: category ?? 'HEADSET',
-      page: 0,
-      size: 5,
-    },
-    {
-      query: {
-        enabled: Boolean(category) && !recommendations?.length,
-        staleTime: 60_000,
-      },
-    },
-  );
+  const recommendationQuery = useQuery({
+    queryKey: [
+      '/products',
+      'recommendations',
+      category ?? 'HEADSET',
+      productId,
+    ],
+    enabled: Boolean(category) && !recommendations?.length,
+    staleTime: 60_000,
+    queryFn: ({ signal }) =>
+      getCursorProducts(
+        {
+          category: category ?? 'HEADSET',
+          size: 6,
+        },
+        undefined,
+        signal,
+      ),
+  });
 
-  const apiRecommendations =
-    recommendationQuery.data?.data?.products
-      ?.filter((item) => item.id !== productId)
-      .slice(0, 4)
-      .map(
-        (item): RecommendationItem => ({
-          id: item.id ?? 0,
-          title: item.productName?.trim() || '상품명 없음',
-          price: formatPrice(item.price),
-          image: item.coverImage?.trim() || '/product1.png',
-        }),
-      ) ?? [];
+  const apiRecommendations = useMemo(
+    () =>
+      (
+        (
+          recommendationQuery.data?.data as
+            | (ProductListDTO & { content?: ProductResponseDTO[] })
+            | undefined
+        )?.content ??
+        recommendationQuery.data?.data?.products ??
+        []
+      )
+        .filter((item: ProductResponseDTO) => item.id !== productId)
+        .slice(0, 5)
+        .map(
+          (item: ProductResponseDTO): RecommendationItem => ({
+            id: item.id ?? 0,
+            title: item.productName?.trim() || '상품명 없음',
+            price: formatPrice(item.price),
+            image: item.coverImage?.trim() || '/product1.png',
+          }),
+        ),
+    [productId, recommendationQuery.data?.data],
+  );
 
   const {
     product: resolvedProduct,
@@ -134,7 +152,7 @@ const ProductDetailContainer = ({
         },
       });
 
-      await telegroInvalidate.cartItems(queryClient, CART_ITEMS_QUERY_PARAMS);
+      await queryClient.invalidateQueries({ queryKey: ['/api/carts'] });
       toastSuccess('상품이 장바구니에 담겼습니다.');
     } catch (error: any) {
       if (error?.response?.status === 401) {
@@ -175,7 +193,7 @@ const ProductDetailContainer = ({
         throw new Error('장바구니 추가 후 cart ID가 없습니다.');
       }
 
-      await telegroInvalidate.cartItems(queryClient, CART_ITEMS_QUERY_PARAMS);
+      await queryClient.invalidateQueries({ queryKey: ['/api/carts'] });
 
       const orderResponse = await createOrderMutation.mutateAsync({
         data: [cartId],

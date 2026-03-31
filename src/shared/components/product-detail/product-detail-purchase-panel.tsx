@@ -176,27 +176,12 @@ const ProductDetailPurchasePanel = ({
           </ActionButton>
         </div>
       ) : (
-        <div className="grid grid-cols-[1.15fr_1fr_0.8fr] gap-3 pt-3">
+        <div className="grid w-full grid-cols-2 gap-3 pt-3">
           <ActionButton variant="primary" onClick={onPurchase}>
             구매하기
           </ActionButton>
           <ActionButton variant="secondary" onClick={onAddCart}>
             장바구니
-          </ActionButton>
-          <ActionButton
-            variant="ghost"
-            onClick={onToggleLike}
-            active={isLiked}
-            ariaPressed={isLiked}
-          >
-            <span className="flex cursor-pointer items-center gap-2">
-              {isLiked ? (
-                <IoHeart className="h-5 w-5 text-[#E53935]" />
-              ) : (
-                <IoHeartOutline className="h-5 w-5 text-[#263238]" />
-              )}
-              <span>{likeCount}</span>
-            </span>
           </ActionButton>
         </div>
       )}

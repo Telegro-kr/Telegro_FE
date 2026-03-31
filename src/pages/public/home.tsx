@@ -7,10 +7,10 @@ import {
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import headsetImage from '/headset.svg';
-import productImage1 from '../../assets/images/Landing/image1.png';
-import productImage2 from '../../assets/images/Landing/image2.png';
-import productImage3 from '../../assets/images/Landing/image3.png';
-import productImage4 from '../../assets/images/Landing/image4.png';
+import productImage1 from '../../assets/images/Landing/headset2.png';
+import productImage2 from '../../assets/images/Landing/image3.png';
+import productImage3 from '../../assets/images/Landing/accessory.png';
+import productImage4 from '../../assets/images/Landing/linecord2.png';
 
 const productPath = '/products';
 const noticePath = '/notices';
@@ -160,6 +160,7 @@ const productCards = [
     title: 'accessory',
     image: productImage3,
     path: getProductCategoryPath('ACCESSORY'),
+    noPadding: true,
   },
   {
     title: 'linecord',
@@ -168,7 +169,7 @@ const productCards = [
   },
 ];
 
-const marqueeCards = [...productCards, ...productCards];
+const marqueeCards = [...productCards, ...productCards, ...productCards];
 
 const PublicHome = () => {
   const { mutate: recordHits } = useRecordHits();
@@ -383,7 +384,11 @@ const PublicHome = () => {
                       {card.title}
                     </h4>
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center p-10 md:p-12">
+                  <div
+                    className={`absolute inset-0 flex items-center justify-center ${
+                      card.noPadding ? '' : 'p-10 md:p-12'
+                    }`}
+                  >
                     <img
                       src={card.image}
                       alt={card.title}

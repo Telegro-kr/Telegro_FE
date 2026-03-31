@@ -95,9 +95,9 @@ const Cart = () => {
               <button
                 type="button"
                 onClick={removeSelected}
-                className="inline-flex h-9 items-center gap-2 border border-neutral-300 px-3 text-sm text-neutral-600 hover:bg-neutral-50"
+                className="caption3 inline-flex items-center gap-2 border border-neutral-300 px-4 py-2 text-neutral-600 hover:bg-neutral-50"
               >
-                <FiTrash2 className="h-4 w-4" />
+                <FiTrash2 className="h-6 w-6" />
                 선택삭제
               </button>
             </div>
