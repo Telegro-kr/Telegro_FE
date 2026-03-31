@@ -1,7 +1,9 @@
-import { telegroPrefetch, useGetProducts, type GetProductsCategory } from '@apis/telegro';
+import {
+  useInfiniteProducts,
+  type GetProductsCategory,
+} from '@apis/telegro';
 import { formatPrice } from '@utils/format';
-import { useEffect, useMemo, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
 
 export type ProductCategory = GetProductsCategory;
 
@@ -22,6 +24,7 @@ type UseProductSectionParams = {
   onClickProduct?: (product: ProductItem) => void;
   pageSize?: number;
   searchKeyword?: string;
+  variant?: 'dashboard' | 'list';
 };
 
 const DEFAULT_PAGE_SIZE = 4;
@@ -39,16 +42,6 @@ const CATEGORY_LABELS: Record<ProductCategory, string> = {
   RECORDER: '\uB179\uC74C\uAE30\uAE30',
   ACCESSORY: '\uC545\uC138\uC11C\uB9AC',
 };
-
-const getProductPageParams = (
-  category: ProductCategory,
-  page: number,
-  pageSize: number,
-) => ({
-  category,
-  page,
-  size: pageSize,
-});
 
 const toProductItem = (
   category: ProductCategory,
@@ -71,6 +64,25 @@ const toProductItem = (
   imageSrc: product.coverImage?.trim() || '/product1.png',
 });
 
+const getPageProducts = (page: {
+  data?: {
+    content?: Array<{
+      id?: number;
+      productModel?: string;
+      productName?: string;
+      price?: string;
+      coverImage?: string;
+    }>;
+    products?: Array<{
+      id?: number;
+      productModel?: string;
+      productName?: string;
+      price?: string;
+      coverImage?: string;
+    }>;
+  };
+}) => page.data?.content ?? page.data?.products ?? [];
+
 export function useProductSection({
   initialCategory = 'HEADSET',
   products,
@@ -79,12 +91,12 @@ export function useProductSection({
   onClickProduct,
   pageSize = DEFAULT_PAGE_SIZE,
   searchKeyword = '',
+  variant = 'dashboard',
 }: UseProductSectionParams = {}) {
-  const queryClient = useQueryClient();
   const hasInjectedProducts = Boolean(products?.length);
   const [activeCategory, setActiveCategory] =
     useState<ProductCategory>(initialCategory);
-  const [pageByCategory, setPageByCategory] = useState<Record<ProductCategory, number>>({
+  const [pageIndexByCategory, setPageIndexByCategory] = useState<Record<ProductCategory, number>>({
     HEADSET: 0,
     PHONE_AMP: 0,
     LINE_CORD: 0,
@@ -92,37 +104,41 @@ export function useProductSection({
     ACCESSORY: 0,
   });
 
-  const currentPage = pageByCategory[activeCategory];
-  const productQuery = useGetProducts(getProductPageParams(activeCategory, currentPage, pageSize), {
-    query: {
+  const currentPageIndex = pageIndexByCategory[activeCategory];
+  const productQuery = useInfiniteProducts(
+    {
+      category: activeCategory,
+      size: pageSize,
+    },
+    {
       staleTime: 60_000,
     },
-  });
+  );
 
-  useEffect(() => {
-    CATEGORY_OPTIONS.forEach((category) => {
-      void telegroPrefetch.products(queryClient, getProductPageParams(category, 0, pageSize));
-    });
-  }, [pageSize, queryClient]);
-
-  useEffect(() => {
-    if (!productQuery.data?.data?.isLast) {
-      void telegroPrefetch.products(
-        queryClient,
-        getProductPageParams(activeCategory, currentPage + 1, pageSize),
-      );
-    }
-  }, [activeCategory, currentPage, pageSize, productQuery.data?.data?.isLast, queryClient]);
+  const mappedPages = useMemo(
+    () =>
+      (productQuery.data?.pages ?? []).map((page) =>
+        getPageProducts(page).map((product) =>
+          toProductItem(activeCategory, product),
+        ),
+      ),
+    [activeCategory, productQuery.data?.pages],
+  );
 
   const resolvedProducts = useMemo(() => {
     if (products?.length) {
       return products.filter((product) => product.category === activeCategory);
     }
 
-    return (productQuery.data?.data?.products ?? []).map((product) =>
-      toProductItem(activeCategory, product),
+    if (variant === 'dashboard') {
+      return mappedPages[currentPageIndex] ?? [];
+    }
+
+    return mappedPages.reduce<ProductItem[]>(
+      (acc, currentPage) => [...acc, ...currentPage],
+      [],
     );
-  }, [activeCategory, productQuery.data?.data?.products, products]);
+  }, [activeCategory, currentPageIndex, mappedPages, products, variant]);
 
   const normalizedKeyword = searchKeyword.trim().toLowerCase();
   const filteredProducts = useMemo(() => {
@@ -145,15 +161,32 @@ export function useProductSection({
       return;
     }
 
-    if (productQuery.data?.data?.isLast) {
+    const nextPageIndex = currentPageIndex + 1;
+    const loadedPageCount = mappedPages.length;
+
+    if (nextPageIndex < loadedPageCount) {
+      setPageIndexByCategory((prev) => ({
+        ...prev,
+        [activeCategory]: nextPageIndex,
+      }));
+      onClickArrow?.();
       return;
     }
 
-    setPageByCategory((prev) => ({
-      ...prev,
-      [activeCategory]: prev[activeCategory] + 1,
-    }));
-    onClickArrow?.();
+    if (!productQuery.hasNextPage || productQuery.isFetchingNextPage) {
+      return;
+    }
+
+    void productQuery.fetchNextPage().then((result) => {
+      const fetchedPageCount = result.data?.pages.length ?? loadedPageCount;
+      if (nextPageIndex < fetchedPageCount) {
+        setPageIndexByCategory((prev) => ({
+          ...prev,
+          [activeCategory]: nextPageIndex,
+        }));
+      }
+      onClickArrow?.();
+    });
   };
 
   return {
@@ -167,7 +200,12 @@ export function useProductSection({
     isError: hasInjectedProducts ? false : productQuery.isError,
     isArrowDisabled: hasInjectedProducts
       ? filteredProducts.length <= pageSize
-      : Boolean(productQuery.data?.data?.isLast),
+      : !productQuery.hasNextPage && currentPageIndex >= Math.max(mappedPages.length - 1, 0),
+    hasNextPage: hasInjectedProducts ? false : Boolean(productQuery.hasNextPage),
+    isFetchingNextPage: hasInjectedProducts ? false : productQuery.isFetchingNextPage,
+    fetchNextPage: hasInjectedProducts
+      ? async () => undefined
+      : () => productQuery.fetchNextPage(),
     setActiveCategory: handleChangeCategory,
     handleClickAll: () => onClickAll?.(),
     handleClickArrow,

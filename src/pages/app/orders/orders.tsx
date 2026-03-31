@@ -2,6 +2,7 @@ import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
 import OrderListTable from '@components/order/order-list-table';
+import { useInfiniteScrollTrigger } from '@hooks/use-infinite-scroll-trigger';
 import useOrderList, { type OrderFilterType } from '@hooks/use-order-list';
 import { useEffect, useRef, useState } from 'react';
 
@@ -19,10 +20,22 @@ const Orders = () => {
   const [appliedFilterBy, setAppliedFilterBy] = useState<OrderFilterType>();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
-  const { orders, isLoading, isError } = useOrderList({
-    pageSize: 10000,
+  const {
+    orders,
+    isLoading,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useOrderList({
+    pageSize: 10,
     searchKeyword: appliedSearchKeyword,
     filterBy: appliedFilterBy,
+  });
+
+  const loadMoreRef = useInfiniteScrollTrigger({
+    enabled: hasNextPage && !isFetchingNextPage,
+    onLoadMore: () => fetchNextPage(),
   });
 
   const selectedFilterLabel =
@@ -114,7 +127,18 @@ const Orders = () => {
           주문 목록을 불러오지 못했습니다.
         </div>
       ) : orders.length ? (
-        <OrderListTable data={orders} />
+        <div className="flex flex-col gap-4">
+          <OrderListTable data={orders} />
+          {(hasNextPage || isFetchingNextPage) ? (
+            <div ref={loadMoreRef}>
+              {isFetchingNextPage ? (
+                <LoadingPanel className="min-h-0 rounded-[1.6rem] py-[2rem]" size={72} />
+              ) : (
+                <div className="h-[1px] w-full" />
+              )}
+            </div>
+          ) : null}
+        </div>
       ) : (
         <div className="rounded-[1.6rem] bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-gray-500">
           표시할 주문 내역이 없습니다.

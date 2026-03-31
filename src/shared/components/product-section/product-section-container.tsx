@@ -5,6 +5,7 @@ import {
   type ProductItem,
   type ProductCategory,
 } from '@hooks/use-product-section';
+import { useInfiniteScrollTrigger } from '@hooks/use-infinite-scroll-trigger';
 import ProductSectionView from './product-section-view';
 
 type ProductSectionContainerProps = {
@@ -38,6 +39,9 @@ export default function ProductSectionContainer({
     isLoading,
     isError,
     isArrowDisabled,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
     setActiveCategory,
     handleClickAll,
     handleClickArrow,
@@ -48,8 +52,14 @@ export default function ProductSectionContainer({
     onClickAll,
     onClickArrow,
     onClickProduct,
-    pageSize: pageSize ?? (variant === 'list' ? 100 : 4),
+    pageSize: pageSize ?? (variant === 'list' ? 10 : 4),
     searchKeyword,
+    variant,
+  });
+
+  const loadMoreRef = useInfiniteScrollTrigger({
+    enabled: variant === 'list' && hasNextPage && !isFetchingNextPage,
+    onLoadMore: () => fetchNextPage(),
   });
 
   return (
@@ -63,6 +73,9 @@ export default function ProductSectionContainer({
       isLoading={isLoading}
       isError={isError}
       isArrowDisabled={isArrowDisabled}
+      hasNextPage={hasNextPage}
+      isFetchingNextPage={isFetchingNextPage}
+      loadMoreRef={loadMoreRef}
       variant={variant}
       onChangeCategory={setActiveCategory}
       onClickAll={handleClickAll}

@@ -1,3 +1,4 @@
+import type { RefObject } from 'react';
 import LoadingPanel from '@components/common/loading-panel';
 import type { ProductCategory, ProductItem } from '@hooks/use-product-section';
 import { cn } from '@utils/cn';
@@ -13,6 +14,9 @@ type ProductSectionViewProps = {
   isLoading: boolean;
   isError: boolean;
   isArrowDisabled: boolean;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  loadMoreRef: RefObject<HTMLDivElement | null>;
   variant?: 'dashboard' | 'list';
   onChangeCategory: (category: ProductCategory) => void;
   onClickAll: () => void;
@@ -30,6 +34,9 @@ export default function ProductSectionView({
   isLoading,
   isError,
   isArrowDisabled,
+  hasNextPage,
+  isFetchingNextPage,
+  loadMoreRef,
   variant = 'dashboard',
   onChangeCategory,
   onClickAll,
@@ -146,6 +153,16 @@ export default function ProductSectionView({
           </button>
         ) : null}
       </div>
+
+      {!isDashboard && (hasNextPage || isFetchingNextPage) ? (
+        <div ref={loadMoreRef} className="w-full">
+          {isFetchingNextPage ? (
+            <LoadingPanel className="min-h-0 rounded-[1.6rem] bg-transparent py-[2rem]" size={72} />
+          ) : (
+            <div className="h-[1px] w-full" />
+          )}
+        </div>
+      ) : null}
     </section>
   );
 }
