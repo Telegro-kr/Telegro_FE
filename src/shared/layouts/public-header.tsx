@@ -165,13 +165,13 @@ const PublicHeader = () => {
                   >
                     비회원 주문조회
                   </Link>
-                  {/* <button
+                  <button
                     type="button"
                     onClick={() => setIsLoginOverlayOpen(true)}
                     className={linkClass}
                   >
                     로그인하기
-                  </button> */}
+                  </button>
                 </>
               )}
             </div>
