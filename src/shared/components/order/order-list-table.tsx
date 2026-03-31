@@ -1,5 +1,6 @@
-import { useUpdateOrderStatus } from '@apis/telegro';
+import { useCancelPayment, useUpdateOrderStatus } from '@apis/telegro';
 import Icon from '@components/common/icon';
+import { toastSuccess } from '@components/common/toast/toast';
 import {
   ORDER_STATUS_OPTIONS,
   type OrderStatusCode,
@@ -71,11 +72,20 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const handleMutationSuccess = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
+    setIsOpen(false);
+  };
   const updateOrderStatus = useUpdateOrderStatus({
     mutation: {
+      onSuccess: handleMutationSuccess,
+    },
+  });
+  const cancelPayment = useCancelPayment({
+    mutation: {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
-        setIsOpen(false);
+        await handleMutationSuccess();
+        toastSuccess('취소되었습니다.');
       },
     },
   });
@@ -83,6 +93,7 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
   useOutsideClose(isOpen, containerRef, () => setIsOpen(false));
 
   const isCancelled = row.statusValue === 'ORDER_CANCELLED';
+  const isMutating = updateOrderStatus.isPending || cancelPayment.isPending;
   const availableOptions =
     row.statusValue === 'ORDER_CREATED'
       ? STATUS_OPTIONS.filter((option) => option.value === 'ORDER_CANCELLED')
@@ -104,7 +115,7 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
     >
       <button
         type="button"
-        disabled={updateOrderStatus.isPending}
+        disabled={isMutating}
         onClick={() => setIsOpen((prev) => !prev)}
         className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center gap-2 rounded-[12px] bg-[#F5F5F5] px-3 text-[1.3rem] font-medium text-[#2B2B2B] transition hover:bg-[#EBEBEB] disabled:cursor-not-allowed disabled:opacity-60 md:text-[1.5rem]"
       >
@@ -118,10 +129,13 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
             <button
               key={option.value}
               type="button"
-              disabled={
-                option.value === row.statusValue || updateOrderStatus.isPending
-              }
+              disabled={option.value === row.statusValue || isMutating}
               onClick={() => {
+                if (option.value === 'ORDER_CANCELLED') {
+                  cancelPayment.mutate({ orderId: row.orderId });
+                  return;
+                }
+
                 updateOrderStatus.mutate({
                   orderId: row.orderId,
                   params: { status: option.value },
