@@ -24,7 +24,9 @@ const AdminLayout = () => {
             <div className="hidden items-center gap-[1.2rem] max-[500px]:flex">
               <button
                 type="button"
-                aria-label={isMobileMenuOpen ? '관리자 메뉴 닫기' : '관리자 메뉴 열기'}
+                aria-label={
+                  isMobileMenuOpen ? '관리자 메뉴 닫기' : '관리자 메뉴 열기'
+                }
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="admin-mobile-menu"
                 onClick={() => setIsMobileMenuOpen((prev) => !prev)}
@@ -32,7 +34,10 @@ const AdminLayout = () => {
               >
                 {isMobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
               </button>
-              <Link to="/admin" className="title3_bold text-primary no-underline">
+              <Link
+                to="/admin"
+                className="title3_bold text-primary no-underline"
+              >
                 Telegro
               </Link>
             </div>
@@ -40,27 +45,38 @@ const AdminLayout = () => {
             <Link to="/admin" className={`${linkClass} max-[500px]:hidden`}>
               Dashboard
             </Link>
-            <Link to="/admin/users" className={`${linkClass} max-[500px]:hidden`}>
-              Users
+            <Link
+              to="/admin/users"
+              className={`${linkClass} max-[500px]:hidden`}
+            >
+              사용자 목록
             </Link>
             <Link
               to="/admin/products"
               className={`${linkClass} max-[500px]:hidden`}
             >
-              Product
+              상품 목록
             </Link>
-            <Link to="/admin/orders" className={`${linkClass} max-[500px]:hidden`}>
-              Order
+            <Link
+              to="/admin/orders"
+              className={`${linkClass} max-[500px]:hidden`}
+            >
+              주문 목록
             </Link>
-            <Link to="/admin/notices" className={`${linkClass} max-[500px]:hidden`}>
-              Notice
+            <Link
+              to="/admin/notices"
+              className={`${linkClass} max-[500px]:hidden`}
+            >
+              공지사항
             </Link>
           </div>
 
           <div
             id="admin-mobile-menu"
             className={`hidden overflow-hidden transition-all duration-300 ease-out max-[500px]:mt-[1.2rem] max-[500px]:block ${
-              isMobileMenuOpen ? 'max-[500px]:max-h-[32rem]' : 'max-[500px]:max-h-0'
+              isMobileMenuOpen
+                ? 'max-[500px]:max-h-[32rem]'
+                : 'max-[500px]:max-h-0'
             }`}
           >
             <div className="flex flex-col gap-[0.8rem] border-t border-[#f0f0f0] pt-[1.2rem]">
@@ -68,16 +84,16 @@ const AdminLayout = () => {
                 Dashboard
               </Link>
               <Link to="/admin/users" className={mobileLinkClass}>
-                Users
+                사용자 목록
               </Link>
               <Link to="/admin/products" className={mobileLinkClass}>
-                Product
+                상품 목록
               </Link>
               <Link to="/admin/orders" className={mobileLinkClass}>
-                Order
+                주문 목록
               </Link>
               <Link to="/admin/notices" className={mobileLinkClass}>
-                Notice
+                공지사항
               </Link>
             </div>
           </div>
