@@ -13,8 +13,6 @@ type ProductDetailPurchasePanelProps = {
   options: string[];
   selectedOption: string;
   inputOption: string;
-  isLiked: boolean;
-  likeCount: number;
   isShareCopied: boolean;
   totalPriceLabel: string;
   onDecrease: () => void;
@@ -40,8 +38,6 @@ const ProductDetailPurchasePanel = ({
   options,
   selectedOption,
   inputOption,
-  isLiked,
-  likeCount,
   isShareCopied,
   totalPriceLabel,
   onDecrease,

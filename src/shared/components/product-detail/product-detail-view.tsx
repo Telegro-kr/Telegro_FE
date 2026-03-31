@@ -126,8 +126,6 @@ const ProductDetailView = ({
   inputOption,
   galleryImages,
   isDetailOpen,
-  isLiked,
-  likeCount,
   isShareCopied,
   totalPriceLabel,
   rewardPointLabel,
@@ -176,8 +174,6 @@ const ProductDetailView = ({
             options={product.options ?? []}
             selectedOption={selectedOption}
             inputOption={inputOption}
-            isLiked={isLiked}
-            likeCount={likeCount}
             isShareCopied={isShareCopied}
             totalPriceLabel={totalPriceLabel}
             onDecrease={onDecreaseQuantity}
