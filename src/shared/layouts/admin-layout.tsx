@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
 const linkClass =
   'title6 text-gray-900 no-underline transition-underline hover:underline';
@@ -23,7 +23,7 @@ const AdminLayout = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex min-h-screen flex-col bg-white">
       <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem] max-[535px]:px-[1.6rem] max-[535px]:pt-[1.2rem] max-[535px]:pb-0">
         <nav className="px-[3rem] max-[535px]:px-0">
           <div className="flex items-center gap-[3rem] max-[535px]:justify-between max-[535px]:gap-[1.2rem]">
@@ -116,11 +116,13 @@ const AdminLayout = () => {
         </nav>
       </header>
 
-      <main className="bg-bg px-4 pt-[5rem]">
+      <main className="flex-1 bg-bg px-4 pt-[5rem]">
         <Outlet />
       </main>
 
-      <footer className="border-t border-[#eee] px-3 py-3">짤 Admin</footer>
+      <footer className="border-t border-[#eee] bg-white px-3 py-3">
+        Admin
+      </footer>
     </div>
   );
 };
