@@ -1,13 +1,23 @@
 import { useEffect, useMemo } from 'react';
 
 import { useInfiniteCartItems } from '@apis/telegro';
-import type { CartResponseDTO, SuccessResponseCartListDTO } from '@apis/telegro';
+import type {
+  CartResponseDTO,
+  SuccessResponseCartListDTO,
+} from '@apis/telegro';
 
 import { mapCartResponseToCartItems } from './cart.adapters';
 
 export const CART_ITEMS_QUERY_PARAMS = {
-  size: 10,
+  size: 20,
 };
+
+type CartPagePayload =
+  | CartResponseDTO[]
+  | {
+      content?: CartResponseDTO[];
+    }
+  | undefined;
 
 export const useCartItemsQuery = () => {
   const query = useInfiniteCartItems(CART_ITEMS_QUERY_PARAMS, {
@@ -25,7 +35,7 @@ export const useCartItemsQuery = () => {
       mapCartResponseToCartItems(
         (query.data?.pages ?? []).reduce<CartResponseDTO[]>(
           (acc, page: SuccessResponseCartListDTO) => {
-            const carts = page.data?.carts;
+            const carts = page.data?.carts as CartPagePayload;
             const normalizedCarts = Array.isArray(carts)
               ? carts
               : Array.isArray(carts?.content)
