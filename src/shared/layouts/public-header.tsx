@@ -69,10 +69,10 @@ const PublicHeader = () => {
 
   return (
     <>
-      <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem] max-[500px]:px-[1.6rem] max-[500px]:py-[1.2rem]">
-        <nav className="px-[2rem] max-[500px]:px-0">
-          <div className="flex items-center gap-[3rem] max-[500px]:justify-between max-[500px]:gap-[1.2rem]">
-            <div className="hidden max-[500px]:flex max-[500px]:items-center max-[500px]:gap-[1.2rem]">
+      <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem] max-[535px]:px-[1.6rem] max-[535px]:py-[1.2rem]">
+        <nav className="px-[2rem] max-[535px]:px-0">
+          <div className="flex items-center gap-[3rem] max-[535px]:justify-between max-[535px]:gap-[1.2rem]">
+            <div className="hidden max-[535px]:flex max-[535px]:items-center max-[535px]:gap-[1.2rem]">
               <button
                 type="button"
                 aria-label={isMobileMenuOpen ? '메뉴 닫기' : '메뉴 열기'}
@@ -100,7 +100,7 @@ const PublicHeader = () => {
 
             <Link
               to="/"
-              className={`${brandLinkClass} max-[500px]:hidden`}
+              className={`${brandLinkClass} max-[535px]:hidden`}
               onClick={handleClosePanels}
             >
               <span className="relative inline-block">
@@ -113,27 +113,29 @@ const PublicHeader = () => {
 
             <Link
               to="/products"
-              className={`${linkClass} max-[500px]:hidden`}
+              className={`${linkClass} max-[535px]:hidden`}
               onClick={handleClosePanels}
             >
               상품
             </Link>
             <Link
               to="/notices"
-              className={`${linkClass} max-[500px]:hidden`}
+              className={`${linkClass} max-[535px]:hidden`}
               onClick={handleClosePanels}
             >
               공지사항
             </Link>
-            <Link
-              to="/app/cart"
-              className={`${linkClass} max-[500px]:hidden`}
-              onClick={handleClosePanels}
-            >
-              장바구니
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                to="/app/cart"
+                className={`${linkClass} max-[535px]:hidden`}
+                onClick={handleClosePanels}
+              >
+                장바구니
+              </Link>
+            ) : null}
 
-            <div className="ml-auto flex items-center gap-6 max-[500px]:hidden">
+            <div className="ml-auto flex items-center gap-6 max-[535px]:hidden">
               {isLoggedIn ? (
                 <>
                   <button
@@ -177,8 +179,10 @@ const PublicHeader = () => {
 
           <div
             id="public-mobile-menu"
-            className={`hidden overflow-hidden transition-all duration-300 ease-out max-[500px]:mt-[1.2rem] max-[500px]:block ${
-              isMobileMenuOpen ? 'max-[500px]:max-h-[40rem]' : 'max-[500px]:max-h-0'
+            className={`hidden overflow-hidden transition-all duration-300 ease-out max-[535px]:mt-[1.2rem] max-[535px]:block ${
+              isMobileMenuOpen
+                ? 'max-[535px]:max-h-[40rem]'
+                : 'max-[535px]:max-h-0'
             }`}
           >
             <div className="flex flex-col gap-[0.8rem] border-t border-[#f0f0f0] pt-[1.2rem]">
@@ -196,13 +200,15 @@ const PublicHeader = () => {
               >
                 공지사항
               </Link>
-              <Link
-                to="/app/cart"
-                className={`${linkClass} rounded-[1rem] px-[0.6rem] py-[0.8rem]`}
-                onClick={handleClosePanels}
-              >
-                장바구니
-              </Link>
+              {isLoggedIn ? (
+                <Link
+                  to="/app/cart"
+                  className={`${linkClass} rounded-[1rem] px-[0.6rem] py-[0.8rem]`}
+                  onClick={handleClosePanels}
+                >
+                  장바구니
+                </Link>
+              ) : null}
 
               {isLoggedIn ? (
                 <>

@@ -8,6 +8,12 @@ const linkClass =
 const mobileLinkClass =
   'title6 rounded-[1rem] px-[0.6rem] py-[0.8rem] text-gray-900 no-underline transition-underline hover:underline';
 
+const brandLinkClass = 'group title3_bold pr-1 no-underline';
+const brandTextBaseClass =
+  'text-primary transition-opacity duration-300 group-hover:opacity-0';
+const brandTextGradientClass =
+  'pointer-events-none absolute inset-0 bg-gradient-to-r from-[#FFCF4D] via-[#FFC633] to-[#DFAF1A] bg-clip-text text-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100';
+
 const AdminLayout = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,10 +24,10 @@ const AdminLayout = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem] max-[500px]:px-[1.6rem] max-[500px]:py-[1.2rem]">
-        <nav className="px-[3rem] max-[500px]:px-0">
-          <div className="flex gap-[3rem] max-[500px]:justify-between max-[500px]:gap-[1.2rem]">
-            <div className="hidden items-center gap-[1.2rem] max-[500px]:flex">
+      <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem] max-[535px]:px-[1.6rem] max-[535px]:py-[1.2rem]">
+        <nav className="px-[3rem] max-[535px]:px-0">
+          <div className="flex items-center gap-[3rem] max-[535px]:justify-between max-[535px]:gap-[1.2rem]">
+            <div className="hidden items-center gap-[1.2rem] max-[535px]:flex">
               <button
                 type="button"
                 aria-label={
@@ -34,38 +40,48 @@ const AdminLayout = () => {
               >
                 {isMobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
               </button>
-              <Link
-                to="/admin"
-                className="title3_bold text-primary no-underline"
-              >
-                Telegro
+              <Link to="/admin" className={brandLinkClass}>
+                <span className="relative inline-block">
+                  <span className={brandTextBaseClass}>Telegro</span>
+                  <span aria-hidden="true" className={brandTextGradientClass}>
+                    Telegro
+                  </span>
+                </span>
               </Link>
             </div>
 
-            <Link to="/admin" className={`${linkClass} max-[500px]:hidden`}>
-              Dashboard
+            <Link
+              to="/admin"
+              className={`${brandLinkClass} max-[535px]:hidden`}
+            >
+              <span className="relative inline-block">
+                <span className={brandTextBaseClass}>Telegro</span>
+                <span aria-hidden="true" className={brandTextGradientClass}>
+                  Telegro
+                </span>
+              </span>
             </Link>
             <Link
               to="/admin/users"
-              className={`${linkClass} max-[500px]:hidden`}
+              className={`${linkClass} max-[535px]:hidden`}
             >
               사용자 목록
             </Link>
             <Link
               to="/admin/products"
-              className={`${linkClass} max-[500px]:hidden`}
+              className={`${linkClass} max-[535px]:hidden`}
             >
               상품 목록
             </Link>
             <Link
               to="/admin/orders"
-              className={`${linkClass} max-[500px]:hidden`}
+              className={`${linkClass} max-[535px]:hidden`}
             >
               주문 목록
             </Link>
             <Link
               to="/admin/notices"
-              className={`${linkClass} max-[500px]:hidden`}
+              className={`${linkClass} max-[535px]:hidden`}
             >
               공지사항
             </Link>
@@ -73,10 +89,10 @@ const AdminLayout = () => {
 
           <div
             id="admin-mobile-menu"
-            className={`hidden overflow-hidden transition-all duration-300 ease-out max-[500px]:mt-[1.2rem] max-[500px]:block ${
+            className={`hidden overflow-hidden transition-all duration-300 ease-out max-[535px]:mt-[1.2rem] max-[535px]:block ${
               isMobileMenuOpen
-                ? 'max-[500px]:max-h-[32rem]'
-                : 'max-[500px]:max-h-0'
+                ? 'max-[535px]:max-h-[32rem]'
+                : 'max-[535px]:max-h-0'
             }`}
           >
             <div className="flex flex-col gap-[0.8rem] border-t border-[#f0f0f0] pt-[1.2rem]">
