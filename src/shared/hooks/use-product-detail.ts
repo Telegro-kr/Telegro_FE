@@ -64,8 +64,8 @@ export const useProductDetail = ({
     [basePrice, quantity],
   );
   const rewardPointLabel = useMemo(
-    () => `${formatNumber(1000 * quantity)} 포인트 적립 예정`,
-    [quantity],
+    () => `${formatNumber(Math.floor(basePrice * quantity * 0.01))} 포인트 적립 예정`,
+    [basePrice, quantity],
   );
 
   useEffect(() => {
