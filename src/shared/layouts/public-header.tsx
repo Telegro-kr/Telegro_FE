@@ -69,7 +69,7 @@ const PublicHeader = () => {
 
   return (
     <>
-      <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem] max-[535px]:px-[1.6rem] max-[535px]:py-[1.2rem]">
+      <header className="fixed top-0 z-50 w-full border-b border-[#eee] bg-white px-[3rem] py-[1.6rem] max-[535px]:px-[1.6rem] max-[535px]:pt-[1.2rem] max-[535px]:pb-0">
         <nav className="px-[2rem] max-[535px]:px-0">
           <div className="flex items-center gap-[3rem] max-[535px]:justify-between max-[535px]:gap-[1.2rem]">
             <div className="hidden max-[535px]:flex max-[535px]:items-center max-[535px]:gap-[1.2rem]">
@@ -185,7 +185,7 @@ const PublicHeader = () => {
                 : 'max-[535px]:max-h-0'
             }`}
           >
-            <div className="flex flex-col gap-[0.8rem] border-t border-[#f0f0f0] pt-[1.2rem]">
+            <div className="flex flex-col gap-[0.8rem] border-t border-[#f0f0f0] py-[1.2rem]">
               <Link
                 to="/products"
                 className={`${linkClass} rounded-[1rem] px-[0.6rem] py-[0.8rem]`}

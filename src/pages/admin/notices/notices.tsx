@@ -15,8 +15,14 @@ const AdminNotices = () => {
   const [keyword, setKeyword] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const { notices, isLoading, isError, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useNoticeSection({
+  const {
+    notices,
+    isLoading,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useNoticeSection({
     pageSize: 10,
     searchKeyword,
   });
@@ -38,7 +44,7 @@ const AdminNotices = () => {
   return (
     <div
       ref={pageRef}
-      className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
+      className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[5rem] md:px-[5rem] lg:px-[10rem]"
     >
       <AdminProfileCard onMove={() => navigate('/')} />
 
@@ -86,10 +92,13 @@ const AdminNotices = () => {
               }}
             />
           ))}
-          {(hasNextPage || isFetchingNextPage) ? (
+          {hasNextPage || isFetchingNextPage ? (
             <div ref={loadMoreRef}>
               {isFetchingNextPage ? (
-                <LoadingPanel className="min-h-0 rounded-2xl py-[2rem]" size={72} />
+                <LoadingPanel
+                  className="min-h-0 rounded-2xl py-[2rem]"
+                  size={72}
+                />
               ) : (
                 <div className="h-[1px] w-full" />
               )}

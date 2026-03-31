@@ -83,7 +83,7 @@ const AdminOrders = () => {
   return (
     <div
       ref={pageRef}
-      className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[2rem] md:px-[5rem] md:py-[3rem] lg:px-[10rem] lg:py-[5rem]"
+      className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[5rem] md:px-[5rem] lg:px-[10rem]"
     >
       <AdminProfileCard onMove={() => navigate('/')} />
 
