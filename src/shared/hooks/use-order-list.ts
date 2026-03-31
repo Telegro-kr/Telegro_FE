@@ -20,7 +20,7 @@ const formatPrice = (value?: number | null) => {
     return '-';
   }
 
-  return `${formatNumber(value)} KRW`;
+  return `₩${formatNumber(value)}`;
 };
 
 const formatProductName = (order: OrderDetailDTO) => {

@@ -7,7 +7,7 @@ const parseNumericValue = (value: number | string | null | undefined): number =>
     return Number.isFinite(value) ? value : 0;
   }
 
-  const normalized = value.replace(/[,\s원]/g, '');
+  const normalized = value.replace(/[,\s₩원]/g, '');
   const parsed = Number(normalized);
 
   return Number.isFinite(parsed) ? parsed : 0;
@@ -51,16 +51,14 @@ export const normalizePriceValue = (
   return Number.isInteger(parsed) ? parsed : parsed;
 };
 
-// 숫자를 천 단위로 포맷
 export const formatNumber = (value: number | string | null | undefined): string => {
   return parseNumericValue(value).toLocaleString('ko-KR');
 };
 
 export const formatPrice = (value: number | string | null | undefined): string => {
-  return `${formatNumber(normalizePriceValue(value))}원`;
+  return `₩${formatNumber(normalizePriceValue(value))}`;
 };
 
-// 날짜를 YYYY-MM-DD hh:mm:ss 형태로 포맷
 export const formatDate = (input: string | Date | null | undefined): string => {
   if (!input) return '정보 없음';
 
@@ -77,7 +75,6 @@ export const formatDate = (input: string | Date | null | undefined): string => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-// 오늘 날짜를 YYYY-MM-DD 형태로 반환
 export const getTodayDate = (): string => {
   const today = new Date();
   const year = today.getFullYear();

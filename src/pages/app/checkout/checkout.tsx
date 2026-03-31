@@ -86,10 +86,7 @@ const CHANNEL_KEY = 'channel-key-0c462650-5c1a-4f74-86d5-80a67cb512c2';
 const STORE_ID = 'store-a85691d3-8516-48fe-985b-03d01942b7d7';
 
 const formatPrice = (price: number) =>
-  new Intl.NumberFormat('ko-KR', {
-    style: 'currency',
-    currency: 'KRW',
-  }).format(price);
+  `₩${new Intl.NumberFormat('ko-KR').format(price)}`;
 
 const buildRoadAddress = (data: DaumPostcodeData) => {
   if (data.addressType !== 'R') {

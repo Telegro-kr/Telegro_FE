@@ -38,10 +38,7 @@ type CheckoutCompleteState = {
 };
 
 const formatPrice = (price: number) =>
-  new Intl.NumberFormat('ko-KR', {
-    style: 'currency',
-    currency: 'KRW',
-  }).format(price);
+  `₩${new Intl.NumberFormat('ko-KR').format(price)}`;
 
 const formatOrderDate = (value?: string) => {
   if (!value) {
