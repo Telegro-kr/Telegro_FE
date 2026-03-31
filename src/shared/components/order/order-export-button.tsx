@@ -10,20 +10,20 @@ type OrderExportButtonProps = {
 };
 
 type ExcelRow = {
-  no: number;
-  orderNumber: number | string;
-  recipientName: string;
-  phoneNumber: string;
-  address: string;
-  addressDetailAndZipcode: string;
-  productName: string;
-  quantity: number;
-  option: string;
-  unitPrice: string;
-  totalPrice: string;
-  orderStatus: string;
-  orderDate: string;
-  request: string;
+  No: number;
+  주문번호: number | string;
+  수령인명: string;
+  전화번호: string;
+  주소: string;
+  상세주소_우편번호: string;
+  상품명: string;
+  수량: number;
+  옵션: string;
+  상품단가: string;
+  총금액: string;
+  주문상태: string;
+  주문일자: string;
+  요청사항: string;
 };
 
 const getOptionLabel = (
@@ -42,22 +42,22 @@ const getWorksheetData = (orders: OrderDetailDTO[]): ExcelRow[] =>
         (
           product: NonNullable<OrderDetailDTO['products']>[number],
         ): ExcelRow => ({
-          no: index + 1,
-          orderNumber: order.orderId ?? '-',
-          recipientName: order.deliveryAddress?.recipientName?.trim() || 'N/A',
-          phoneNumber: order.deliveryAddress?.phoneNumber?.trim() || 'N/A',
-          address: order.deliveryAddress?.address?.trim() || 'N/A',
-          addressDetailAndZipcode: `${
+          No: index + 1,
+          주문번호: order.orderId ?? '-',
+          수령인명: order.deliveryAddress?.recipientName?.trim() || 'N/A',
+          전화번호: order.deliveryAddress?.phoneNumber?.trim() || 'N/A',
+          주소: order.deliveryAddress?.address?.trim() || 'N/A',
+          상세주소_우편번호: `${
             order.deliveryAddress?.addressDetail?.trim() || 'N/A'
           } / ${order.deliveryAddress?.zipcode?.trim() || 'N/A'}`,
-          productName: product.productName?.trim() || 'N/A',
-          quantity: product.quantity ?? 0,
-          option: getOptionLabel(product),
-          unitPrice: `${formatNumber(product.productPrice ?? 0)} KRW`,
-          totalPrice: `${formatNumber(product.totalPrice ?? 0)} KRW`,
-          orderStatus: order.orderStatus || '-',
-          orderDate: formatDate(order.createdAt),
-          request: order.request?.trim() || '-',
+          상품명: product.productName?.trim() || 'N/A',
+          수량: product.quantity ?? 0,
+          옵션: getOptionLabel(product),
+          상품단가: `${formatNumber(product.productPrice ?? 0)} KRW`,
+          총금액: `${formatNumber(product.totalPrice ?? 0)} KRW`,
+          주문상태: order.orderStatus || '-',
+          주문일자: formatDate(order.createdAt),
+          요청사항: order.request?.trim() || '-',
         }),
       );
 
