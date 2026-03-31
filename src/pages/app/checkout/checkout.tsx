@@ -285,6 +285,22 @@ const Checkout = () => {
     }));
   };
 
+  useEffect(() => {
+    if (selectedAddressId || !addressList.length) {
+      return;
+    }
+
+    const defaultAddress =
+      addressList.find((address) => address.isDefault) ?? addressList[0];
+
+    if (!defaultAddress?.deliveryAddressId) {
+      return;
+    }
+
+    setSelectedAddressId(String(defaultAddress.deliveryAddressId));
+    updateAddressForm(defaultAddress);
+  }, [addressList, selectedAddressId, userName, userPhone]);
+
   const handleAddressSelect = (addressId: string) => {
     setSelectedAddressId(addressId);
     const selected = addressList.find(
