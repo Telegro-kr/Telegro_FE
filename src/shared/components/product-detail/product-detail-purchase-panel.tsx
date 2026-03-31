@@ -115,7 +115,7 @@ const ProductDetailPurchasePanel = ({
             type="text"
             value={inputOption}
             onChange={(event) => onInputOptionChange(event.target.value)}
-            placeholder="기타 옵션 기재"
+            placeholder="사용 전화기 모델 기재"
             className="body5 h-[4.4rem] border border-[#D9E0E6] bg-white px-4 text-[#263238] outline-none placeholder:text-[#9CA3AF] focus:border-[#1F3138]"
           />
         ) : null}
