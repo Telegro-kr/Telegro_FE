@@ -46,6 +46,12 @@ type NoticeCursorParams = {
 
 type NoticeCursorPayload = CursorMeta & {
   content?: NoticeDTO[];
+  nextCursorId?: number | string | null;
+  nextCursorCreatedAt?: string | null;
+  nextCursor?: {
+    lastId?: number | string | null;
+    lastCreatedAt?: string | null;
+  } | null;
 };
 
 type OrderCursorParams = Omit<GetOrdersParams, 'page'> & {
@@ -69,6 +75,21 @@ type InfiniteHookOptions = {
 };
 
 const CURSOR_PARAM_KEY = 'cursor';
+
+const serializeCursor = (cursor: CursorValue | undefined) => {
+  if (cursor === undefined || cursor === null || cursor === '') {
+    return '';
+  }
+
+  if (typeof cursor === 'object') {
+    return JSON.stringify(cursor);
+  }
+
+  return String(cursor);
+};
+
+const isCursorRecord = (cursor: CursorValue | undefined): cursor is Record<string, unknown> =>
+  typeof cursor === 'object' && cursor !== null && !Array.isArray(cursor);
 
 const resolveNextCursor = <TItem>(
   data: CursorMeta | undefined,
@@ -199,10 +220,40 @@ export const useInfiniteNotices = (
     enabled: options?.enabled,
     queryFn: ({ pageParam, signal }) =>
       getCursorNotices({ ...params, cursor: pageParam as CursorValue | undefined }, undefined, signal),
-    getNextPageParam: (lastPage) => {
+    getNextPageParam: (lastPage, _allPages, lastPageParam, allPageParams) => {
       const data = lastPage.data as (NoticeListDTO & CursorMeta & NoticeCursorPayload) | undefined;
-      const items = data?.content ?? data?.notices ?? [];
-      return resolveNextCursor<NoticeDTO>(data, items, params.size, (item) => item.id);
+
+      if (!data?.hasNext) {
+        return undefined;
+      }
+
+      const nextCursor: CursorValue = {
+        cursorId:
+          data?.nextCursorId ??
+          data?.nextCursor?.lastId ??
+          null,
+        cursorCreatedAt:
+          data?.nextCursorCreatedAt ??
+          data?.nextCursor?.lastCreatedAt ??
+          null,
+      };
+
+      const nextCursorKey = serializeCursor(nextCursor);
+      const currentCursorKey = serializeCursor(lastPageParam as CursorValue | undefined);
+      const seenCursor = allPageParams.some(
+        (pageParam) => serializeCursor(pageParam as CursorValue | undefined) === nextCursorKey,
+      );
+
+      if (
+        !isCursorRecord(nextCursor) ||
+        (!nextCursor.cursorId && !nextCursor.cursorCreatedAt) ||
+        nextCursorKey === currentCursorKey ||
+        seenCursor
+      ) {
+        return undefined;
+      }
+
+      return nextCursor;
     },
   });
 

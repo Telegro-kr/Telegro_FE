@@ -12,10 +12,15 @@ export function useInfiniteScrollTrigger({
   rootMargin = '320px',
 }: UseInfiniteScrollTriggerParams) {
   const targetRef = useRef<HTMLDivElement | null>(null);
+  const onLoadMoreRef = useRef(onLoadMore);
+  const triggeredWhileVisibleRef = useRef(false);
+
+  onLoadMoreRef.current = onLoadMore;
 
   useEffect(() => {
     const target = targetRef.current;
     if (!enabled || !target) {
+      triggeredWhileVisibleRef.current = false;
       return;
     }
 
@@ -23,12 +28,22 @@ export function useInfiniteScrollTrigger({
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (!entry?.isIntersecting || locked) {
+        if (!entry) {
+          return;
+        }
+
+        if (!entry.isIntersecting) {
+          triggeredWhileVisibleRef.current = false;
+          return;
+        }
+
+        if (locked || triggeredWhileVisibleRef.current) {
           return;
         }
 
         locked = true;
-        void Promise.resolve(onLoadMore()).finally(() => {
+        triggeredWhileVisibleRef.current = true;
+        void Promise.resolve(onLoadMoreRef.current()).finally(() => {
           locked = false;
         });
       },
@@ -40,7 +55,7 @@ export function useInfiniteScrollTrigger({
     return () => {
       observer.disconnect();
     };
-  }, [enabled, onLoadMore, rootMargin]);
+  }, [enabled, rootMargin]);
 
   return targetRef;
 }
