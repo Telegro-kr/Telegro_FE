@@ -134,12 +134,32 @@ export const useOrderList = ({
     },
   );
 
+  const sourceOrders = useMemo<OrderDetailDTO[]>(
+    () => {
+      const mergedOrders = (orderQuery.data?.pages ?? []).reduce<OrderDetailDTO[]>(
+        (acc, page) => [...acc, ...getPageOrders(page)],
+        [],
+      );
+
+      return mergedOrders.reduce<OrderDetailDTO[]>((acc, order) => {
+        if (
+          order.orderId != null &&
+          acc.some((currentOrder) => currentOrder.orderId === order.orderId)
+        ) {
+          return acc;
+        }
+
+        return [...acc, order];
+      }, []);
+    },
+    [orderQuery.data?.pages],
+  );
+
   const orders = useMemo<OrderRow[]>(
     () => {
-      const rows = (orderQuery.data?.pages ?? []).reduce<OrderRow[]>((acc, page, pageIndex) => {
-        const rows = getPageOrders(page).map((order, index) => ({
-          id: order.orderId ?? pageIndex * pageSize + index + 1,
-          orderId: order.orderId ?? pageIndex * pageSize + index + 1,
+      return sourceOrders.map((order, index) => ({
+        id: order.orderId ?? index + 1,
+        orderId: order.orderId ?? index + 1,
           productName: formatProductName(order),
           optionLabel: formatOptionLabel(order),
           quantity: getQuantity(order),
@@ -154,21 +174,10 @@ export const useOrderList = ({
           orderInfo: getOrderInfo(order),
           customerInfo: getCustomerInfo(order),
           statusLabel: getOrderStatusLabel(order.orderStatus),
-          statusValue: getStatusValue(order),
-        }));
-
-        return [...acc, ...rows];
-      }, []);
-
-      return rows.reduce<OrderRow[]>((acc, row) => {
-        if (acc.some((currentRow) => currentRow.orderId === row.orderId)) {
-          return acc;
-        }
-
-        return [...acc, row];
-      }, []);
+        statusValue: getStatusValue(order),
+      }));
     },
-    [orderQuery.data?.pages, pageSize],
+    [sourceOrders],
   );
 
   const pages = orderQuery.data?.pages ?? [];
@@ -180,6 +189,7 @@ export const useOrderList = ({
 
   return {
     orders,
+    sourceOrders,
     totalCount,
     isLoading: orderQuery.isLoading,
     isError: orderQuery.isError,
