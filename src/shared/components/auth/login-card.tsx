@@ -20,11 +20,15 @@ type LoginCardProps = {
 };
 
 const COPY = {
+  termsServiceUrl:
+    'https://chip-pendulum-4ad.notion.site/Telegro-334fbd49b8fd80a99e7ff86f5ccaa8b1?source=copy_link',
+  termsPrivacyUrl:
+    'https://chip-pendulum-4ad.notion.site/Telegro-334fbd49b8fd8097b004e47bcfd2f694?pvs=73',
   titleSuffix: '에 오신것을 환영합니다.',
   descriptionLine1: '편리한 상품 주문 및 관리를 위해',
   descriptionLine2: '로그인을 해주세요!',
   termsLine1: '서비스 이용 시',
-  termsLine2: '동의하고 확인한 것으로 간주합니다',
+  termsLine2: '에 동의하고 확인한 것으로 간주합니다',
   termsService: '이용약관',
   termsPrivacy: '개인정보 처리방침',
   id: '아이디',
@@ -81,10 +85,25 @@ export const LoginCard = ({
           <div className="flex-col-center caption5 gap-1 text-center whitespace-nowrap text-gray-500">
             <p>
               {COPY.termsLine1}{' '}
-              <span className="underline">{COPY.termsService}</span>에
+              <a
+                href={COPY.termsServiceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                {COPY.termsService}
+              </a>
+              과{' '}
             </p>
             <p>
-              <span className="underline">{COPY.termsPrivacy}</span>{' '}
+              <a
+                href={COPY.termsPrivacyUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                {COPY.termsPrivacy}
+              </a>
               {COPY.termsLine2}
             </p>
           </div>
