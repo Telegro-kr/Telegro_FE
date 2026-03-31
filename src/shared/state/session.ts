@@ -34,6 +34,11 @@ export const getStoredUserRole = () => {
   return window.localStorage.getItem('userRole') as ServerRole | null;
 };
 
+export const isOnlinePaymentRole = (role: ServerRole | null) =>
+  role === 'MEMBER' || role === 'ADMIN';
+
+export const hasDeliveryFee = (role: ServerRole | null) => role === 'MEMBER';
+
 export const accessTokenAtom = atomWithStorage<string | null>(
   'accessToken',
   null,

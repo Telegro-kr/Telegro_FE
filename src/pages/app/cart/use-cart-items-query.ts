@@ -9,6 +9,7 @@ import type {
 import { mapCartResponseToCartItems } from './cart.adapters';
 
 export const CART_ITEMS_QUERY_PARAMS = {
+  page: 0,
   size: 20,
 };
 

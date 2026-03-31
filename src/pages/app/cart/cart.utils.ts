@@ -2,6 +2,8 @@ import { formatPrice, normalizePriceValue } from '@utils/format';
 
 import type { CartItem, CartSummary } from './cart.types';
 
+const DELIVERY_FEE = 3000;
+
 export const formatWon = (value: number | string) => formatPrice(value);
 
 export const getAllOptionIds = (items: CartItem[]) =>
@@ -18,7 +20,10 @@ export const buildSelectedItems = (items: CartItem[], selectedOptionIds: string[
     }))
     .filter((item) => item.options.length > 0);
 
-export const calculateCartSummary = (selectedItems: CartItem[]): CartSummary => {
+export const calculateCartSummary = (
+  selectedItems: CartItem[],
+  shouldApplyDeliveryFee = false,
+): CartSummary => {
   let itemCount = 0;
   let orderPrice = 0;
   let point = 0;
@@ -33,13 +38,15 @@ export const calculateCartSummary = (selectedItems: CartItem[]): CartSummary => 
     });
   });
 
+  const deliveryFee = shouldApplyDeliveryFee && itemCount > 0 ? DELIVERY_FEE : 0;
+
   return {
     itemCount,
     orderPrice,
     point,
     discount,
-    deliveryFee: 0,
-    finalPrice: orderPrice - discount,
+    deliveryFee,
+    finalPrice: orderPrice - discount + deliveryFee,
   };
 };
 

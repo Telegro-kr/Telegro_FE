@@ -5,6 +5,7 @@ import {
   useUpdateCartItem,
 } from '@apis/telegro';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
+import { getStoredUserRole, hasDeliveryFee } from '@state/session';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLayoutEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +32,8 @@ const parseCartId = (optionId: string) => {
 export const useCart = (initialItems: CartItem[]) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const userRole = getStoredUserRole();
+  const shouldApplyDeliveryFee = hasDeliveryFee(userRole);
   const [items, setItems] = useState<CartItem[]>(initialItems);
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(() =>
     getAllOptionIds(initialItems),
@@ -49,7 +52,10 @@ export const useCart = (initialItems: CartItem[]) => {
     [items, selectedOptionIds],
   );
 
-  const summary = useMemo(() => calculateCartSummary(selectedItems), [selectedItems]);
+  const summary = useMemo(
+    () => calculateCartSummary(selectedItems, shouldApplyDeliveryFee),
+    [selectedItems, shouldApplyDeliveryFee],
+  );
 
   const allSelected =
     items.length > 0 &&
@@ -85,7 +91,10 @@ export const useCart = (initialItems: CartItem[]) => {
   const updateQuantity = async (optionId: string, delta: number) => {
     const previousItems = items;
     const targetOption = previousItems
-      .flatMap((item) => item.options)
+      .reduce<typeof previousItems[number]['options']>(
+        (options, item) => [...options, ...item.options],
+        [],
+      )
       .find((option) => option.id === optionId);
 
     if (!targetOption) {

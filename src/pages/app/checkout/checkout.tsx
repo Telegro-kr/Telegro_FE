@@ -10,7 +10,11 @@ import {
   useValidatePayment,
 } from '@apis/telegro';
 import { verifyPayment } from '@apis/verifyPayment';
-import { getStoredUserRole } from '@state/session';
+import {
+  getStoredUserRole,
+  hasDeliveryFee,
+  isOnlinePaymentRole as isOnlinePaymentRoleByRole,
+} from '@state/session';
 import { formatPhoneNumber, getTodayDate } from '@utils/format';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -93,11 +97,14 @@ const buildRoadAddress = (data: DaumPostcodeData) => {
     return data.address;
   }
 
-  const extras = [data.bname, data.apartment === 'Y' ? data.buildingName : ''].filter(
-    Boolean,
-  );
+  const extras = [
+    data.bname,
+    data.apartment === 'Y' ? data.buildingName : '',
+  ].filter(Boolean);
 
-  return extras.length ? `${data.address} (${extras.join(', ')})` : data.address;
+  return extras.length
+    ? `${data.address} (${extras.join(', ')})`
+    : data.address;
 };
 
 const ensureImpLoaded = () =>
@@ -109,7 +116,9 @@ const ensureImpLoaded = () =>
 
     const existingScript =
       (document.getElementById(IMP_SCRIPT_ID) as HTMLScriptElement | null) ??
-      (document.querySelector(`script[src="${IMP_SCRIPT_SRC}"]`) as HTMLScriptElement | null);
+      (document.querySelector(
+        `script[src="${IMP_SCRIPT_SRC}"]`,
+      ) as HTMLScriptElement | null);
 
     const handleLoad = () => {
       if (window.IMP) {
@@ -119,7 +128,8 @@ const ensureImpLoaded = () =>
 
       reject(new Error('결제 모듈을 불러오지 못했습니다.'));
     };
-    const handleError = () => reject(new Error('결제 모듈 스크립트 로드에 실패했습니다.'));
+    const handleError = () =>
+      reject(new Error('결제 모듈 스크립트 로드에 실패했습니다.'));
 
     if (existingScript) {
       existingScript.id = IMP_SCRIPT_ID;
@@ -149,7 +159,7 @@ const Checkout = () => {
   const state = location.state as CheckoutLocationState | null;
   const orderData = state?.orderData;
   const userRole = getStoredUserRole();
-  const isOnlinePaymentRole = userRole === 'MEMBER' || userRole === 'ADMIN';
+  const isOnlinePaymentRole = isOnlinePaymentRoleByRole(userRole);
 
   const [selectedAddressId, setSelectedAddressId] = useState('');
   const [pointsToUse, setPointsToUse] = useState(0);
@@ -219,7 +229,9 @@ const Checkout = () => {
   const addressList = myPageQuery.data?.data?.addressList ?? [];
   const point = myPageQuery.data?.data?.point ?? 0;
   const userName = myPageQuery.data?.data?.userName?.trim() ?? '';
-  const userPhone = formatPhoneNumber(myPageQuery.data?.data?.phone?.trim() ?? '');
+  const userPhone = formatPhoneNumber(
+    myPageQuery.data?.data?.phone?.trim() ?? '',
+  );
   const userEmail = myPageQuery.data?.data?.email?.trim() ?? '';
 
   useEffect(() => {
@@ -238,7 +250,9 @@ const Checkout = () => {
         key: `${product.cartId ?? index}`,
         name: product.productName?.trim() || '상품',
         option:
-          product.selectOption?.trim() || product.inputOption?.trim() || '기본 옵션',
+          product.selectOption?.trim() ||
+          product.inputOption?.trim() ||
+          '기본 옵션',
         quantity: product.quantity ?? 0,
         coverImage: product.coverImage?.trim() || '/product1.png',
         totalPrice: product.totalPrice ?? 0,
@@ -250,9 +264,12 @@ const Checkout = () => {
     () => products.reduce((acc, product) => acc + product.totalPrice, 0),
     [products],
   );
-  const shippingCost = orderData ? SHIPPING_FEE : 0;
+  const shippingCost = orderData && hasDeliveryFee(userRole) ? SHIPPING_FEE : 0;
   const maxUsablePoints = Math.min(point, totalProductPrice + shippingCost);
-  const totalPayable = Math.max(totalProductPrice + shippingCost - pointsToUse, 0);
+  const totalPayable = Math.max(
+    totalProductPrice + shippingCost - pointsToUse,
+    0,
+  );
 
   const updateAddressForm = (address: DeliveryAddressDetailDTO) => {
     setFormData((prev) => ({
@@ -509,7 +526,8 @@ const Checkout = () => {
         navigate('/app/checkout/complete', {
           replace: true,
           state: buildCompleteState({
-            orderIdentifier: createdOrder.orderNumber || String(resolvedOrderId),
+            orderIdentifier:
+              createdOrder.orderNumber || String(resolvedOrderId),
             orderDate: createdOrder.createdAt,
             pointsToEarn: orderData?.pointToEarn ?? 0,
           }),
@@ -518,7 +536,9 @@ const Checkout = () => {
       }
 
       const paymentResult = await requestPayment(resolvedOrderId);
-      await validatePaymentMutation.mutateAsync({ impUid: paymentResult.imp_uid });
+      await validatePaymentMutation.mutateAsync({
+        impUid: paymentResult.imp_uid,
+      });
 
       const vbankInfo =
         selectedPaymentMethod === 'vbank'
@@ -558,7 +578,9 @@ const Checkout = () => {
     return (
       <section className="min-h-screen bg-[#f6f6f6] px-5 py-10">
         <div className="mx-auto max-w-[1100px] rounded-[2rem] bg-white px-8 py-16 text-center shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
-          <p className="text-[1.6rem] text-neutral-600">주문 정보를 불러오는 중입니다...</p>
+          <p className="text-[1.6rem] text-neutral-600">
+            주문 정보를 불러오는 중입니다...
+          </p>
         </div>
       </section>
     );
@@ -598,7 +620,9 @@ const Checkout = () => {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">
             <section className="rounded-[1.8rem] bg-white p-7 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
-              <h2 className="text-[2rem] font-semibold text-[#171717]">주문 상품</h2>
+              <h2 className="text-[2rem] font-semibold text-[#171717]">
+                주문 상품
+              </h2>
               <div className="mt-6 space-y-4">
                 {products.map((product) => (
                   <article
@@ -614,7 +638,9 @@ const Checkout = () => {
                       <p className="text-[1.6rem] font-semibold text-[#171717]">
                         {product.name}
                       </p>
-                      <p className="mt-1 text-[1.3rem] text-neutral-500">{product.option}</p>
+                      <p className="mt-1 text-[1.3rem] text-neutral-500">
+                        {product.option}
+                      </p>
                       <div className="mt-3 flex flex-wrap items-center gap-3 text-[1.3rem] text-neutral-600">
                         <span>수량 {product.quantity}개</span>
                         <span>{formatPrice(product.totalPrice)}</span>
@@ -626,23 +652,31 @@ const Checkout = () => {
             </section>
 
             <section className="rounded-[1.8rem] bg-white p-7 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
-              <h2 className="text-[2rem] font-semibold text-[#171717]">주문자 정보</h2>
+              <h2 className="text-[2rem] font-semibold text-[#171717]">
+                주문자 정보
+              </h2>
               <div className="mt-5 grid gap-4 md:grid-cols-2">
                 <div className="rounded-[1.2rem] bg-[#f8f8f8] px-5 py-4">
                   <p className="text-[1.2rem] text-neutral-500">이름</p>
-                  <p className="mt-2 text-[1.6rem] font-medium text-[#171717]">{userName}</p>
+                  <p className="mt-2 text-[1.6rem] font-medium text-[#171717]">
+                    {userName}
+                  </p>
                 </div>
                 <div className="rounded-[1.2rem] bg-[#f8f8f8] px-5 py-4">
                   <p className="text-[1.2rem] text-neutral-500">이메일</p>
-                  <p className="mt-2 text-[1.6rem] font-medium text-[#171717]">{userEmail}</p>
+                  <p className="mt-2 text-[1.6rem] font-medium text-[#171717]">
+                    {userEmail}
+                  </p>
                 </div>
               </div>
             </section>
 
             <section className="rounded-[1.8rem] bg-white p-7 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
-              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <h2 className="text-[2rem] font-semibold text-[#171717]">배송 정보</h2>
+                  <h2 className="text-[2rem] font-semibold text-[#171717]">
+                    배송 정보
+                  </h2>
                   <p className="mt-2 text-[1.3rem] text-neutral-500">
                     저장된 배송지를 선택하거나 새 주소를 입력해주세요.
                   </p>
@@ -650,7 +684,9 @@ const Checkout = () => {
                 <div className="flex gap-3">
                   <select
                     value={selectedAddressId}
-                    onChange={(event) => handleAddressSelect(event.target.value)}
+                    onChange={(event) =>
+                      handleAddressSelect(event.target.value)
+                    }
                     className="min-w-[220px] rounded-full border border-neutral-300 bg-white px-4 py-3 text-[1.4rem]"
                   >
                     <option value="">배송지 선택</option>
@@ -679,7 +715,10 @@ const Checkout = () => {
                 <input
                   value={formData.userName}
                   onChange={(event) =>
-                    setFormData((prev) => ({ ...prev, userName: event.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      userName: event.target.value,
+                    }))
                   }
                   placeholder="받는 분 성함"
                   className="rounded-[1.2rem] border border-neutral-300 px-4 py-4 text-[1.5rem]"
@@ -722,7 +761,10 @@ const Checkout = () => {
                 <textarea
                   value={formData.request}
                   onChange={(event) =>
-                    setFormData((prev) => ({ ...prev, request: event.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      request: event.target.value,
+                    }))
                   }
                   placeholder="배송 요청사항"
                   rows={4}
@@ -734,7 +776,9 @@ const Checkout = () => {
 
           <aside className="space-y-6">
             <section className="rounded-[1.8rem] bg-white p-7 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
-              <h2 className="text-[2rem] font-semibold text-[#171717]">결제 금액</h2>
+              <h2 className="text-[2rem] font-semibold text-[#171717]">
+                결제 금액
+              </h2>
               <div className="mt-6 space-y-4 text-[1.5rem]">
                 <div className="flex items-center justify-between">
                   <span className="text-neutral-500">상품 금액</span>
@@ -747,7 +791,9 @@ const Checkout = () => {
                 <div className="space-y-3 rounded-[1.2rem] bg-[#f8f8f8] p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-neutral-500">포인트 사용</span>
-                    <span className="text-[#d93a32]">- {formatPrice(pointsToUse)}</span>
+                    <span className="text-[#d93a32]">
+                      - {formatPrice(pointsToUse)}
+                    </span>
                   </div>
                   <input
                     type="number"
@@ -768,7 +814,9 @@ const Checkout = () => {
                 </div>
                 <div className="border-t border-dashed border-neutral-200 pt-4">
                   <div className="flex items-end justify-between">
-                    <span className="text-[1.7rem] font-semibold">최종 결제금액</span>
+                    <span className="text-[1.7rem] font-semibold">
+                      최종 결제금액
+                    </span>
                     <span className="text-[2.2rem] font-semibold text-[#d93a32]">
                       {formatPrice(totalPayable)}
                     </span>
@@ -799,7 +847,9 @@ const Checkout = () => {
                         key={method.key}
                         type="button"
                         onClick={() =>
-                          setSelectedPaymentMethod(method.key as PaymentMethodKey)
+                          setSelectedPaymentMethod(
+                            method.key as PaymentMethodKey,
+                          )
                         }
                         className={[
                           'flex w-full items-center justify-between rounded-[1.2rem] border px-4 py-4 text-left text-[1.5rem]',
@@ -809,7 +859,9 @@ const Checkout = () => {
                         ].join(' ')}
                       >
                         <span>{method.label}</span>
-                        <span className="text-[1.3rem]">{selected ? '선택됨' : '선택'}</span>
+                        <span className="text-[1.3rem]">
+                          {selected ? '선택됨' : '선택'}
+                        </span>
                       </button>
                     );
                   })}
@@ -820,7 +872,9 @@ const Checkout = () => {
                     우리은행 540-263910-02-001
                   </p>
                   <p className="mt-2">예금주: 연경진</p>
-                  <p className="mt-4 text-[#1f5eff]">세금계산서는 월말 일괄 발행됩니다.</p>
+                  <p className="mt-4 text-[#1f5eff]">
+                    세금계산서는 월말 일괄 발행됩니다.
+                  </p>
                   <p>표기 금액은 부가세 별도 금액입니다.</p>
                 </div>
               )}
@@ -829,7 +883,9 @@ const Checkout = () => {
                 <input
                   type="checkbox"
                   checked={isAgreementChecked}
-                  onChange={(event) => setIsAgreementChecked(event.target.checked)}
+                  onChange={(event) =>
+                    setIsAgreementChecked(event.target.checked)
+                  }
                   className="mt-1 h-5 w-5"
                 />
                 <span className="text-[1.4rem] text-neutral-600">
