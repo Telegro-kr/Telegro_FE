@@ -87,13 +87,12 @@ function StepIndicator({
 }: {
   currentStatus?: OrderDetailResponseDTOOrderStatus;
 }) {
-  const activeIndex = getStepIndex(currentStatus);
   const isCancelled = currentStatus === 'ORDER_CANCELLED';
 
-  return (
-    <div className="overflow-hidden rounded-[1.8rem] border border-neutral-200 bg-white">
-      {isCancelled ? (
-        <div className="flex items-center gap-4 border-b border-neutral-200 bg-[#171717] px-6 py-5 text-white">
+  if (isCancelled) {
+    return (
+      <div className="overflow-hidden rounded-[1.8rem] border border-neutral-200 bg-white">
+        <div className="flex items-center gap-4 bg-[#171717] px-6 py-5 text-white">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
             <FiClock className="text-lg" />
           </div>
@@ -104,8 +103,14 @@ function StepIndicator({
             </p>
           </div>
         </div>
-      ) : null}
+      </div>
+    );
+  }
 
+  const activeIndex = getStepIndex(currentStatus);
+
+  return (
+    <div className="overflow-hidden rounded-[1.8rem] border border-neutral-200 bg-white">
       <div className="grid gap-px bg-neutral-200 md:grid-cols-5">
         {orderSteps.map((step, index) => {
           const isActive = index === activeIndex;
