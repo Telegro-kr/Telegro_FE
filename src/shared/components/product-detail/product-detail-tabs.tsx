@@ -8,15 +8,13 @@ type ProductDetailTabsProps = {
 
 const tabs: Array<{ key: ProductTab; label: string; suffix?: string }> = [
   { key: 'detail', label: '상세정보' },
-  { key: 'review', label: '구매평', suffix: '0' },
   { key: 'return', label: '반품/교환' },
-  { key: 'qna', label: 'Q&A', suffix: '0' },
 ];
 
 const ProductDetailTabs = ({ activeTab, onChange }: ProductDetailTabsProps) => {
   return (
     <section className="mt-10 border-b border-[#E3E7EB]">
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-2">
         {tabs.map((tab) => (
           <button
             key={tab.key}
