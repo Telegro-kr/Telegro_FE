@@ -203,7 +203,7 @@ const ProductDetailView = ({
               <button
                 type="button"
                 onClick={onToggleDetail}
-                className="flex-row-center h-[4.8rem] w-full cursor-pointer gap-2 border-[2px] border-gray-600 bg-white text-[1.5rem] font-semibold text-[#263238] shadow-[0_8px_16px_rgba(38,50,56,0.08)] transition-colors hover:bg-gray-100"
+                className="flex-row-center h-[4.8rem] w-full cursor-pointer gap-2 border-[2px] border-gray-600 bg-white text-[1.5rem] font-semibold text-[#263238] transition-colors hover:bg-gray-100"
               >
                 <span>
                   {isDetailOpen ? '상품 상세 접기' : '상품 상세 보기'}
@@ -267,7 +267,7 @@ const ReturnPolicyPanel = () => (
       />
     </div>
 
-    <div className="rounded-[5px] border border-[#E5E7EB] bg-white px-7 py-6 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+    <div className="rounded-[5px] border border-[#E5E7EB] bg-white px-7 py-6">
       <h3 className="text-[1.55rem] font-semibold text-[#263238]">
         A/S 정책 안내
       </h3>
@@ -285,7 +285,7 @@ const ReturnPolicyPanel = () => (
       </div>
     </div>
 
-    <div className="overflow-hidden rounded-[5px] border border-[#E5E7EB] bg-white shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+    <div className="overflow-hidden rounded-[5px] border border-[#E5E7EB] bg-white">
       <div className="border-b border-[#EEF2F6] px-7 py-5">
         <h3 className="text-[1.55rem] font-semibold text-[#263238]">
           거래 조건에 관한 정보
@@ -333,7 +333,7 @@ const PolicyCard = ({
         : 'text-[#263238]';
 
   return (
-    <div className="rounded-[5px] border border-[#E5E7EB] bg-white px-7 py-6 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+    <div className="rounded-[5px] border border-[#E5E7EB] bg-white px-7 py-6">
       <h3 className={`text-[1.45rem] font-semibold ${titleColor}`}>{title}</h3>
       <ul className="mt-5 flex list-disc flex-col gap-3 pl-5">
         {items.map((item) => (
