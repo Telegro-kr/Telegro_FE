@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   telegroInvalidate,
   type DeliveryAddressDetailDTO,
+  type OrderDetailDTO,
   useAddDeliveryAddress,
   useAddDeliveryAddress1 as useDeleteDeliveryAddress,
   useGetMyPage,
@@ -16,6 +17,25 @@ import { INITIAL_ADDRESS_FORM, POSTCODE_SCRIPT_ID, POSTCODE_SCRIPT_SRC } from '.
 import type { AddressForm, AddressModalState, MenuItem } from './my.types';
 import { buildRoadAddress, getAddressForm, getApiErrorMessage, getDefaultAddress, toAddressPayload } from './my.utils';
 
+const getRecentOrders = (
+  orders:
+    | OrderDetailDTO[]
+    | {
+        content?: OrderDetailDTO[];
+      }
+    | undefined,
+) => {
+  if (Array.isArray(orders)) {
+    return orders;
+  }
+
+  if (Array.isArray(orders?.content)) {
+    return orders.content;
+  }
+
+  return [];
+};
+
 export function useMyPage() {
   const queryClient = useQueryClient();
   const [activeMenu, setActiveMenu] = useState<MenuItem>('프로필');
@@ -26,7 +46,7 @@ export function useMyPage() {
   const [addressForm, setAddressForm] = useState<AddressForm>(INITIAL_ADDRESS_FORM);
 
   const myPageQuery = useGetMyPage({ query: { staleTime: 60_000 } });
-  const ordersQuery = useGetOrders({ size: 4 }, { query: { staleTime: 60_000 } });
+  const ordersQuery = useGetOrders({ size: 5 }, { query: { staleTime: 60_000 } });
   const addAddressMutation = useAddDeliveryAddress();
   const updateAddressMutation = useUpdateDeliveryAddress();
   const deleteAddressMutation = useDeleteDeliveryAddress();
@@ -59,7 +79,7 @@ export function useMyPage() {
   const user = myPageQuery.data?.data;
   const addresses = [...(user?.addressList ?? [])].sort((a, b) => Number(b.isDefault) - Number(a.isDefault));
   const defaultAddress = getDefaultAddress(addresses);
-  const recentOrders = ordersQuery.data?.data?.orders ?? [];
+  const recentOrders = getRecentOrders(ordersQuery.data?.data?.orders);
 
   const isAddressMutationPending =
     addAddressMutation.isPending ||
