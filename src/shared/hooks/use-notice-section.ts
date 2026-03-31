@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useGetNotices } from '@apis/telegro';
+import { useInfiniteNotices } from '@apis/telegro';
 import { stripHtmlToText } from '@utils/html';
 
 export type NoticeItem = {
@@ -25,6 +25,19 @@ type NoticeListItemWithContext = {
   context?: string | null;
 };
 
+type NoticeCursorResponse = {
+  hasNext?: boolean;
+  nextCursor?: unknown;
+  totalElements?: number;
+  content?: Array<{
+    id?: number;
+    noticeTitle?: string;
+    noticeCreateDate?: string;
+    viewCount?: number;
+    context?: string | null;
+  }>;
+};
+
 const formatNoticeDate = (value?: string) => {
   if (!value) return '-';
 
@@ -47,39 +60,41 @@ export function useNoticeSection({
   searchKeyword = '',
 }: UseNoticeSectionParams = {}) {
   const hasInjectedNotices = Boolean(notices?.length);
-  const noticeQuery = useGetNotices(
-    { page: 0, size: pageSize },
+  const noticeQuery = useInfiniteNotices(
+    { size: pageSize },
     {
-      query: {
-        staleTime: 60_000,
-      },
+      staleTime: 60_000,
     },
   );
 
-  const resolvedNotices = useMemo(() => {
+  const resolvedNotices = useMemo<NoticeItem[]>(() => {
     if (notices?.length) {
       return notices;
     }
 
-    return (noticeQuery.data?.data?.notices ?? []).map((notice) => {
-      const plainTextPreview = stripHtmlToText(
-        (notice as typeof notice & NoticeListItemWithContext).context ?? '',
-      );
+    return (noticeQuery.data?.pages ?? []).flatMap((page) =>
+      (((page.data as NoticeCursorResponse | undefined)?.content ??
+        page.data?.notices ??
+        [])).map((notice) => {
+        const plainTextPreview = stripHtmlToText(
+          (notice as typeof notice & NoticeListItemWithContext).context ?? '',
+        );
 
-      return {
-        id: notice.id ?? 0,
-        title:
-          notice.noticeTitle?.trim() ||
-          '\uC81C\uBAA9 \uC5C6\uB294 \uACF5\uC9C0\uC0AC\uD56D',
-        preview: plainTextPreview || FALLBACK_PREVIEW,
-        views: notice.viewCount ?? 0,
-        dateLabel: formatNoticeDate(notice.noticeCreateDate),
-      };
-    });
-  }, [noticeQuery.data?.data?.notices, notices]);
+        return {
+          id: notice.id ?? 0,
+          title:
+            notice.noticeTitle?.trim() ||
+            '\uC81C\uBAA9 \uC5C6\uB294 \uACF5\uC9C0\uC0AC\uD56D',
+          preview: plainTextPreview || FALLBACK_PREVIEW,
+          views: notice.viewCount ?? 0,
+          dateLabel: formatNoticeDate(notice.noticeCreateDate),
+        };
+      }),
+    );
+  }, [noticeQuery.data?.pages, notices]);
 
   const normalizedKeyword = searchKeyword.trim().toLowerCase();
-  const filteredNotices = useMemo(() => {
+  const filteredNotices = useMemo<NoticeItem[]>(() => {
     if (!normalizedKeyword) {
       return resolvedNotices;
     }
@@ -96,6 +111,11 @@ export function useNoticeSection({
     notices: filteredNotices,
     isLoading: hasInjectedNotices ? false : noticeQuery.isLoading,
     isError: hasInjectedNotices ? false : noticeQuery.isError,
+    hasNextPage: hasInjectedNotices ? false : Boolean(noticeQuery.hasNextPage),
+    isFetchingNextPage: hasInjectedNotices ? false : noticeQuery.isFetchingNextPage,
+    fetchNextPage: hasInjectedNotices
+      ? async () => undefined
+      : () => noticeQuery.fetchNextPage(),
     handleClickAll: () => {
       onClickAll?.();
     },

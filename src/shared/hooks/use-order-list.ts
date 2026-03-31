@@ -1,7 +1,7 @@
+import { useInfiniteOrders } from '@apis/telegro';
 import type { OrderDetailDTO } from '@apis/telegro';
-import { useGetOrders } from '@apis/telegro';
-import { getOrderStatusLabel } from '@constants/orderStatus';
 import type { OrderRow, OrderStatusValue } from '@components/order/order-list-table';
+import { getOrderStatusLabel } from '@constants/orderStatus';
 import { formatNumber } from '@utils/format';
 import { useMemo } from 'react';
 
@@ -13,14 +13,14 @@ type UseOrderListParams = {
   filterBy?: OrderFilterType;
 };
 
-const DEFAULT_PAGE_SIZE = 10000;
+const DEFAULT_PAGE_SIZE = 10;
 
 const formatPrice = (value?: number | null) => {
   if (value === undefined || value === null) {
     return '-';
   }
 
-  return `${formatNumber(value)}원`;
+  return `${formatNumber(value)} KRW`;
 };
 
 const formatProductName = (order: OrderDetailDTO) => {
@@ -28,11 +28,11 @@ const formatProductName = (order: OrderDetailDTO) => {
   const firstProductName = products[0]?.productName?.trim();
 
   if (!firstProductName) {
-    return '상품 정보 없음';
+    return 'Unknown product';
   }
 
   return products.length > 1
-    ? `${firstProductName} 외 ${products.length - 1}건`
+    ? `${firstProductName} +${products.length - 1}`
     : firstProductName;
 };
 
@@ -47,16 +47,10 @@ const formatOptionLabel = (order: OrderDetailDTO) => {
   return optionValues.length ? optionValues.join(' / ') : '-';
 };
 
-const getQuantity = (order: OrderDetailDTO) => {
-  return (order.products ?? []).reduce(
-    (sum, product) => sum + (product.quantity ?? 0),
-    0,
-  );
-};
+const getQuantity = (order: OrderDetailDTO) =>
+  (order.products ?? []).reduce((sum, product) => sum + (product.quantity ?? 0), 0);
 
-const getUnitPrice = (order: OrderDetailDTO) => {
-  return formatPrice(order.products?.[0]?.productPrice);
-};
+const getUnitPrice = (order: OrderDetailDTO) => formatPrice(order.products?.[0]?.productPrice);
 
 const getOrderInfo = (order: OrderDetailDTO) => {
   if (!order.createdAt) {
@@ -64,7 +58,6 @@ const getOrderInfo = (order: OrderDetailDTO) => {
   }
 
   const date = new Date(order.createdAt);
-
   if (Number.isNaN(date.getTime())) {
     return '-';
   }
@@ -78,13 +71,10 @@ const getOrderInfo = (order: OrderDetailDTO) => {
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
-const getCustomerInfo = (order: OrderDetailDTO) => {
-  return order.userInfo?.username?.trim() || '-';
-};
+const getCustomerInfo = (order: OrderDetailDTO) => order.userInfo?.username?.trim() || '-';
 
-const getStatusValue = (order: OrderDetailDTO): OrderStatusValue => {
-  return (order.orderStatus as OrderStatusValue | undefined) ?? 'ORDER_CREATED';
-};
+const getStatusValue = (order: OrderDetailDTO): OrderStatusValue =>
+  (order.orderStatus as OrderStatusValue | undefined) ?? 'ORDER_CREATED';
 
 export const useOrderList = ({
   pageSize = DEFAULT_PAGE_SIZE,
@@ -94,46 +84,56 @@ export const useOrderList = ({
   const normalizedKeyword = searchKeyword.trim();
   const hasSearchKeyword = normalizedKeyword.length > 0;
 
-  const orderQuery = useGetOrders(
+  const orderQuery = useInfiniteOrders(
     {
       size: pageSize,
       q: hasSearchKeyword ? normalizedKeyword : undefined,
       filterBy: hasSearchKeyword ? filterBy : undefined,
     },
     {
-      query: {
-        staleTime: 60_000,
-      },
+      staleTime: 60_000,
     },
   );
 
-  const orders = useMemo<OrderRow[]>(() => {
-    return (orderQuery.data?.data?.orders ?? []).map((order, index) => ({
-      id: order.orderId ?? index + 1,
-      orderId: order.orderId ?? index + 1,
-      productName: formatProductName(order),
-      optionLabel: formatOptionLabel(order),
-      quantity: getQuantity(order),
-      unitPrice: getUnitPrice(order),
-      totalPrice: formatPrice(order.amount),
-      totalSubLabel:
-        order.shoppingCost === 0
-          ? '(무료배송)'
-          : order.shoppingCost
-            ? `배송비 ${formatPrice(order.shoppingCost)}`
-            : undefined,
-      orderInfo: getOrderInfo(order),
-      customerInfo: getCustomerInfo(order),
-      statusLabel: getOrderStatusLabel(order.orderStatus),
-      statusValue: getStatusValue(order),
-    }));
-  }, [orderQuery.data?.data?.orders]);
+  const orders = useMemo<OrderRow[]>(
+    () =>
+      (orderQuery.data?.pages ?? []).flatMap((page, pageIndex) =>
+        (page.data?.data?.orders ?? []).map((order, index) => ({
+          id: order.orderId ?? pageIndex * pageSize + index + 1,
+          orderId: order.orderId ?? pageIndex * pageSize + index + 1,
+          productName: formatProductName(order),
+          optionLabel: formatOptionLabel(order),
+          quantity: getQuantity(order),
+          unitPrice: getUnitPrice(order),
+          totalPrice: formatPrice(order.amount),
+          totalSubLabel:
+            order.shoppingCost === 0
+              ? '(Free shipping)'
+              : order.shoppingCost
+                ? `Shipping ${formatPrice(order.shoppingCost)}`
+                : undefined,
+          orderInfo: getOrderInfo(order),
+          customerInfo: getCustomerInfo(order),
+          statusLabel: getOrderStatusLabel(order.orderStatus),
+          statusValue: getStatusValue(order),
+        })),
+      ),
+    [orderQuery.data?.pages, pageSize],
+  );
+
+  const totalCount =
+    orderQuery.data?.pages.at(-1)?.data?.data?.totalElement ??
+    orderQuery.data?.pages[0]?.data?.data?.totalElement ??
+    orders.length;
 
   return {
     orders,
-    totalCount: orderQuery.data?.data?.totalElement ?? orders.length,
+    totalCount,
     isLoading: orderQuery.isLoading,
     isError: orderQuery.isError,
+    hasNextPage: Boolean(orderQuery.hasNextPage),
+    isFetchingNextPage: orderQuery.isFetchingNextPage,
+    fetchNextPage: () => orderQuery.fetchNextPage(),
     refetch: orderQuery.refetch,
   };
 };

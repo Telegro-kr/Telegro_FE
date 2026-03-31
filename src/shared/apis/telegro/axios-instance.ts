@@ -5,11 +5,35 @@ export const AXIOS_INSTANCE = Axios.create({
   withCredentials: true,
 });
 
+let isHandlingUnauthorized = false;
+
 AXIOS_INSTANCE.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+AXIOS_INSTANCE.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const requestUrl = String(error?.config?.url ?? '');
+    const isAuthRequest =
+      requestUrl.includes('/auth/login') || requestUrl.includes('/auth/signup');
+
+    if (status === 401 && !isAuthRequest && typeof window !== 'undefined') {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userRole');
+
+      if (!isHandlingUnauthorized) {
+        isHandlingUnauthorized = true;
+        window.location.replace('/');
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export const axiosInstance = async <T>(
   config: AxiosRequestConfig,

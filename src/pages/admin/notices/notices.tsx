@@ -4,6 +4,7 @@ import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
 import NoticeCard from '@components/notice/notice-card';
 import { useNoticeSection } from '@hooks/use-notice-section';
+import { useInfiniteScrollTrigger } from '@hooks/use-infinite-scroll-trigger';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiPlus } from 'react-icons/fi';
@@ -14,9 +15,15 @@ const AdminNotices = () => {
   const [keyword, setKeyword] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const { notices, isLoading, isError } = useNoticeSection({
-    pageSize: 100,
+  const { notices, isLoading, isError, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useNoticeSection({
+    pageSize: 10,
     searchKeyword,
+  });
+
+  const loadMoreRef = useInfiniteScrollTrigger({
+    enabled: hasNextPage && !isFetchingNextPage,
+    onLoadMore: () => fetchNextPage(),
   });
 
   const handleSearch = (value: string) => {
@@ -79,6 +86,15 @@ const AdminNotices = () => {
               }}
             />
           ))}
+          {(hasNextPage || isFetchingNextPage) ? (
+            <div ref={loadMoreRef}>
+              {isFetchingNextPage ? (
+                <LoadingPanel className="min-h-0 rounded-2xl py-[2rem]" size={72} />
+              ) : (
+                <div className="h-[1px] w-full" />
+              )}
+            </div>
+          ) : null}
         </div>
       ) : (
         <div className="rounded-2xl bg-white px-[2.2rem] py-[2rem] text-[1.6rem] text-gray-500">

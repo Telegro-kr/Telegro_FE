@@ -26,7 +26,7 @@ export function useMyPage() {
   const [addressForm, setAddressForm] = useState<AddressForm>(INITIAL_ADDRESS_FORM);
 
   const myPageQuery = useGetMyPage({ query: { staleTime: 60_000 } });
-  const ordersQuery = useGetOrders({ page: 0, size: 4 }, { query: { staleTime: 60_000 } });
+  const ordersQuery = useGetOrders({ size: 4 }, { query: { staleTime: 60_000 } });
   const addAddressMutation = useAddDeliveryAddress();
   const updateAddressMutation = useUpdateDeliveryAddress();
   const deleteAddressMutation = useDeleteDeliveryAddress();
