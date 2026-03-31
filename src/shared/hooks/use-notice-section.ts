@@ -72,10 +72,13 @@ export function useNoticeSection({
       return notices;
     }
 
-    return (noticeQuery.data?.pages ?? []).flatMap((page) =>
-      (((page.data as NoticeCursorResponse | undefined)?.content ??
+    return (noticeQuery.data?.pages ?? []).reduce<NoticeItem[]>((acc, page) => {
+      const pageItems =
+        (page.data as NoticeCursorResponse | undefined)?.content ??
         page.data?.notices ??
-        [])).map((notice) => {
+        [];
+
+      const mappedItems = pageItems.map((notice) => {
         const plainTextPreview = stripHtmlToText(
           (notice as typeof notice & NoticeListItemWithContext).context ?? '',
         );
@@ -89,8 +92,10 @@ export function useNoticeSection({
           views: notice.viewCount ?? 0,
           dateLabel: formatNoticeDate(notice.noticeCreateDate),
         };
-      }),
-    );
+      });
+
+      return [...acc, ...mappedItems];
+    }, []);
   }, [noticeQuery.data?.pages, notices]);
 
   const normalizedKeyword = searchKeyword.trim().toLowerCase();

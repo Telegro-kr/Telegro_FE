@@ -21,6 +21,8 @@ import { axiosInstance, type ErrorType } from './axios-instance';
 
 type CursorValue = number | string | Record<string, unknown>;
 
+type CursorRecord = Record<string, unknown>;
+
 type CursorMeta = {
   cursor?: CursorValue | null;
   nextCursor?: CursorValue | null;
@@ -54,6 +56,26 @@ type NoticeCursorPayload = CursorMeta & {
   } | null;
 };
 
+type OrderCursorPayload = CursorMeta & {
+  content?: OrderDetailDTO[];
+  nextCursorId?: number | string | null;
+  nextCursorCreatedAt?: string | null;
+  orders?:
+    | OrderDetailDTO[]
+    | {
+        content?: OrderDetailDTO[];
+        hasNext?: boolean;
+        nextCursorId?: number | string | null;
+        nextCursorCreatedAt?: string | null;
+        nextCursor?: {
+          cursorId?: number | string | null;
+          cursorCreatedAt?: string | null;
+          lastId?: number | string | null;
+          lastCreatedAt?: string | null;
+        } | null;
+      };
+};
+
 type OrderCursorParams = Omit<GetOrdersParams, 'page'> & {
   size: number;
   cursor?: CursorValue;
@@ -74,7 +96,7 @@ type InfiniteHookOptions = {
   staleTime?: number;
 };
 
-const CURSOR_PARAM_KEY = 'cursor';
+const CURSOR_PARAM_KEY = 'cursorId';
 
 const serializeCursor = (cursor: CursorValue | undefined) => {
   if (cursor === undefined || cursor === null || cursor === '') {
@@ -88,24 +110,129 @@ const serializeCursor = (cursor: CursorValue | undefined) => {
   return String(cursor);
 };
 
-const isCursorRecord = (cursor: CursorValue | undefined): cursor is Record<string, unknown> =>
-  typeof cursor === 'object' && cursor !== null && !Array.isArray(cursor);
+const hasCursorValue = (value: unknown) => value !== undefined && value !== null && value !== '';
+
+const getContentArray = <TItem>(value: unknown): TItem[] => {
+  if (Array.isArray(value)) {
+    return value as TItem[];
+  }
+
+  if (value && typeof value === 'object' && Array.isArray((value as { content?: unknown[] }).content)) {
+    return (value as { content: TItem[] }).content;
+  }
+
+  return [];
+};
+
+const getLastArrayItem = <TItem>(items: TItem[]) => (items.length ? items[items.length - 1] : undefined);
+
+const getBoolean = (value: unknown) => (typeof value === 'boolean' ? value : undefined);
+
+const getNumberOrString = (value: unknown) =>
+  typeof value === 'number' || typeof value === 'string' ? value : undefined;
+
+const getString = (value: unknown) => (typeof value === 'string' ? value : undefined);
+
+const toCursorRecord = (value: unknown): CursorRecord | undefined =>
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as CursorRecord) : undefined;
+
+const getOrderCursorPayload = (data: OrderCursorPayload | undefined) => {
+  const nestedOrders = toCursorRecord(data?.orders);
+
+  return {
+    items: getContentArray<OrderDetailDTO>(data?.content ?? data?.orders),
+    hasNext:
+      data?.hasNext ??
+      getBoolean(nestedOrders?.hasNext) ??
+      (data?.isLast === true ? false : undefined),
+    cursorId:
+      getNumberOrString(data?.nextCursorId) ??
+      getNumberOrString(nestedOrders?.nextCursorId) ??
+      getNumberOrString(toCursorRecord(nestedOrders?.nextCursor)?.cursorId) ??
+      getNumberOrString(toCursorRecord(nestedOrders?.nextCursor)?.lastId),
+    cursorCreatedAt:
+      getString(data?.nextCursorCreatedAt) ??
+      getString(nestedOrders?.nextCursorCreatedAt) ??
+      getString(toCursorRecord(nestedOrders?.nextCursor)?.cursorCreatedAt) ??
+      getString(toCursorRecord(nestedOrders?.nextCursor)?.lastCreatedAt),
+  };
+};
+
+const getExplicitNextCursor = (
+  data: CursorMeta | undefined,
+  pageParam: CursorValue | undefined,
+  allPageParams: unknown[],
+) => {
+  if (!data) {
+    return undefined;
+  }
+
+  const nestedNextCursor = toCursorRecord(data.nextCursor);
+  const cursorId =
+    getNumberOrString((data as CursorRecord).nextCursorId) ??
+    getNumberOrString((data as CursorRecord).cursorId) ??
+    getNumberOrString(nestedNextCursor?.cursorId) ??
+    getNumberOrString(nestedNextCursor?.lastId);
+  const cursorCreatedAt =
+    getString((data as CursorRecord).nextCursorCreatedAt) ??
+    getString((data as CursorRecord).cursorCreatedAt) ??
+    getString(nestedNextCursor?.cursorCreatedAt) ??
+    getString(nestedNextCursor?.lastCreatedAt);
+
+  const recordCursor =
+    hasCursorValue(cursorId) || hasCursorValue(cursorCreatedAt)
+      ? {
+          ...(hasCursorValue(cursorId) ? { cursorId } : {}),
+          ...(hasCursorValue(cursorCreatedAt) ? { cursorCreatedAt } : {}),
+        }
+      : undefined;
+
+  const explicitCursor =
+    recordCursor ??
+    data.nextCursor ??
+    data.cursor ??
+    data.nextId ??
+    data.lastCursor;
+
+  if (!hasCursorValue(explicitCursor)) {
+    return undefined;
+  }
+
+  const nextCursorKey = serializeCursor(explicitCursor as CursorValue);
+  const currentCursorKey = serializeCursor(pageParam);
+  const seenCursor = allPageParams.some(
+    (currentPageParam) => serializeCursor(currentPageParam as CursorValue | undefined) === nextCursorKey,
+  );
+
+  if (nextCursorKey === currentCursorKey || seenCursor) {
+    return undefined;
+  }
+
+  return explicitCursor as CursorValue;
+};
 
 const resolveNextCursor = <TItem>(
   data: CursorMeta | undefined,
   items: TItem[],
   pageSize: number,
   getItemCursor: (item: TItem) => CursorValue | null | undefined,
+  pageParam?: CursorValue | undefined,
+  allPageParams: unknown[] = [],
 ) => {
   if (!data) {
     return undefined;
   }
 
-  if (data.hasNext === false || data.hasMore === false || data.isLast === true) {
+  if (
+    data.hasNext === false ||
+    data.hasMore === false ||
+    data.isLast === true ||
+    getBoolean((data as CursorRecord).hasNext) === false
+  ) {
     return undefined;
   }
 
-  const explicitCursor = data.nextCursor ?? data.cursor ?? data.nextId ?? data.lastCursor;
+  const explicitCursor = getExplicitNextCursor(data, pageParam, allPageParams);
   if (explicitCursor !== undefined && explicitCursor !== null && explicitCursor !== '') {
     return explicitCursor;
   }
@@ -181,10 +308,17 @@ export const useInfiniteProducts = (
     enabled: options?.enabled,
     queryFn: ({ pageParam, signal }) =>
       getCursorProducts({ ...params, cursor: pageParam as CursorValue | undefined }, undefined, signal),
-    getNextPageParam: (lastPage) => {
-      const data = lastPage.data as (ProductListDTO & CursorMeta) | undefined;
-      const items = data?.products ?? [];
-      return resolveNextCursor<ProductResponseDTO>(data, items, params.size, (item) => item.id);
+    getNextPageParam: (lastPage, _allPages, lastPageParam, allPageParams) => {
+      const data = lastPage.data as (ProductListDTO & CursorMeta & { content?: ProductResponseDTO[] }) | undefined;
+      const items = getContentArray<ProductResponseDTO>(data?.content ?? data?.products);
+      return resolveNextCursor<ProductResponseDTO>(
+        data,
+        items,
+        params.size,
+        (item) => item.id,
+        lastPageParam as CursorValue | undefined,
+        allPageParams,
+      );
     },
   });
 
@@ -222,38 +356,15 @@ export const useInfiniteNotices = (
       getCursorNotices({ ...params, cursor: pageParam as CursorValue | undefined }, undefined, signal),
     getNextPageParam: (lastPage, _allPages, lastPageParam, allPageParams) => {
       const data = lastPage.data as (NoticeListDTO & CursorMeta & NoticeCursorPayload) | undefined;
-
-      if (!data?.hasNext) {
-        return undefined;
-      }
-
-      const nextCursor: CursorValue = {
-        cursorId:
-          data?.nextCursorId ??
-          data?.nextCursor?.lastId ??
-          null,
-        cursorCreatedAt:
-          data?.nextCursorCreatedAt ??
-          data?.nextCursor?.lastCreatedAt ??
-          null,
-      };
-
-      const nextCursorKey = serializeCursor(nextCursor);
-      const currentCursorKey = serializeCursor(lastPageParam as CursorValue | undefined);
-      const seenCursor = allPageParams.some(
-        (pageParam) => serializeCursor(pageParam as CursorValue | undefined) === nextCursorKey,
+      const items = getContentArray<NoticeDTO>(data?.content ?? data?.notices);
+      return resolveNextCursor<NoticeDTO>(
+        data,
+        items,
+        params.size,
+        (item) => item.id,
+        lastPageParam as CursorValue | undefined,
+        allPageParams,
       );
-
-      if (
-        !isCursorRecord(nextCursor) ||
-        (!nextCursor.cursorId && !nextCursor.cursorCreatedAt) ||
-        nextCursorKey === currentCursorKey ||
-        seenCursor
-      ) {
-        return undefined;
-      }
-
-      return nextCursor;
     },
   });
 
@@ -299,10 +410,52 @@ export const useInfiniteOrders = (
     enabled: options?.enabled,
     queryFn: ({ pageParam, signal }) =>
       getCursorOrders({ ...params, cursor: pageParam as CursorValue | undefined }, undefined, signal),
-    getNextPageParam: (lastPage) => {
-      const data = lastPage.data as (OrderListDTO & CursorMeta) | undefined;
-      const items = data?.orders ?? [];
-      return resolveNextCursor<OrderDetailDTO>(data, items, params.size, (item) => item.orderId);
+    getNextPageParam: (lastPage, _allPages, lastPageParam, allPageParams) => {
+      const data = lastPage.data as (OrderListDTO & OrderCursorPayload) | undefined;
+      const { items, hasNext, cursorId, cursorCreatedAt } = getOrderCursorPayload(data);
+
+      if (hasNext === false) {
+        return undefined;
+      }
+
+      if (hasCursorValue(cursorId) || hasCursorValue(cursorCreatedAt)) {
+        const nextCursor = {
+          ...(hasCursorValue(cursorId) ? { cursorId } : {}),
+          ...(hasCursorValue(cursorCreatedAt) ? { cursorCreatedAt } : {}),
+        };
+        const nextCursorKey = serializeCursor(nextCursor);
+        const currentCursorKey = serializeCursor(lastPageParam as CursorValue | undefined);
+        const seenCursor = allPageParams.some(
+          (pageParam) => serializeCursor(pageParam as CursorValue | undefined) === nextCursorKey,
+        );
+
+        if (nextCursorKey === currentCursorKey || seenCursor) {
+          return undefined;
+        }
+
+        return nextCursor;
+      }
+
+      const lastOrder = getLastArrayItem(items);
+      if (!lastOrder?.orderId || !lastOrder.createdAt) {
+        return undefined;
+      }
+
+      const nextCursor = {
+        cursorId: lastOrder.orderId,
+        cursorCreatedAt: lastOrder.createdAt,
+      };
+      const nextCursorKey = serializeCursor(nextCursor);
+      const currentCursorKey = serializeCursor(lastPageParam as CursorValue | undefined);
+      const seenCursor = allPageParams.some(
+        (pageParam) => serializeCursor(pageParam as CursorValue | undefined) === nextCursorKey,
+      );
+
+      if (nextCursorKey === currentCursorKey || seenCursor) {
+        return undefined;
+      }
+
+      return nextCursor;
     },
   });
 
@@ -338,12 +491,19 @@ export const useInfiniteCartItems = (
     enabled: options?.enabled,
     queryFn: ({ pageParam, signal }) =>
       getCursorCartItems({ ...params, cursor: pageParam as CursorValue | undefined }, undefined, signal),
-    getNextPageParam: (lastPage) => {
+    getNextPageParam: (lastPage, _allPages, lastPageParam, allPageParams) => {
       const data = lastPage.data as (CartListDTO & CursorMeta) | undefined;
       const cartPayload = data?.carts as CartCursorPayload | CartResponseDTO[] | undefined;
-      const items = Array.isArray(cartPayload) ? cartPayload : cartPayload?.content ?? [];
-      const cursorMeta = Array.isArray(cartPayload) ? data : cartPayload;
-      return resolveNextCursor<CartResponseDTO>(cursorMeta, items, params.size, (item) => item.id);
+      const items = getContentArray<CartResponseDTO>(cartPayload);
+      const cursorMeta = (Array.isArray(cartPayload) ? data : cartPayload) as CursorMeta | undefined;
+      return resolveNextCursor<CartResponseDTO>(
+        cursorMeta,
+        items,
+        params.size,
+        (item) => item.id,
+        lastPageParam as CursorValue | undefined,
+        allPageParams,
+      );
     },
   });
 

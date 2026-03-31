@@ -64,6 +64,25 @@ const toProductItem = (
   imageSrc: product.coverImage?.trim() || '/product1.png',
 });
 
+const getPageProducts = (page: {
+  data?: {
+    content?: Array<{
+      id?: number;
+      productModel?: string;
+      productName?: string;
+      price?: string;
+      coverImage?: string;
+    }>;
+    products?: Array<{
+      id?: number;
+      productModel?: string;
+      productName?: string;
+      price?: string;
+      coverImage?: string;
+    }>;
+  };
+}) => page.data?.content ?? page.data?.products ?? [];
+
 export function useProductSection({
   initialCategory = 'HEADSET',
   products,
@@ -99,7 +118,7 @@ export function useProductSection({
   const mappedPages = useMemo(
     () =>
       (productQuery.data?.pages ?? []).map((page) =>
-        (page.data?.data?.products ?? []).map((product) =>
+        getPageProducts(page).map((product) =>
           toProductItem(activeCategory, product),
         ),
       ),
@@ -115,7 +134,10 @@ export function useProductSection({
       return mappedPages[currentPageIndex] ?? [];
     }
 
-    return mappedPages.flat();
+    return mappedPages.reduce<ProductItem[]>(
+      (acc, currentPage) => [...acc, ...currentPage],
+      [],
+    );
   }, [activeCategory, currentPageIndex, mappedPages, products, variant]);
 
   const normalizedKeyword = searchKeyword.trim().toLowerCase();

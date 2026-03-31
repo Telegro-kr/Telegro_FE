@@ -76,6 +76,45 @@ const getCustomerInfo = (order: OrderDetailDTO) => order.userInfo?.username?.tri
 const getStatusValue = (order: OrderDetailDTO): OrderStatusValue =>
   (order.orderStatus as OrderStatusValue | undefined) ?? 'ORDER_CREATED';
 
+type OrderPageData = {
+  content?: OrderDetailDTO[];
+  orders?:
+    | OrderDetailDTO[]
+    | {
+        content?: OrderDetailDTO[];
+        totalElement?: number;
+        totalElements?: number;
+      };
+  totalElement?: number;
+  totalElements?: number;
+};
+
+const getPageOrders = (page: {
+  data?: OrderPageData;
+}) => {
+  const { data } = page;
+
+  if (Array.isArray(data?.content)) {
+    return data.content;
+  }
+
+  if (Array.isArray(data?.orders)) {
+    return data.orders;
+  }
+
+  if (Array.isArray(data?.orders?.content)) {
+    return data.orders.content;
+  }
+
+  return [];
+};
+
+const getPageTotalCount = (page?: { data?: OrderPageData }) =>
+  page?.data?.totalElements ??
+  page?.data?.totalElement ??
+  (Array.isArray(page?.data?.orders) ? undefined : page?.data?.orders?.totalElements) ??
+  (Array.isArray(page?.data?.orders) ? undefined : page?.data?.orders?.totalElement);
+
 export const useOrderList = ({
   pageSize = DEFAULT_PAGE_SIZE,
   searchKeyword = '',
@@ -96,9 +135,9 @@ export const useOrderList = ({
   );
 
   const orders = useMemo<OrderRow[]>(
-    () =>
-      (orderQuery.data?.pages ?? []).flatMap((page, pageIndex) =>
-        (page.data?.data?.orders ?? []).map((order, index) => ({
+    () => {
+      const rows = (orderQuery.data?.pages ?? []).reduce<OrderRow[]>((acc, page, pageIndex) => {
+        const rows = getPageOrders(page).map((order, index) => ({
           id: order.orderId ?? pageIndex * pageSize + index + 1,
           orderId: order.orderId ?? pageIndex * pageSize + index + 1,
           productName: formatProductName(order),
@@ -116,14 +155,27 @@ export const useOrderList = ({
           customerInfo: getCustomerInfo(order),
           statusLabel: getOrderStatusLabel(order.orderStatus),
           statusValue: getStatusValue(order),
-        })),
-      ),
+        }));
+
+        return [...acc, ...rows];
+      }, []);
+
+      return rows.reduce<OrderRow[]>((acc, row) => {
+        if (acc.some((currentRow) => currentRow.orderId === row.orderId)) {
+          return acc;
+        }
+
+        return [...acc, row];
+      }, []);
+    },
     [orderQuery.data?.pages, pageSize],
   );
 
+  const pages = orderQuery.data?.pages ?? [];
+  const lastPage = pages.length ? pages[pages.length - 1] : undefined;
   const totalCount =
-    orderQuery.data?.pages.at(-1)?.data?.data?.totalElement ??
-    orderQuery.data?.pages[0]?.data?.data?.totalElement ??
+    getPageTotalCount(lastPage) ??
+    getPageTotalCount(pages[0]) ??
     orders.length;
 
   return {

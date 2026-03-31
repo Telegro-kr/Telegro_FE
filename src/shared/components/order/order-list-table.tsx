@@ -245,9 +245,9 @@ const OrderListTable = ({ data, detailBasePath = '/app/orders' }: Props) => {
         </thead>
 
         <tbody>
-          {filteredData.map((row) => (
+          {filteredData.map((row, index) => (
             <tr
-              key={row.id}
+              key={`${row.orderId}-${index}`}
               onClick={() => navigate(`${detailBasePath}/${row.orderId}`)}
               className="h-[8rem] cursor-pointer border-b border-slate-200 transition last:border-b-0 hover:bg-[#FAFAFA]"
             >
