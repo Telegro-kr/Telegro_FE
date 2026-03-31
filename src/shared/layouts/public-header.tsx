@@ -138,7 +138,7 @@ const PublicHeader = () => {
             <div className="ml-auto flex items-center gap-6 max-[535px]:hidden">
               {isLoggedIn ? (
                 <>
-                  <button
+                  {/* <button
                     type="button"
                     aria-label="알림 보기"
                     aria-expanded={isNotificationOpen}
@@ -147,7 +147,7 @@ const PublicHeader = () => {
                     className="place-items-center rounded-full px-2 py-1 transition-colors hover:bg-black/5"
                   >
                     {notificationButton}
-                  </button>
+                  </button> */}
                   <Link
                     to="/app/my"
                     className={linkClass}
@@ -165,13 +165,13 @@ const PublicHeader = () => {
                   >
                     비회원 주문조회
                   </Link>
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() => setIsLoginOverlayOpen(true)}
                     className={linkClass}
                   >
                     로그인하기
-                  </button>
+                  </button> */}
                 </>
               )}
             </div>
@@ -212,6 +212,7 @@ const PublicHeader = () => {
 
               {isLoggedIn ? (
                 <>
+                  {/*
                   <button
                     type="button"
                     aria-label="알림 보기"
@@ -224,7 +225,7 @@ const PublicHeader = () => {
                     className={`${linkClass} rounded-[1rem] px-[0.6rem] py-[0.8rem] text-left`}
                   >
                     알림
-                  </button>
+                  </button> */}
                   <Link
                     to="/app/my"
                     className={`${linkClass} rounded-[1rem] px-[0.6rem] py-[0.8rem]`}
@@ -263,7 +264,7 @@ const PublicHeader = () => {
         <LoginOverlay onDismiss={() => setIsLoginOverlayOpen(false)} />
       ) : null}
 
-      {isLoggedIn ? (
+      {/* {isLoggedIn ? (
         <NotificationDrawer
           key={location.pathname}
           open={isNotificationOpen}
@@ -271,7 +272,7 @@ const PublicHeader = () => {
           notifications={notifications}
           onNotificationsChange={setNotifications}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 };
