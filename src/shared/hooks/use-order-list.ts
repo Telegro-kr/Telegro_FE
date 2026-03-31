@@ -2,7 +2,7 @@ import { useInfiniteOrders } from '@apis/telegro';
 import type { OrderDetailDTO } from '@apis/telegro';
 import type { OrderRow, OrderStatusValue } from '@components/order/order-list-table';
 import { getOrderStatusLabel } from '@constants/orderStatus';
-import { formatNumber } from '@utils/format';
+import { formatPrice } from '@utils/format';
 import { useMemo } from 'react';
 
 export type OrderFilterType = 'product' | 'user';
@@ -11,17 +11,12 @@ type UseOrderListParams = {
   pageSize?: number;
   searchKeyword?: string;
   filterBy?: OrderFilterType;
+  startDate?: string;
+  endDate?: string;
+  orderStatus?: OrderStatusValue | 'ALL';
 };
 
 const DEFAULT_PAGE_SIZE = 10;
-
-const formatPrice = (value?: number | null) => {
-  if (value === undefined || value === null) {
-    return '-';
-  }
-
-  return `₩${formatNumber(value)}`;
-};
 
 const formatProductName = (order: OrderDetailDTO) => {
   const products = order.products ?? [];
@@ -50,7 +45,8 @@ const formatOptionLabel = (order: OrderDetailDTO) => {
 const getQuantity = (order: OrderDetailDTO) =>
   (order.products ?? []).reduce((sum, product) => sum + (product.quantity ?? 0), 0);
 
-const getUnitPrice = (order: OrderDetailDTO) => formatPrice(order.products?.[0]?.productPrice);
+const getUnitPrice = (order: OrderDetailDTO) =>
+  formatPrice(order.products?.[0]?.productPrice ?? 0);
 
 const getOrderInfo = (order: OrderDetailDTO) => {
   if (!order.createdAt) {
@@ -71,7 +67,8 @@ const getOrderInfo = (order: OrderDetailDTO) => {
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
-const getCustomerInfo = (order: OrderDetailDTO) => order.userInfo?.username?.trim() || '-';
+const getCustomerInfo = (order: OrderDetailDTO) =>
+  order.userInfo?.username?.trim() || '-';
 
 const getStatusValue = (order: OrderDetailDTO): OrderStatusValue =>
   (order.orderStatus as OrderStatusValue | undefined) ?? 'ORDER_CREATED';
@@ -89,9 +86,7 @@ type OrderPageData = {
   totalElements?: number;
 };
 
-const getPageOrders = (page: {
-  data?: OrderPageData;
-}) => {
+const getPageOrders = (page: { data?: OrderPageData }) => {
   const { data } = page;
 
   if (Array.isArray(data?.content)) {
@@ -119,6 +114,9 @@ export const useOrderList = ({
   pageSize = DEFAULT_PAGE_SIZE,
   searchKeyword = '',
   filterBy,
+  startDate,
+  endDate,
+  orderStatus,
 }: UseOrderListParams = {}) => {
   const normalizedKeyword = searchKeyword.trim();
   const hasSearchKeyword = normalizedKeyword.length > 0;
@@ -128,55 +126,54 @@ export const useOrderList = ({
       size: pageSize,
       q: hasSearchKeyword ? normalizedKeyword : undefined,
       filterBy: hasSearchKeyword ? filterBy : undefined,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+      orderStatus: orderStatus && orderStatus !== 'ALL' ? orderStatus : undefined,
     },
     {
       staleTime: 60_000,
     },
   );
 
-  const sourceOrders = useMemo<OrderDetailDTO[]>(
-    () => {
-      const mergedOrders = (orderQuery.data?.pages ?? []).reduce<OrderDetailDTO[]>(
-        (acc, page) => [...acc, ...getPageOrders(page)],
-        [],
-      );
+  const sourceOrders = useMemo<OrderDetailDTO[]>(() => {
+    const mergedOrders = (orderQuery.data?.pages ?? []).reduce<OrderDetailDTO[]>(
+      (acc, page) => [...acc, ...getPageOrders(page)],
+      [],
+    );
 
-      return mergedOrders.reduce<OrderDetailDTO[]>((acc, order) => {
-        if (
-          order.orderId != null &&
-          acc.some((currentOrder) => currentOrder.orderId === order.orderId)
-        ) {
-          return acc;
-        }
+    return mergedOrders.reduce<OrderDetailDTO[]>((acc, order) => {
+      if (
+        order.orderId != null &&
+        acc.some((currentOrder) => currentOrder.orderId === order.orderId)
+      ) {
+        return acc;
+      }
 
-        return [...acc, order];
-      }, []);
-    },
-    [orderQuery.data?.pages],
-  );
+      return [...acc, order];
+    }, []);
+  }, [orderQuery.data?.pages]);
 
   const orders = useMemo<OrderRow[]>(
-    () => {
-      return sourceOrders.map((order, index) => ({
+    () =>
+      sourceOrders.map((order, index) => ({
         id: order.orderId ?? index + 1,
         orderId: order.orderId ?? index + 1,
-          productName: formatProductName(order),
-          optionLabel: formatOptionLabel(order),
-          quantity: getQuantity(order),
-          unitPrice: getUnitPrice(order),
-          totalPrice: formatPrice(order.amount),
-          totalSubLabel:
-            order.shoppingCost === 0
-              ? '(Free shipping)'
-              : order.shoppingCost
-                ? `배송비 ${formatPrice(order.shoppingCost)}`
-                : undefined,
-          orderInfo: getOrderInfo(order),
-          customerInfo: getCustomerInfo(order),
-          statusLabel: getOrderStatusLabel(order.orderStatus),
+        productName: formatProductName(order),
+        optionLabel: formatOptionLabel(order),
+        quantity: getQuantity(order),
+        unitPrice: getUnitPrice(order),
+        totalPrice: formatPrice(order.amount ?? 0),
+        totalSubLabel:
+          order.shoppingCost === 0
+            ? '(Free shipping)'
+            : order.shoppingCost
+              ? `배송비 ${formatPrice(order.shoppingCost)}`
+              : undefined,
+        orderInfo: getOrderInfo(order),
+        customerInfo: getCustomerInfo(order),
+        statusLabel: getOrderStatusLabel(order.orderStatus),
         statusValue: getStatusValue(order),
-      }));
-    },
+      })),
     [sourceOrders],
   );
 

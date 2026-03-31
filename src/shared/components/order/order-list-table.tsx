@@ -6,7 +6,7 @@ import {
   type OrderStatusCode,
 } from '@constants/orderStatus';
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,6 +30,8 @@ export type OrderRow = {
 type Props = {
   data: OrderRow[];
   detailBasePath?: string;
+  selectedStatus?: OrderStatusValue | 'ALL';
+  onStatusChange?: (status: OrderStatusValue | 'ALL') => void;
 };
 
 const STATUS_OPTIONS: Array<{ label: string; value: OrderStatusValue }> =
@@ -157,25 +159,19 @@ const OrderStatusControl = ({ row }: { row: OrderRow }) => {
   );
 };
 
-const OrderListTable = ({ data, detailBasePath = '/app/orders' }: Props) => {
+const OrderListTable = ({
+  data,
+  detailBasePath = '/app/orders',
+  selectedStatus = 'ALL',
+  onStatusChange,
+}: Props) => {
   const navigate = useNavigate();
   const [isHeaderFilterOpen, setIsHeaderFilterOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<
-    OrderStatusValue | 'ALL'
-  >('ALL');
   const headerFilterRef = useRef<HTMLDivElement>(null);
 
   useOutsideClose(isHeaderFilterOpen, headerFilterRef, () =>
     setIsHeaderFilterOpen(false),
   );
-
-  const filteredData = useMemo(() => {
-    if (selectedStatus === 'ALL') {
-      return data;
-    }
-
-    return data.filter((row) => row.statusValue === selectedStatus);
-  }, [data, selectedStatus]);
 
   const selectedStatusLabel =
     selectedStatus === 'ALL'
@@ -231,7 +227,7 @@ const OrderListTable = ({ data, detailBasePath = '/app/orders' }: Props) => {
                     <button
                       type="button"
                       onClick={() => {
-                        setSelectedStatus('ALL');
+                        onStatusChange?.('ALL');
                         setIsHeaderFilterOpen(false);
                       }}
                       className={[
@@ -248,7 +244,7 @@ const OrderListTable = ({ data, detailBasePath = '/app/orders' }: Props) => {
                         key={option.value}
                         type="button"
                         onClick={() => {
-                          setSelectedStatus(option.value);
+                          onStatusChange?.(option.value);
                           setIsHeaderFilterOpen(false);
                         }}
                         className={[
@@ -269,7 +265,7 @@ const OrderListTable = ({ data, detailBasePath = '/app/orders' }: Props) => {
         </thead>
 
         <tbody>
-          {filteredData.map((row, index) => (
+          {data.map((row, index) => (
             <tr
               key={`${row.orderId}-${index}`}
               onClick={() => navigate(`${detailBasePath}/${row.orderId}`)}

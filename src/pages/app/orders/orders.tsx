@@ -2,7 +2,9 @@ import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
 import OrderExportButton from '@components/order/order-export-button';
-import OrderListTable from '@components/order/order-list-table';
+import OrderListTable, {
+  type OrderStatusValue,
+} from '@components/order/order-list-table';
 import { useInfiniteScrollTrigger } from '@hooks/use-infinite-scroll-trigger';
 import useOrderList, { type OrderFilterType } from '@hooks/use-order-list';
 import { useEffect, useRef, useState } from 'react';
@@ -19,6 +21,11 @@ const Orders = () => {
     useState<OrderFilterType>('product');
   const [appliedSearchKeyword, setAppliedSearchKeyword] = useState('');
   const [appliedFilterBy, setAppliedFilterBy] = useState<OrderFilterType>();
+  const [selectedStatus, setSelectedStatus] = useState<
+    OrderStatusValue | 'ALL'
+  >('ALL');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
@@ -34,6 +41,9 @@ const Orders = () => {
     pageSize: 10,
     searchKeyword: appliedSearchKeyword,
     filterBy: appliedFilterBy,
+    startDate,
+    endDate,
+    orderStatus: selectedStatus,
   });
 
   const loadMoreRef = useInfiniteScrollTrigger({
@@ -56,6 +66,9 @@ const Orders = () => {
     setAppliedSearchKeyword('');
     setSelectedFilterBy('product');
     setAppliedFilterBy(undefined);
+    setSelectedStatus('ALL');
+    setStartDate('');
+    setEndDate('');
     setIsFilterOpen(false);
   };
 
@@ -84,11 +97,31 @@ const Orders = () => {
     >
       <div className="flex flex-col gap-[3.5rem]">
         <div className="flex-row-between w-full">
-          <h1 className="title3 text-gray-900">주문 목록</h1>
+          <div className="flex-row gap-[2rem]">
+            <h1 className="title3 text-gray-900">주문 목록</h1>
+            <div className="flex-row items-center gap-[0.8rem]">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(event) => setStartDate(event.target.value)}
+                className="caption3 h-[4rem] rounded-[10px] border border-[#E6E6E6] bg-white px-4 text-gray-900 outline-none"
+                aria-label="시작일"
+              />
+              <input
+                type="date"
+                value={endDate}
+                onChange={(event) => setEndDate(event.target.value)}
+                className="caption3 h-[4rem] rounded-[10px] border border-[#E6E6E6] bg-white px-4 text-gray-900 outline-none"
+                aria-label="종료일"
+              />
+            </div>
+          </div>
 
           <OrderExportButton
             orders={sourceOrders}
-            isFiltered={Boolean(appliedSearchKeyword.trim())}
+            isFiltered={Boolean(
+              appliedSearchKeyword.trim() || startDate || endDate,
+            )}
           />
         </div>
 
@@ -138,7 +171,11 @@ const Orders = () => {
         </div>
       ) : orders.length ? (
         <div className="flex flex-col gap-4">
-          <OrderListTable data={orders} />
+          <OrderListTable
+            data={orders}
+            selectedStatus={selectedStatus}
+            onStatusChange={setSelectedStatus}
+          />
           {hasNextPage || isFetchingNextPage ? (
             <div ref={loadMoreRef}>
               {isFetchingNextPage ? (
