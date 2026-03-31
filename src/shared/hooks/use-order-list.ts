@@ -149,7 +149,7 @@ export const useOrderList = ({
             order.shoppingCost === 0
               ? '(Free shipping)'
               : order.shoppingCost
-                ? `Shipping ${formatPrice(order.shoppingCost)}`
+                ? `배송비 ${formatPrice(order.shoppingCost)}`
                 : undefined,
           orderInfo: getOrderInfo(order),
           customerInfo: getCustomerInfo(order),

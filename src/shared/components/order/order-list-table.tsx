@@ -1,4 +1,5 @@
 import { useUpdateOrderStatus } from '@apis/telegro';
+import Icon from '@components/common/icon';
 import {
   ORDER_STATUS_OPTIONS,
   type OrderStatusCode,
@@ -32,6 +33,15 @@ type Props = {
 
 const STATUS_OPTIONS: Array<{ label: string; value: OrderStatusValue }> =
   ORDER_STATUS_OPTIONS;
+const ORDER_CREATED_TOOLTIP =
+  '결제가 완료되지 않은 주문건입니다. 24시간 내로 삭제됩니다.';
+
+const OrderCreatedRowTooltip = () => (
+  <div className="pointer-events-none absolute top-1/2 right-3 z-30 flex max-w-[calc(100vw-6rem)] min-w-[39rem] -translate-y-1/2 gap-[0.4rem] rounded-[8px] bg-[#3A3A3B] px-[14px] py-[1rem] text-left text-[14px] leading-[21px] font-medium break-words whitespace-pre-line text-white opacity-0 shadow-[0_18px_40px_rgba(0,0,0,0.2)] transition-opacity duration-75 group-hover:opacity-100">
+    <Icon name="global-toast" className="text-primary" size={2.0} />
+    {ORDER_CREATED_TOOLTIP}
+  </div>
+);
 
 const useOutsideClose = (
   isOpen: boolean,
@@ -249,10 +259,13 @@ const OrderListTable = ({ data, detailBasePath = '/app/orders' }: Props) => {
             <tr
               key={`${row.orderId}-${index}`}
               onClick={() => navigate(`${detailBasePath}/${row.orderId}`)}
-              className="h-[8rem] cursor-pointer border-b border-slate-200 transition last:border-b-0 hover:bg-[#FAFAFA]"
+              className="group relative h-[8rem] cursor-pointer border-b border-slate-200 transition last:border-b-0 hover:bg-[#FAFAFA]"
             >
               <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.id}</span>
+                {row.statusValue === 'ORDER_CREATED' ? (
+                  <OrderCreatedRowTooltip />
+                ) : null}
               </td>
               <td className="px-2 text-center align-middle text-[1.5rem] font-normal text-slate-900 md:px-4 md:text-[1.8rem]">
                 <span className="block truncate">{row.productName}</span>
