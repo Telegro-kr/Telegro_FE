@@ -1,6 +1,9 @@
 import { useInfiniteOrders } from '@apis/telegro';
 import type { OrderDetailDTO } from '@apis/telegro';
-import type { OrderRow, OrderStatusValue } from '@components/order/order-list-table';
+import type {
+  OrderRow,
+  OrderStatusValue,
+} from '@components/order/order-list-table';
 import { getOrderStatusLabel } from '@constants/orderStatus';
 import { formatPrice } from '@utils/format';
 import { useMemo } from 'react';
@@ -23,7 +26,7 @@ const formatProductName = (order: OrderDetailDTO) => {
   const firstProductName = products[0]?.productName?.trim();
 
   if (!firstProductName) {
-    return 'Unknown product';
+    return '-';
   }
 
   return products.length > 1
@@ -43,7 +46,10 @@ const formatOptionLabel = (order: OrderDetailDTO) => {
 };
 
 const getQuantity = (order: OrderDetailDTO) =>
-  (order.products ?? []).reduce((sum, product) => sum + (product.quantity ?? 0), 0);
+  (order.products ?? []).reduce(
+    (sum, product) => sum + (product.quantity ?? 0),
+    0,
+  );
 
 const getUnitPrice = (order: OrderDetailDTO) =>
   formatPrice(order.products?.[0]?.productPrice ?? 0);
@@ -107,8 +113,12 @@ const getPageOrders = (page: { data?: OrderPageData }) => {
 const getPageTotalCount = (page?: { data?: OrderPageData }) =>
   page?.data?.totalElements ??
   page?.data?.totalElement ??
-  (Array.isArray(page?.data?.orders) ? undefined : page?.data?.orders?.totalElements) ??
-  (Array.isArray(page?.data?.orders) ? undefined : page?.data?.orders?.totalElement);
+  (Array.isArray(page?.data?.orders)
+    ? undefined
+    : page?.data?.orders?.totalElements) ??
+  (Array.isArray(page?.data?.orders)
+    ? undefined
+    : page?.data?.orders?.totalElement);
 
 export const useOrderList = ({
   pageSize = DEFAULT_PAGE_SIZE,
@@ -128,7 +138,8 @@ export const useOrderList = ({
       filterBy: hasSearchKeyword ? filterBy : undefined,
       startDate: startDate || undefined,
       endDate: endDate || undefined,
-      orderStatus: orderStatus && orderStatus !== 'ALL' ? orderStatus : undefined,
+      orderStatus:
+        orderStatus && orderStatus !== 'ALL' ? orderStatus : undefined,
     },
     {
       staleTime: 60_000,
@@ -136,10 +147,9 @@ export const useOrderList = ({
   );
 
   const sourceOrders = useMemo<OrderDetailDTO[]>(() => {
-    const mergedOrders = (orderQuery.data?.pages ?? []).reduce<OrderDetailDTO[]>(
-      (acc, page) => [...acc, ...getPageOrders(page)],
-      [],
-    );
+    const mergedOrders = (orderQuery.data?.pages ?? []).reduce<
+      OrderDetailDTO[]
+    >((acc, page) => [...acc, ...getPageOrders(page)], []);
 
     return mergedOrders.reduce<OrderDetailDTO[]>((acc, order) => {
       if (
@@ -180,9 +190,7 @@ export const useOrderList = ({
   const pages = orderQuery.data?.pages ?? [];
   const lastPage = pages.length ? pages[pages.length - 1] : undefined;
   const totalCount =
-    getPageTotalCount(lastPage) ??
-    getPageTotalCount(pages[0]) ??
-    orders.length;
+    getPageTotalCount(lastPage) ?? getPageTotalCount(pages[0]) ?? orders.length;
 
   return {
     orders,

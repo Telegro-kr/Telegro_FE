@@ -187,7 +187,7 @@ function ProductCard({ product }: { product: CartProductDTO }) {
 
         <div className="min-w-0">
           <p className="title4 text-neutral-900">
-            {product.productName ?? 'Unknown product'}
+            {product.productName ?? '-'}
           </p>
           <p className="caption2 mt-1 text-neutral-500">
             {product.productModel?.trim() || 'No model information'}
