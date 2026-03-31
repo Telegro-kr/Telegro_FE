@@ -1,4 +1,5 @@
 import { useCancelPayment, useUpdateOrderStatus } from '@apis/telegro';
+import ConfirmModal from '@components/common/confirm-modal';
 import Icon from '@components/common/icon';
 import { toastSuccess } from '@components/common/toast/toast';
 import {
@@ -81,6 +82,7 @@ const OrderStatusControl = ({
 }) => {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const handleMutationSuccess = async () => {
     await queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
@@ -123,19 +125,34 @@ const OrderStatusControl = ({
   if (!canManageStatuses) {
     if (canCancelOrder(row.statusValue)) {
       return (
-        <div
-          className="relative flex justify-center"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <button
-            type="button"
-            disabled={isMutating}
-            onClick={() => cancelPayment.mutate({ orderId: row.orderId })}
-            className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center rounded-[12px] bg-[#FFF5F5] px-3 text-[1.3rem] font-medium text-[#D64545] transition hover:bg-[#FDECEC] disabled:cursor-not-allowed disabled:opacity-60 md:text-[1.5rem]"
+        <>
+          <div
+            className="relative flex justify-center"
+            onClick={(event) => event.stopPropagation()}
           >
-            주문 취소
-          </button>
-        </div>
+            <button
+              type="button"
+              disabled={isMutating}
+              onClick={() => setIsCancelConfirmOpen(true)}
+              className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center rounded-[12px] bg-[#FFF5F5] px-3 text-[1.3rem] font-medium text-[#D64545] transition hover:bg-[#FDECEC] disabled:cursor-not-allowed disabled:opacity-60 md:text-[1.5rem]"
+            >
+              주문 취소
+            </button>
+          </div>
+
+          {isCancelConfirmOpen ? (
+            <ConfirmModal
+              message="주문을 취소하시겠습니까?"
+              confirmText="주문 취소"
+              cancelText="닫기"
+              onCancel={() => setIsCancelConfirmOpen(false)}
+              onConfirm={() => {
+                setIsCancelConfirmOpen(false);
+                cancelPayment.mutate({ orderId: row.orderId });
+              }}
+            />
+          ) : null}
+        </>
       );
     }
 
