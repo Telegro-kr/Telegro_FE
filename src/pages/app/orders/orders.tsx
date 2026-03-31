@@ -1,3 +1,4 @@
+import DateInputPopover from '@components/common/date-input-popover';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
@@ -100,19 +101,20 @@ const Orders = () => {
           <div className="flex-row gap-[2rem]">
             <h1 className="title3 text-gray-900">주문 목록</h1>
             <div className="flex-row items-center gap-[0.8rem]">
-              <input
-                type="date"
+              <DateInputPopover
                 value={startDate}
-                onChange={(event) => setStartDate(event.target.value)}
-                className="caption3 h-[4rem] rounded-[10px] border border-[#E6E6E6] bg-white px-4 text-gray-900 outline-none"
-                aria-label="시작일"
+                onChange={setStartDate}
+                ariaLabel="시작일"
+                placeholder="시작일"
+                buttonClassName="caption3 h-[4rem] min-w-[15rem] rounded-[10px] text-gray-900"
               />
-              <input
-                type="date"
+              <span className="text-[1.6rem] font-medium text-[#8F8F95]">-</span>
+              <DateInputPopover
                 value={endDate}
-                onChange={(event) => setEndDate(event.target.value)}
-                className="caption3 h-[4rem] rounded-[10px] border border-[#E6E6E6] bg-white px-4 text-gray-900 outline-none"
-                aria-label="종료일"
+                onChange={setEndDate}
+                ariaLabel="종료일"
+                placeholder="종료일"
+                buttonClassName="caption3 h-[4rem] min-w-[15rem] rounded-[10px] text-gray-900"
               />
             </div>
           </div>

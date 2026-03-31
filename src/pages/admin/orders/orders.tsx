@@ -1,4 +1,5 @@
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
+import DateInputPopover from '@components/common/date-input-popover';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
 import SearchBar from '@components/common/search-bar';
@@ -104,19 +105,20 @@ const AdminOrders = () => {
         <div className="flex-row-between w-full">
           <div className="flex-row-start gap-2">
             <h1 className="title3 text-gray-900">주문 목록</h1>
-            <input
-              type="date"
+            <DateInputPopover
               value={startDate}
-              onChange={(event) => setStartDate(event.target.value)}
-              className="h-[4.4rem] rounded-[1.2rem] border border-[#E6E6E6] bg-white px-4 text-[1.4rem] text-[#2B2B2B] outline-none"
-              aria-label="시작일"
+              onChange={setStartDate}
+              ariaLabel="시작일"
+              placeholder="시작일"
+              buttonClassName="h-[4.4rem] min-w-[16rem] rounded-[1.2rem] text-[1.4rem] text-[#2B2B2B]"
             />
-            <input
-              type="date"
+            <span className="px-1 text-[1.6rem] font-medium text-[#8F8F95]">-</span>
+            <DateInputPopover
               value={endDate}
-              onChange={(event) => setEndDate(event.target.value)}
-              className="h-[4.4rem] rounded-[1.2rem] border border-[#E6E6E6] bg-white px-4 text-[1.4rem] text-[#2B2B2B] outline-none"
-              aria-label="종료일"
+              onChange={setEndDate}
+              ariaLabel="종료일"
+              placeholder="종료일"
+              buttonClassName="h-[4.4rem] min-w-[16rem] rounded-[1.2rem] text-[1.4rem] text-[#2B2B2B]"
             />
           </div>
 
