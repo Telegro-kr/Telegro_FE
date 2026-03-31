@@ -111,9 +111,9 @@ const AdminOrders = () => {
                 onChange={setStartDate}
                 ariaLabel="시작일"
                 placeholder="시작일"
-                buttonClassName="h-[4.4rem] min-w-[16rem] rounded-[1.2rem] text-[1.4rem] text-[#2B2B2B]"
+                buttonClassName="caption3 h-[4rem] min-w-[15rem] rounded-[10px] text-gray-900"
               />
-              <span className="px-1 text-[1.6rem] font-medium text-[#8F8F95]">
+              <span className="text-[1.6rem] font-medium text-[#8F8F95]">
                 -
               </span>
               <DateInputPopover
@@ -121,7 +121,7 @@ const AdminOrders = () => {
                 onChange={setEndDate}
                 ariaLabel="종료일"
                 placeholder="종료일"
-                buttonClassName="h-[4.4rem] min-w-[16rem] rounded-[1.2rem] text-[1.4rem] text-[#2B2B2B]"
+                buttonClassName="caption3 h-[4rem] min-w-[15rem] rounded-[10px] text-gray-900"
               />
             </div>
           </div>

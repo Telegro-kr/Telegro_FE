@@ -58,7 +58,9 @@ const DateInputPopover = ({
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const selectedDate = useMemo(() => parseDateString(value), [value]);
-  const [viewDate, setViewDate] = useState<Date>(() => selectedDate ?? new Date());
+  const [viewDate, setViewDate] = useState<Date>(
+    () => selectedDate ?? new Date(),
+  );
 
   useEffect(() => {
     if (selectedDate) {
@@ -110,7 +112,7 @@ const DateInputPopover = ({
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          'flex items-center justify-between gap-3 rounded-[1.2rem] border border-[#E6E6E6] bg-white px-4 text-left text-[1.4rem] text-[#2B2B2B] transition-colors outline-none hover:border-[#D9D9D9]',
+          'flex cursor-pointer items-center justify-between gap-3 rounded-[12px] bg-[#F5F5F5] px-4 text-left text-[1.4rem] text-[#2B2B2B] transition-colors outline-none hover:border-[#D9D9D9] hover:bg-[#EBEBEB]',
           !value && 'text-[#9C9CA4]',
           buttonClassName,
         )}
@@ -135,7 +137,8 @@ const DateInputPopover = ({
               direction="left"
               onClick={() =>
                 setViewDate(
-                  (prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1),
+                  (prev) =>
+                    new Date(prev.getFullYear(), prev.getMonth() - 1, 1),
                 )
               }
             />
@@ -146,7 +149,8 @@ const DateInputPopover = ({
               direction="right"
               onClick={() =>
                 setViewDate(
-                  (prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1),
+                  (prev) =>
+                    new Date(prev.getFullYear(), prev.getMonth() + 1, 1),
                 )
               }
             />
@@ -165,7 +169,9 @@ const DateInputPopover = ({
 
           <div className="grid grid-cols-7 gap-x-1 gap-y-2">
             {calendarDays.map(({ key, date, label, isCurrentMonth }) => {
-              const isSelected = selectedDate ? isSameDate(date, selectedDate) : false;
+              const isSelected = selectedDate
+                ? isSameDate(date, selectedDate)
+                : false;
               const isToday = isSameDate(date, today);
 
               return (
