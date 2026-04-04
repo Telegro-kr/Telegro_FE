@@ -17,6 +17,7 @@ import OrderListTable, {
 import { useQuery } from '@tanstack/react-query';
 import { useInfiniteScrollTrigger } from '@hooks/use-infinite-scroll-trigger';
 import useOrderList, { type OrderFilterType } from '@hooks/use-order-list';
+import { formatPrice } from '@utils/format';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -73,6 +74,7 @@ const AdminOrders = () => {
 
   const {
     orders,
+    totalPrice,
     isLoading,
     isError,
     hasNextPage,
@@ -128,7 +130,10 @@ const AdminOrders = () => {
       BUSINESS: 0,
     };
 
-    const userRoleMap = new Map<number, ReturnType<typeof normalizeOrderRole>>();
+    const userRoleMap = new Map<
+      number,
+      ReturnType<typeof normalizeOrderRole>
+    >();
 
     for (const user of usersQuery.data?.data?.users ?? []) {
       if (user.id == null) {
@@ -138,8 +143,13 @@ const AdminOrders = () => {
       userRoleMap.set(user.id, normalizeOrderRole(user.role));
     }
 
-    for (const order of orderRatioQuery.data ? getOrdersFromResponse(orderRatioQuery.data) : []) {
-      const role = order.userInfo?.id != null ? userRoleMap.get(order.userInfo.id) : undefined;
+    for (const order of orderRatioQuery.data
+      ? getOrdersFromResponse(orderRatioQuery.data)
+      : []) {
+      const role =
+        order.userInfo?.id != null
+          ? userRoleMap.get(order.userInfo.id)
+          : undefined;
       counts[role ?? 'MEMBER'] += 1;
     }
 
@@ -228,22 +238,30 @@ const AdminOrders = () => {
             </div>
           </div>
 
-          <OrderExportButton
-            filters={{
-              filterBy: appliedFilterBy,
-              q: appliedSearchKeyword.trim() || undefined,
-              startDate: startDate || undefined,
-              endDate: endDate || undefined,
-              orderStatus:
-                selectedStatus !== 'ALL' ? selectedStatus : undefined,
-            }}
-            isFiltered={Boolean(
-              appliedSearchKeyword.trim() ||
-                startDate ||
-                endDate ||
-                selectedStatus !== 'ALL',
-            )}
-          />
+          <div className="flex items-center gap-[1.2rem]">
+            <div className="flex gap-[1rem] rounded-[10px] bg-white px-[1.3rem] py-[1rem]">
+              <p className="caption1 text-gray-700">총 금액</p>
+              <p className="caption1 font-semibold text-gray-900">
+                {formatPrice(totalPrice)}
+              </p>
+            </div>
+            <OrderExportButton
+              filters={{
+                filterBy: appliedFilterBy,
+                q: appliedSearchKeyword.trim() || undefined,
+                startDate: startDate || undefined,
+                endDate: endDate || undefined,
+                orderStatus:
+                  selectedStatus !== 'ALL' ? selectedStatus : undefined,
+              }}
+              isFiltered={Boolean(
+                appliedSearchKeyword.trim() ||
+                  startDate ||
+                  endDate ||
+                  selectedStatus !== 'ALL',
+              )}
+            />
+          </div>
         </div>
 
         <div ref={filterRef} className="relative flex-1">

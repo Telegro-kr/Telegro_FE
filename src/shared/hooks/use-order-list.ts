@@ -81,6 +81,7 @@ const getStatusValue = (order: OrderDetailDTO): OrderStatusValue =>
 
 type OrderPageData = {
   content?: OrderDetailDTO[];
+  totalPrice?: number;
   orders?:
     | OrderDetailDTO[]
     | {
@@ -189,13 +190,16 @@ export const useOrderList = ({
 
   const pages = orderQuery.data?.pages ?? [];
   const lastPage = pages.length ? pages[pages.length - 1] : undefined;
+  const firstPage = pages[0];
   const totalCount =
     getPageTotalCount(lastPage) ?? getPageTotalCount(pages[0]) ?? orders.length;
+  const totalPrice = firstPage?.data?.totalPrice ?? 0;
 
   return {
     orders,
     sourceOrders,
     totalCount,
+    totalPrice,
     isLoading: orderQuery.isLoading,
     isError: orderQuery.isError,
     hasNextPage: Boolean(orderQuery.hasNextPage),
