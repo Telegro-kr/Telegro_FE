@@ -13,6 +13,7 @@ import { verifyPayment } from '@apis/verifyPayment';
 import {
   getStoredUserRole,
   hasDeliveryFee,
+  isBusinessOrderRole,
   isOnlinePaymentRole as isOnlinePaymentRoleByRole,
 } from '@state/session';
 import { formatPhoneNumber, getTodayDate } from '@utils/format';
@@ -87,8 +88,14 @@ const IMP_SCRIPT_ID = 'iamport-script';
 const IMP_SCRIPT_SRC = 'https://cdn.iamport.kr/v1/iamport.js';
 const IMP_MERCHANT_CODE = 'imp06338577';
 const SHIPPING_FEE = 3000;
+const CONSIGNMENT_SHIPPING_FEE = 4000;
 const CHANNEL_KEY = 'channel-key-0c462650-5c1a-4f74-86d5-80a67cb512c2';
 const STORE_ID = 'store-a85691d3-8516-48fe-985b-03d01942b7d7';
+const VAT_NOTICE =
+  '상기 금액은 부과세(VAT)별도 금액으로 입금 처리시 결제 금액 + 부과세 합계로 입금하시기 바랍니다.';
+const CONSIGNMENT_DELIVERY_LABEL = '위탁 배송지 주문';
+const CONSIGNMENT_DELIVERY_NOTICE =
+  '위탁 배송지 주문 시 배송비 4,000원이 추가됩니다.';
 
 const formatPrice = (price: number) =>
   `₩${new Intl.NumberFormat('ko-KR').format(price)}`;
@@ -161,12 +168,14 @@ const Checkout = () => {
   const orderData = state?.orderData;
   const userRole = getStoredUserRole();
   const isOnlinePaymentRole = isOnlinePaymentRoleByRole(userRole);
+  const shouldShowVatNotice = isBusinessOrderRole(userRole);
 
   const [selectedAddressId, setSelectedAddressId] = useState('');
   const [pointsToUse, setPointsToUse] = useState(0);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethodKey>('card');
   const [isAgreementChecked, setIsAgreementChecked] = useState(false);
+  const [isConsignmentDelivery, setIsConsignmentDelivery] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
   const [isPostcodeReady, setIsPostcodeReady] = useState(false);
   const [isImpReady, setIsImpReady] = useState(() => Boolean(window.IMP));
@@ -265,7 +274,13 @@ const Checkout = () => {
     () => products.reduce((acc, product) => acc + product.totalPrice, 0),
     [products],
   );
-  const shippingCost = orderData && hasDeliveryFee(userRole) ? SHIPPING_FEE : 0;
+  const baseShippingCost =
+    orderData && hasDeliveryFee(userRole) ? SHIPPING_FEE : 0;
+  const shippingCost =
+    baseShippingCost +
+    (shouldShowVatNotice && isConsignmentDelivery
+      ? CONSIGNMENT_SHIPPING_FEE
+      : 0);
   const maxUsablePoints = Math.min(point, totalProductPrice + shippingCost);
   const totalPayable = Math.max(
     totalProductPrice + shippingCost - pointsToUse,
@@ -791,6 +806,26 @@ const Checkout = () => {
                   rows={4}
                   className="rounded-[1.2rem] border border-neutral-300 px-4 py-4 text-[1.5rem] md:col-span-2"
                 />
+                {shouldShowVatNotice ? (
+                  <label className="bg-primary/10 border-primary flex cursor-pointer items-start gap-3 rounded-[12px] border px-4 py-4 md:col-span-2">
+                    <input
+                      type="checkbox"
+                      checked={isConsignmentDelivery}
+                      onChange={(event) =>
+                        setIsConsignmentDelivery(event.target.checked)
+                      }
+                      className="mt-1 h-5 w-5"
+                    />
+                    <span className="min-w-0">
+                      <span className="block text-[1.5rem] font-medium text-[#171717]">
+                        {CONSIGNMENT_DELIVERY_LABEL}
+                      </span>
+                      <span className="mt-1 block text-[1.3rem] leading-[1.6] text-neutral-500">
+                        {CONSIGNMENT_DELIVERY_NOTICE}
+                      </span>
+                    </span>
+                  </label>
+                ) : null}
               </div>
             </section>
           </div>
@@ -807,8 +842,16 @@ const Checkout = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-neutral-500">배송비</span>
-                  <span>{formatPrice(shippingCost)}</span>
+                  <span>{formatPrice(baseShippingCost)}</span>
                 </div>
+                {shouldShowVatNotice && isConsignmentDelivery ? (
+                  <div className="flex items-center justify-between">
+                    <span className="text-neutral-500">
+                      {CONSIGNMENT_DELIVERY_LABEL}
+                    </span>
+                    <span>{formatPrice(CONSIGNMENT_SHIPPING_FEE)}</span>
+                  </div>
+                ) : null}
                 <div className="space-y-3 rounded-[1.2rem] bg-[#f8f8f8] p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-neutral-500">포인트 사용</span>
@@ -842,9 +885,16 @@ const Checkout = () => {
                       {formatPrice(totalPayable)}
                     </span>
                   </div>
+                  {shouldShowVatNotice ? (
+                    <p className="mt-3 text-[1.3rem] leading-[1.7] text-neutral-500">
+                      {VAT_NOTICE}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-neutral-500">적립 예정 포인트</span>
+                  <span className="caption3 text-blue-700">
+                    적립 예정 포인트
+                  </span>
                   <span>{orderData.pointToEarn ?? 0}P</span>
                 </div>
               </div>

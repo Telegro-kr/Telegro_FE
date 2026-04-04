@@ -68,7 +68,7 @@ const Cart = () => {
                 </span>
               </button>
               <div className="py-4">제품정보</div>
-              <div className="py-4">적립예정 포인트</div>
+              <div className="py-4">적립 예정 포인트</div>
               <div className="py-4">할인금액</div>
               <div className="py-4">결제금액</div>
               <div className="py-4">선택</div>

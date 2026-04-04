@@ -110,7 +110,11 @@ const CheckoutComplete = () => {
 
     return {
       orderPk: detail.orderId ?? recoveredOrderId ?? undefined,
-      orderId: detail.imp_uid || impUid || merchantUid || String(detail.orderId ?? '-'),
+      orderId:
+        detail.imp_uid ||
+        impUid ||
+        merchantUid ||
+        String(detail.orderId ?? '-'),
       orderDate: detail.orderDate,
       orderDetails: {
         products: (detail.products ?? []).map((product) => ({
@@ -142,7 +146,9 @@ const CheckoutComplete = () => {
     return (
       <section className="min-h-screen bg-[#f6f6f6] px-5 py-10">
         <div className="mx-auto max-w-[900px] rounded-[2rem] bg-white px-8 py-16 text-center shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
-          <p className="text-[1.6rem] text-neutral-600">주문 정보를 확인하는 중입니다...</p>
+          <p className="text-[1.6rem] text-neutral-600">
+            주문 정보를 확인하는 중입니다...
+          </p>
         </div>
       </section>
     );
@@ -179,7 +185,9 @@ const CheckoutComplete = () => {
   const heroImage = products[0]?.coverImage || '/cart-empty.svg';
   const canCancel =
     resolvedOrderPk != null &&
-    canCancelOrder(orderDetailQuery.data?.data?.orderStatus ?? 'ORDER_COMPLETED');
+    canCancelOrder(
+      orderDetailQuery.data?.data?.orderStatus ?? 'ORDER_COMPLETED',
+    );
 
   return (
     <section className="min-h-screen bg-[#f6f6f6] px-5 py-10 text-[#111] sm:px-8 lg:px-12">
@@ -195,7 +203,9 @@ const CheckoutComplete = () => {
           </h1>
           <p className="mt-3 text-[1.5rem] text-neutral-500">
             주문일 {formatOrderDate(resolvedState.orderDate)} / 주문번호{' '}
-            <span className="font-semibold text-[#171717]">{resolvedState.orderId ?? '-'}</span>
+            <span className="font-semibold text-[#171717]">
+              {resolvedState.orderId ?? '-'}
+            </span>
           </p>
           {canCancel ? (
             <button
@@ -208,7 +218,9 @@ const CheckoutComplete = () => {
               disabled={cancelPaymentMutation.isPending}
               className="mt-6 rounded-full border border-[#D64545] px-6 py-3 text-[1.4rem] font-semibold text-[#D64545] transition hover:bg-[#FFF5F5] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {cancelPaymentMutation.isPending ? '취소 처리 중...' : '주문 취소'}
+              {cancelPaymentMutation.isPending
+                ? '취소 처리 중...'
+                : '주문 취소'}
             </button>
           ) : null}
         </div>
@@ -216,7 +228,9 @@ const CheckoutComplete = () => {
         <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="space-y-6">
             <section className="rounded-[1.6rem] bg-[#fafafa] p-6">
-              <h2 className="text-[1.9rem] font-semibold text-[#171717]">주문 상품</h2>
+              <h2 className="text-[1.9rem] font-semibold text-[#171717]">
+                주문 상품
+              </h2>
               <div className="mt-5 space-y-4">
                 {products.map((product, index) => (
                   <article
@@ -245,7 +259,9 @@ const CheckoutComplete = () => {
             </section>
 
             <section className="rounded-[1.6rem] bg-[#fafafa] p-6">
-              <h2 className="text-[1.9rem] font-semibold text-[#171717]">배송 정보</h2>
+              <h2 className="text-[1.9rem] font-semibold text-[#171717]">
+                배송 정보
+              </h2>
               <div className="mt-5 space-y-3 text-[1.45rem] text-neutral-700">
                 <p>
                   <span className="mr-3 text-neutral-500">이름</span>
@@ -272,7 +288,9 @@ const CheckoutComplete = () => {
 
             {resolvedState.vbankInfo ? (
               <section className="rounded-[1.6rem] bg-[#eef5ff] p-6">
-                <h2 className="text-[1.9rem] font-semibold text-[#171717]">가상계좌 정보</h2>
+                <h2 className="text-[1.9rem] font-semibold text-[#171717]">
+                  가상계좌 정보
+                </h2>
                 <div className="mt-5 space-y-3 text-[1.45rem] text-neutral-700">
                   <p>
                     <span className="mr-3 text-neutral-500">은행</span>
@@ -316,7 +334,9 @@ const CheckoutComplete = () => {
               </div>
               <div className="border-t border-white/20 pt-4">
                 <div className="flex items-end justify-between">
-                  <span className="text-[1.6rem] font-semibold">총 결제금액</span>
+                  <span className="text-[1.6rem] font-semibold">
+                    총 결제금액
+                  </span>
                   <span className="text-[2.2rem] font-semibold text-[#ffd26a]">
                     {formatPrice(finalPrice)}
                   </span>
