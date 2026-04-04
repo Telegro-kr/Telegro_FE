@@ -22,10 +22,10 @@ export default function ProductCard({
         <img
           src={product.imageSrc}
           alt={product.title}
-          className="h-[28.326rem] w-full rounded-[1.913rem] object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          className="aspect-[1/1] w-full rounded-[1.913rem] object-cover transition-transform duration-300 group-hover:scale-[1.02]"
         />
 
-        <div className="absolute top-[24rem] left-[1.8rem] inline-flex items-center justify-center gap-[1rem] rounded-[0.8rem] bg-[#33373B] px-[1.6rem] py-[0.5rem]">
+        <div className="absolute bottom-[1.8rem] left-[1.8rem] inline-flex items-center justify-center gap-[1rem] rounded-[0.8rem] bg-[#33373B] px-[1.6rem] py-[0.5rem]">
           <span className="text-[1.4rem] leading-[2.1rem] font-semibold text-[#FEFEFE]">
             {product.priceLabel}
           </span>

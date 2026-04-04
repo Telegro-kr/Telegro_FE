@@ -13,6 +13,10 @@ import { toastError, toastSuccess } from '@components/common/toast/toast';
 import queryClient from '@libs/query-client';
 import { Editor } from '@toast-ui/react-editor';
 import color from '@toast-ui/editor-plugin-color-syntax';
+import {
+  createEditorAlignmentPlugin,
+  createEditorToolbarItems,
+} from '@utils/editor-toolbar';
 import axios from 'axios';
 import {
   useEffect,
@@ -65,6 +69,8 @@ const invalidateProductQueries = () =>
       typeof query.queryKey[0] === 'string' &&
       query.queryKey[0].startsWith('/products'),
   });
+
+const editorAlignmentPlugin = createEditorAlignmentPlugin();
 
 const AdminProductCreate = () => {
   const navigate = useNavigate();
@@ -303,13 +309,8 @@ const AdminProductCreate = () => {
                 editorRef.current?.getInstance().getHTML() ?? '';
               updateField('content', nextContent);
             }}
-            toolbarItems={[
-              ['heading', 'bold', 'italic', 'strike'],
-              ['hr', 'quote'],
-              ['ul', 'ol', 'task', 'indent', 'outdent'],
-              ['table', 'link', 'image'],
-            ]}
-            plugins={[color]}
+            toolbarItems={createEditorToolbarItems()}
+            plugins={[color, editorAlignmentPlugin]}
           />
         }
         onChange={updateField}

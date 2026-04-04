@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import headsetImage from '/headset.svg';
-import productImage1 from '../../assets/images/Landing/headset2.png';
+import productImage1 from '../../assets/images/Landing/headset3.png';
 import productImage2 from '../../assets/images/Landing/image3.png';
 import productImage3 from '../../assets/images/Landing/accessory.png';
 import productImage4 from '../../assets/images/Landing/linecord2.png';

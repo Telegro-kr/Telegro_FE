@@ -63,6 +63,27 @@
 }
 
 @layer utilities {
+  .telegro-editor-align-button {
+    min-width: 2.8rem;
+    padding: 0 0.6rem;
+    border-radius: 0.6rem;
+    background: transparent;
+    color: #475569;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .telegro-editor-align-button:hover {
+    background: #f1f5f9;
+    color: #111827;
+  }
+
+  .telegro-editor-align-button:focus-visible {
+    outline: 2px solid #f59e0b;
+    outline-offset: 1px;
+  }
+
   @keyframes landing-fade-up {
     0% {
       opacity: 0;

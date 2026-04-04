@@ -17,6 +17,10 @@ import {
 } from 'react';
 import FormActionButtons from '@components/admin/common/form-action-buttons';
 import { toastError, toastSuccess } from '@components/common/toast/toast';
+import {
+  createEditorAlignmentPlugin,
+  createEditorToolbarItems,
+} from '@utils/editor-toolbar';
 import { useNavigate, useParams } from 'react-router-dom';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import 'tui-color-picker/dist/tui-color-picker.css';
@@ -55,6 +59,8 @@ const invalidateNoticeQueries = () =>
       typeof query.queryKey[0] === 'string' &&
       query.queryKey[0].startsWith('/notices'),
   });
+
+const editorAlignmentPlugin = createEditorAlignmentPlugin();
 
 const AdminNoticeCreate = () => {
   const navigate = useNavigate();
@@ -342,13 +348,8 @@ const AdminNoticeCreate = () => {
                     editorRef.current?.getInstance().getHTML() ?? '';
                   setContent(nextContent);
                 }}
-                toolbarItems={[
-                  ['heading', 'bold', 'italic', 'strike'],
-                  ['hr', 'quote'],
-                  ['ul', 'ol', 'task', 'indent', 'outdent'],
-                  ['table', 'link', 'image'],
-                ]}
-                plugins={[color]}
+                toolbarItems={createEditorToolbarItems()}
+                plugins={[color, editorAlignmentPlugin]}
               />
             </div>
             <p className="text-[1.3rem] leading-[1.7] text-gray-500">
