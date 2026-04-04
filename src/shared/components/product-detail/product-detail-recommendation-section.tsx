@@ -18,7 +18,7 @@ const ProductDetailRecommendationSection = ({
             당신을 위한
           </span>
           <h2 className="text-[2.2rem] leading-none font-semibold tracking-[-0.03em] text-[#111827]">
-            똑똑한 Telegro 상품추천
+            똑똑한 Telegro 상품 추천
           </h2>
         </div>
       </div>
@@ -38,11 +38,11 @@ const ProductDetailRecommendationSection = ({
               className="group flex w-[22rem] shrink-0 flex-col gap-3"
             >
               <article className="flex flex-col gap-3">
-                <div className="overflow-hidden bg-[#F5F5F2]">
+                <div className="aspect-square overflow-hidden bg-[#F5F5F2]">
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="aspect-[1/1] w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                    className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
