@@ -92,6 +92,10 @@ const ProductForm = ({
   onSubmit,
   onCancel,
 }: ProductFormProps) => {
+  const visiblePriceFields = PRICE_FIELDS.filter(
+    (field) => mode === 'create' || field.key !== 'price',
+  );
+
   return (
     <section className="overflow-hidden rounded-[3rem] border border-[#EAEAEA] bg-white shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
       <div className="border-b border-[#F1F1F1] bg-[#FFFAF5] px-[3rem] py-[1.8rem] md:px-[3.2rem]">
@@ -172,7 +176,7 @@ const ProductForm = ({
         </div>
 
         <div className="grid gap-[1.6rem] md:grid-cols-2 xl:grid-cols-3">
-          {PRICE_FIELDS.map((field) => (
+          {visiblePriceFields.map((field) => (
             <Field key={field.key} label={field.label}>
               <input
                 type="text"

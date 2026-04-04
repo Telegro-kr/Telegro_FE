@@ -1,9 +1,20 @@
-﻿import {
+import {
   ProductRequestDTOCategory,
   type ProductDetailResponseDTO,
   type ProductRequestDTO,
 } from '@apis/telegro';
 import type { ProductFormValues } from '@components/admin/product/product-form';
+import { normalizePriceValue } from '@utils/format';
+
+export type UpdateProductPayload = Omit<
+  ProductRequestDTO,
+  'price' | 'priceBussiness' | 'priceBest' | 'priceDealer' | 'priceCustomer'
+> & {
+  priceBussiness?: number;
+  priceBest?: number;
+  priceDealer?: number;
+  priceCustomer?: number;
+};
 
 export const createDefaultProductFormValues = (): ProductFormValues => ({
   productModel: '',
@@ -37,7 +48,7 @@ export const mapProductDetailToFormValues = (
   pictures: (product.pictures ?? []).filter(Boolean),
 });
 
-export const normalizeProductPayload = (
+export const normalizeCreateProductPayload = (
   values: ProductFormValues,
 ): ProductRequestDTO => ({
   productModel: values.productModel.trim(),
@@ -57,7 +68,29 @@ export const normalizeProductPayload = (
   pictures: values.pictures,
 });
 
-export const validateProductFormValues = (values: ProductFormValues) => {
+export const normalizeUpdateProductPayload = (
+  values: ProductFormValues,
+): UpdateProductPayload => ({
+  productModel: values.productModel.trim(),
+  productName: values.productName.trim(),
+  category: values.category,
+  content: values.content.trim(),
+  options: values.optionsText
+    .split(',')
+    .map((option) => option.trim())
+    .filter(Boolean),
+  priceBussiness: normalizePriceValue(values.priceBussiness),
+  priceBest: normalizePriceValue(values.priceBest),
+  priceDealer: normalizePriceValue(values.priceDealer),
+  priceCustomer: normalizePriceValue(values.priceCustomer),
+  coverImage: values.coverImage.trim(),
+  pictures: values.pictures,
+});
+
+export const validateProductFormValues = (
+  values: ProductFormValues,
+  mode: 'create' | 'edit',
+) => {
   if (!values.productName.trim()) {
     return 'Please enter a product name.';
   }
@@ -70,8 +103,24 @@ export const validateProductFormValues = (values: ProductFormValues) => {
     return 'Please enter product description content.';
   }
 
-  if (!values.price.trim()) {
+  if (mode === 'create' && !values.price.trim()) {
     return 'Please enter the base price.';
+  }
+
+  if (!values.priceBussiness.trim()) {
+    return 'Please enter the business price.';
+  }
+
+  if (!values.priceBest.trim()) {
+    return 'Please enter the best price.';
+  }
+
+  if (!values.priceDealer.trim()) {
+    return 'Please enter the dealer price.';
+  }
+
+  if (!values.priceCustomer.trim()) {
+    return 'Please enter the customer price.';
   }
 
   if (!values.coverImage.trim()) {

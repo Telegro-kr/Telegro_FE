@@ -4,6 +4,7 @@
   updateProduct,
   useGetProductDetail,
   type ProductRequestDTO,
+  type UpdateProductBody,
 } from '@apis/telegro';
 import ProductForm, {
   type ProductFormValues,
@@ -29,7 +30,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   createDefaultProductFormValues,
   mapProductDetailToFormValues,
-  normalizeProductPayload,
+  normalizeCreateProductPayload,
+  normalizeUpdateProductPayload,
   validateProductFormValues,
 } from './product-form.utils';
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -218,7 +220,10 @@ const AdminProductCreate = () => {
       content: htmlContent,
     };
 
-    const validationMessage = validateProductFormValues(nextValues);
+    const validationMessage = validateProductFormValues(
+      nextValues,
+      isEditMode ? 'edit' : 'create',
+    );
 
     if (validationMessage) {
       setError(validationMessage);
@@ -234,11 +239,14 @@ const AdminProductCreate = () => {
     setIsSubmitting(true);
 
     try {
-      const payload: ProductRequestDTO = normalizeProductPayload(nextValues);
-
       if (isEditMode) {
-        await updateProduct(resolvedProductId, payload);
+        await updateProduct(
+          resolvedProductId,
+          normalizeUpdateProductPayload(nextValues) as UpdateProductBody,
+        );
       } else {
+        const payload: ProductRequestDTO =
+          normalizeCreateProductPayload(nextValues);
         await createProduct(payload);
       }
 
