@@ -1,4 +1,11 @@
+import {
+  getAllOrders,
+  useGetUsers,
+  type OrderDetailDTO,
+  type UserDTORole,
+} from '@apis/telegro';
 import AdminProfileCard from '@components/admin/profile-card/profile-card';
+import RoleDonutCard from '@components/admin/user-list/role-donut-card';
 import DateInputPopover from '@components/common/date-input-popover';
 import ExploreScrollToTop from '@components/common/explore-scroll-to-top';
 import LoadingPanel from '@components/common/loading-panel';
@@ -7,15 +14,46 @@ import OrderExportButton from '@components/order/order-export-button';
 import OrderListTable, {
   type OrderStatusValue,
 } from '@components/order/order-list-table';
+import { useQuery } from '@tanstack/react-query';
 import { useInfiniteScrollTrigger } from '@hooks/use-infinite-scroll-trigger';
 import useOrderList, { type OrderFilterType } from '@hooks/use-order-list';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const FILTER_OPTIONS: Array<{ label: string; value: OrderFilterType }> = [
   { label: '상품명', value: 'product' },
   { label: '주문자 정보', value: 'user' },
 ];
+
+const FETCH_ALL_USERS_SIZE = 10000;
+
+const getOrdersFromResponse = (
+  ordersResponse: Awaited<ReturnType<typeof getAllOrders>>,
+): OrderDetailDTO[] => {
+  const data = ordersResponse.data;
+
+  if (Array.isArray(data?.orders)) {
+    return data.orders;
+  }
+
+  if (Array.isArray((data as { content?: unknown[] } | undefined)?.content)) {
+    return (data as { content: OrderDetailDTO[] }).content;
+  }
+
+  return [];
+};
+
+const normalizeOrderRole = (role?: UserDTORole) => {
+  switch (role) {
+    case 'DEALER':
+    case 'BEST':
+    case 'BUSINESS':
+      return role;
+    case 'MEMBER':
+    default:
+      return 'MEMBER';
+  }
+};
 
 const AdminOrders = () => {
   const navigate = useNavigate();
@@ -48,6 +86,65 @@ const AdminOrders = () => {
     endDate,
     orderStatus: selectedStatus,
   });
+
+  const usersQuery = useGetUsers(
+    {
+      page: 0,
+      size: FETCH_ALL_USERS_SIZE,
+    },
+    {
+      query: {
+        staleTime: 60_000,
+      },
+    },
+  );
+
+  const orderRatioQuery = useQuery({
+    queryKey: [
+      '/api/orders',
+      'role-ratio',
+      appliedFilterBy,
+      appliedSearchKeyword.trim(),
+      startDate,
+      endDate,
+      selectedStatus,
+    ],
+    queryFn: () =>
+      getAllOrders({
+        filterBy: appliedFilterBy,
+        q: appliedSearchKeyword.trim() || undefined,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+        orderStatus: selectedStatus !== 'ALL' ? selectedStatus : undefined,
+      }),
+    staleTime: 60_000,
+  });
+
+  const roleCounts = useMemo(() => {
+    const counts = {
+      MEMBER: 0,
+      DEALER: 0,
+      BEST: 0,
+      BUSINESS: 0,
+    };
+
+    const userRoleMap = new Map<number, ReturnType<typeof normalizeOrderRole>>();
+
+    for (const user of usersQuery.data?.data?.users ?? []) {
+      if (user.id == null) {
+        continue;
+      }
+
+      userRoleMap.set(user.id, normalizeOrderRole(user.role));
+    }
+
+    for (const order of orderRatioQuery.data ? getOrdersFromResponse(orderRatioQuery.data) : []) {
+      const role = order.userInfo?.id != null ? userRoleMap.get(order.userInfo.id) : undefined;
+      counts[role ?? 'MEMBER'] += 1;
+    }
+
+    return counts;
+  }, [orderRatioQuery.data, usersQuery.data?.data?.users]);
 
   const loadMoreRef = useInfiniteScrollTrigger({
     enabled: hasNextPage && !isFetchingNextPage,
@@ -98,7 +195,13 @@ const AdminOrders = () => {
       ref={pageRef}
       className="flex flex-col gap-[5rem] bg-[#FAFAFA] px-[2rem] py-[5rem] md:px-[5rem] lg:px-[10rem]"
     >
-      <AdminProfileCard onMove={() => navigate('/')} />
+      <div className="flex gap-8 sm:flex-col md:flex-row md:items-start md:justify-between">
+        <AdminProfileCard onMove={() => navigate('/')} />
+        <RoleDonutCard
+          className="w-full max-w-[30rem] shrink-0"
+          roleCounts={roleCounts}
+        />
+      </div>
 
       <div className="flex flex-col gap-[3.5rem]">
         <div className="flex-row-between w-full">
