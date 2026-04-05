@@ -5,6 +5,7 @@ import { toastSuccess } from '@components/common/toast/toast';
 import {
   ORDER_STATUS_OPTIONS,
   canCancelOrder,
+  isTerminalOrderStatus,
   type OrderStatusCode,
 } from '@constants/orderStatus';
 import { useQueryClient } from '@tanstack/react-query';
@@ -39,8 +40,11 @@ type Props = {
 
 const STATUS_OPTIONS: Array<{ label: string; value: OrderStatusValue }> =
   ORDER_STATUS_OPTIONS;
+const MANAGEABLE_STATUS_OPTIONS = STATUS_OPTIONS.filter(
+  (option) => option.value !== 'ORDER_EXPIRED',
+);
 const ORDER_CREATED_TOOLTIP =
-  '결제가 완료되지 않은 주문건입니다. 24시간 내로 삭제됩니다.';
+  '결제가 완료되지 않은 주문건입니다. 24시간 내로 만료됩니다.';
 
 const OrderCreatedRowTooltip = () => (
   <div className="pointer-events-none absolute top-1/2 z-30 flex max-w-[calc(100vw-6rem)] min-w-[39rem] -translate-y-1/2 gap-[0.4rem] rounded-[8px] bg-[#3A3A3B] px-[14px] py-[1rem] text-left text-[14px] leading-[21px] font-medium break-words whitespace-pre-line text-white opacity-0 shadow-[0_18px_40px_rgba(0,0,0,0.2)] transition-opacity duration-75 group-hover:opacity-100 sm:right-[5rem] md:right-[10rem] lg:right-[15rem]">
@@ -104,9 +108,9 @@ const OrderStatusControl = ({
 
   useOutsideClose(isOpen, containerRef, () => setIsOpen(false));
 
-  const isCancelled = row.statusValue === 'ORDER_CANCELLED';
+  const isTerminalStatus = isTerminalOrderStatus(row.statusValue);
   const isMutating = updateOrderStatus.isPending || cancelPayment.isPending;
-  const availableOptions = STATUS_OPTIONS.filter((option) => {
+  const availableOptions = MANAGEABLE_STATUS_OPTIONS.filter((option) => {
     if (option.value === 'ORDER_CANCELLED') {
       return canCancelOrder(row.statusValue);
     }
@@ -114,7 +118,7 @@ const OrderStatusControl = ({
     return true;
   });
 
-  if (isCancelled) {
+  if (isTerminalStatus) {
     return (
       <div className="inline-flex h-[4.4rem] w-full max-w-[10.5rem] items-center justify-center rounded-[12px] bg-[#F5F5F5] px-3 text-[1.3rem] font-medium text-slate-500 md:text-[1.5rem]">
         {row.statusLabel}

@@ -3,6 +3,7 @@ export const ORDER_STATUS_LABELS = {
   PAYMENT_COMPLETED: '결제 완료',
   ORDER_COMPLETED: '주문 완료',
   ORDER_CANCELLED: '주문 취소',
+  ORDER_EXPIRED: '주문 만료',
   SHIPPING: '배송 중',
   DELIVERY_COMPLETED: '배송 완료',
 } as const;
@@ -19,6 +20,7 @@ export const ORDER_STATUS_OPTIONS: Array<{
   { label: ORDER_STATUS_LABELS.SHIPPING, value: 'SHIPPING' },
   { label: ORDER_STATUS_LABELS.DELIVERY_COMPLETED, value: 'DELIVERY_COMPLETED' },
   { label: ORDER_STATUS_LABELS.ORDER_CANCELLED, value: 'ORDER_CANCELLED' },
+  { label: ORDER_STATUS_LABELS.ORDER_EXPIRED, value: 'ORDER_EXPIRED' },
 ];
 
 export const ORDER_PROGRESS_STEPS: OrderStatusCode[] = [
@@ -37,6 +39,9 @@ export const CANCELLABLE_ORDER_STATUSES: OrderStatusCode[] = [
 
 export const canCancelOrder = (status?: string | null) =>
   Boolean(status && CANCELLABLE_ORDER_STATUSES.includes(status as OrderStatusCode));
+
+export const isTerminalOrderStatus = (status?: string | null) =>
+  status === 'ORDER_CANCELLED' || status === 'ORDER_EXPIRED';
 
 export const getOrderStatusLabel = (status?: string | null) => {
   if (!status) {

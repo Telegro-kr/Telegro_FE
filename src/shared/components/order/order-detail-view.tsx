@@ -10,6 +10,7 @@ import {
   ORDER_PROGRESS_STEPS,
   canCancelOrder,
   getOrderStatusLabel,
+  isTerminalOrderStatus,
 } from '@constants/orderStatus';
 import { formatPrice as formatWon } from '@utils/format';
 import type { ReactNode } from 'react';
@@ -88,9 +89,9 @@ function StepIndicator({
 }: {
   currentStatus?: OrderDetailResponseDTOOrderStatus;
 }) {
-  const isCancelled = currentStatus === 'ORDER_CANCELLED';
+  const isTerminalStatus = isTerminalOrderStatus(currentStatus);
 
-  if (isCancelled) {
+  if (isTerminalStatus) {
     return (
       <div className="overflow-hidden rounded-[1.8rem] border border-neutral-200 bg-white">
         <div className="flex items-center gap-4 bg-[#171717] px-6 py-5 text-white">
